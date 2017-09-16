@@ -1,4 +1,4 @@
-/* global cash, assertNamespace */
+/* global shop, assertNamespace */
 
 assertNamespace('shop.configuration');
 
@@ -9,7 +9,7 @@ shop.configuration.ConfigurationLoader = function ConfigurationLoader(url, selec
 
       var setHtml = function setHtml(htmlCode) {
          $(selector).html(htmlCode);
-      } 
+      };
       
       this.initialize = function initialize() {
          console.log('loading ' + url);
