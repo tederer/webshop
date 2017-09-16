@@ -1,0 +1,26 @@
+{
+   "name": "webshop",
+   "version": "0.0.1",
+   "description": "Testimplementierung eines Webshops",
+   "private": true,
+   "author": {
+    "name": "Thomas Ederer",
+    "email": "thomas@orchideenvermehrung.at"
+   },
+  
+   "licenses": [
+      {
+      "type": "BSD-3-Clause"
+      }
+   ],
+  
+   "dependencies" : {
+   },
+   
+   "devDependencies": {
+   },
+  
+   "engines": {
+      "node": ">=6.11.x"
+   }
+}

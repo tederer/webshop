@@ -1,0 +1,57 @@
+body {
+   width : 100%;
+   height : 100%; 
+   overflow : hidden;
+   background-color : #777;
+   font-family: Verdana;
+}
+
+#shop {
+   position : absolute;
+   top : 0.5em;
+   left : 0.5em;
+   bottom : 0.5em;
+   right : 0.5em;
+   border-radius : 1em 1em 1em 1em;
+   background-color : transparent;
+   z-index : 1;
+}
+
+#shop > #tabs {
+   position : absolute;
+   top : 0;
+   left : 0;
+   width : 100%;
+   height : 3em;
+   border-radius : 1em 1em 0 0;
+   background-color : #AAAAAA;
+   font-size : 1em;
+   line-height: 3em;
+   text-align: center;
+}
+
+#shop > #content {
+   position : absolute;
+   top : 3em;
+   left : 0;
+   bottom : 2em;
+   width : 100%;
+   border-radius : 0 0 0 0;
+   background-color : #DDDDDD;
+}
+
+#shop > #footer {
+   position : absolute;
+   left : 0;
+   bottom : 0;
+   width : 100%;
+   height : 2em;
+   border-radius : 0 0 1em 1em;
+   background-color : #AAAAAA;
+}
+
+#shop > #footer > #author  {
+   text-align : center;
+   font-size : 0.5em;
+   margin : 1.5em 0 1.5em 0;
+}

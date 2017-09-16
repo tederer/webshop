@@ -1,0 +1,5 @@
+{
+   { name: 'Aerangis ellisii', price: 10 },
+   { name: 'Cattleya walkeriana alba', price: 12 },
+   { name: 'Cymbidium devonianum', price: 8 }
+}
