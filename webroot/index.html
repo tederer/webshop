@@ -5,13 +5,14 @@
    <link rel="stylesheet" type="text/css" href="css/shop.css">
 
    <script type="text/javascript" src="lib/jquery-3.2.1.min.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/RequireMock.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/NamespaceUtils.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ConfigurationLoader.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/Configuration.js" charset="UTF-8"></script>
    <script>
       $(document).ready(function() {
          console.log('document.ready');
-         var configLoader = new shop.configuration.ConfigurationLoader('http://localhost:8080/configuration/pflanzen.json', '#shop > #content');
-         configLoader.initialize();
+         var config = new shop.configuration.Configuration('http://localhost:8080/configuration/pflanzen.json', '#shop > #content');
+         config.initialize();
       });
    </script>
 </head>

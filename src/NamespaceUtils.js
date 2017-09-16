@@ -14,7 +14,6 @@ var recursiveAssertObject = function recursiveAssertObject(parentObject, objects
 };
 
 assertNamespace = function assertNamespace(namespace) {
-   
    var rootObject = (typeof window === 'undefined') ? global : window;
    var objects = namespace.split('.');
    recursiveAssertObject(rootObject, objects);

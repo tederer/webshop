@@ -1,11 +1,13 @@
 /* global shop, assertNamespace */
 
+require('./NamespaceUtils.js');
+
 assertNamespace('shop.configuration');
 
 /**
- * constructor for a ConfigurationLoader.
+ * constructor for the Configuration.
  */
-shop.configuration.ConfigurationLoader = function ConfigurationLoader(url, selector) {
+shop.configuration.Configuration = function Configuration(url, selector) {
 
       var setHtml = function setHtml(htmlCode) {
          $(selector).html(htmlCode);
