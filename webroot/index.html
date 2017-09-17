@@ -7,12 +7,15 @@
    <script type="text/javascript" src="lib/jquery-3.2.1.min.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/RequireMock.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/NamespaceUtils.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/Configuration.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/Promise.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ConfigProvider.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/HtmlContent.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/PlantList.js" charset="UTF-8"></script>
    <script>
+      var configProvider = new shop.configuration.ConfigProvider('http://localhost:8080/configuration');
+
       $(document).ready(function() {
-         console.log('document.ready');
-         var config = new shop.configuration.Configuration('http://localhost:8080/configuration/pflanzen.json', '#shop > #content');
-         config.initialize();
+         var plantList = new shop.PlantList(configProvider, new shop.HtmlContent("#content"));
       });
    </script>
 </head>
