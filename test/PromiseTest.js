@@ -12,8 +12,8 @@ var rejectCalled;
 var capturedData;
 var capturedError;
 
-var maxTimedExpectRepitation = 10;
-var timedExpectIntervalInMs = 100;
+var maxTimedExpectDurationInMs = 200;
+var timedExpectIntervalInMs = 50;
 var finishTest;
 
 var recursiveTimedExpect = function recursiveTimedExpect(predicate, repetitionCount) {
@@ -22,7 +22,7 @@ var recursiveTimedExpect = function recursiveTimedExpect(predicate, repetitionCo
    if (result === true) {
       finishTest();
    } else {
-      if (repetitionCount < maxTimedExpectRepitation) {
+      if ((repetitionCount * timedExpectIntervalInMs) < maxTimedExpectDurationInMs) {
          setTimeout(function() { recursiveTimedExpect(predicate, repetitionCount + 1); }, timedExpectIntervalInMs);
       } else {
          finishTest('predicate does not evaluate to true');
@@ -99,7 +99,7 @@ describe('Promise', function() {
       
       finishTest = done;
       var executor = function(resolve, reject) { 
-         setTimeout(function() { resolve('this is another test!'); }, 500);
+         setTimeout(function() { resolve('this is another test!'); }, 100);
       };
       
       var promise = new common.Promise(executor);
@@ -108,7 +108,33 @@ describe('Promise', function() {
       timedExpect(function() { return capturedData === 'this is another test!'; });
    });   
    
-   it('then() triggers executor function and onRejecteded gets called when executor function fails', function() {
+   it('chained onFulfilledActions of then() get executed in the order of definition', function() {
+      
+      var promise = new common.Promise((fulfill, reject) => fulfill(3));
+      promise.then((value) => value * 2).then((value) => value + 1).then(onFulfilled);
+      
+      expect(capturedData).to.be.eql(7);
+   });   
+   
+   it('exception in onFulfilledActions of then() gets provided to onRejectedAction', function() {
+      
+      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
+      promise.then((data) => {throw 'an error happened';}).then(onFulfilled, onRejected);
+      
+      expect(!resolveCalled && rejectCalled).to.be.eql(true);
+      expect(capturedError).to.be.eql('an error happened');
+   });   
+   
+   it('exception in onFulfilledActions of then() gets provided to last defined onRejectedAction when no onRejectedAction is defined before', function() {
+      
+      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
+      promise.then((data) => {throw 'an error happened';}).then((data) => data).then(onFulfilled, onRejected);
+      
+      expect(!resolveCalled && rejectCalled).to.be.eql(true);
+      expect(capturedError).to.be.eql('an error happened');
+   });   
+   
+   it('then() triggers executor function and onRejected gets called when executor function fails', function() {
       
       var promise = new common.Promise(function(resolve, reject) { 
          reject();
@@ -129,4 +155,22 @@ describe('Promise', function() {
       
       expect(capturedError).to.be.eql('everything went wrong');
    });
+
+   it('onRejectedAction providing data triggers onFulfilledActions of next then()', function() {
+      
+      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
+      promise.then((data) => {throw 'an error happened';}).then(onFulfilled, (error) => 'corrected data').then(onFulfilled, onRejected);
+      
+      expect(resolveCalled && !rejectCalled).to.be.eql(true);
+      expect(capturedData).to.be.eql('corrected data');
+   });   
+
+   it('exception in onRejectedAction gets provided to onRejectedAction', function() {
+      
+      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
+      promise.then((data) => {throw 'an error happened';}).then(onFulfilled, (error) => {throw 'another error happened';}).then(onFulfilled, onRejected);
+      
+      expect(!resolveCalled && rejectCalled).to.be.eql(true);
+      expect(capturedError).to.be.eql('another error happened');
+   });   
 });  

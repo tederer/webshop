@@ -39,14 +39,22 @@ common.Promise = function Promise(executor) {
       return new common.Promise(function(resolve, reject) {
 
          var doResolve = function doResolve() {
-            onFulfilledAction(data);
-            // TODO abhängig von onFulfilledAction entweder resolve oder reject aufrufen
-            resolve(data);
+            try {
+               var result = onFulfilledAction(data);
+               resolve(result);
+            } catch(error) {
+               reject(error);
+            }
          };
          
          var doReject = function doReject() {
             if (onRejectedAction !== undefined) {
-               onRejectedAction(error);
+               try {
+                  var result = onRejectedAction(error);
+                  resolve(result);
+               } catch(error) {
+                  reject(error);
+               }
             } else {
                reject(error);
             }
