@@ -8,6 +8,8 @@ function valueIsAnObject(val) {
    return ( (typeof val === 'function') || (typeof val === 'object') );
 }
 
+var DEFAULT_SELECTOR = 'defaultSelector';
+
 var configContent;
 var capturedHtmlContent;
 var capturedConfigName;
@@ -19,8 +21,8 @@ var mockedConfigProvider = {
       }
 };
 
-var mockedHtmlContent = {
-   set: function set(content) { capturedHtmlContent = content; }
+var setHtmlContent = function setHtmlContent(selector, content) {
+   capturedHtmlContent = content;
 };
 
 var givenPlantConfigurationContains = function givenPlantConfigurationContains(content) {
@@ -39,14 +41,14 @@ describe('PlantList', function() {
    
    it('creating an instance of a PlantList is an instance/object', function() {
       
-      var plantList = new shop.PlantList(mockedConfigProvider, mockedHtmlContent);
+      var plantList = new shop.ui.PlantList(DEFAULT_SELECTOR, mockedConfigProvider, setHtmlContent);
       
       expect(valueIsAnObject(plantList)).to.be.eql(true);
    });
    
    it('PlantList requests its config file', function() {
       
-      var plantList = new shop.PlantList(mockedConfigProvider, mockedHtmlContent);
+      var plantList = new shop.ui.PlantList(DEFAULT_SELECTOR, mockedConfigProvider, setHtmlContent);
       
       expect(capturedConfigName).to.be.eql('pflanzen');
    });
@@ -55,7 +57,7 @@ describe('PlantList', function() {
       
       givenPlantConfigurationContains('{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       
-      var plantList = new shop.PlantList(mockedConfigProvider, mockedHtmlContent);
+      var plantList = new shop.ui.PlantList(DEFAULT_SELECTOR, mockedConfigProvider, setHtmlContent);
       
       expect(capturedHtmlContent).to.be.eql('<table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr><tr><td>Cattleya walkeriana</td><td>8 EUR</td></tr></table>');
    });
@@ -64,7 +66,7 @@ describe('PlantList', function() {
       
       givenPlantConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
       
-      var plantList = new shop.PlantList(mockedConfigProvider, mockedHtmlContent);
+      var plantList = new shop.ui.PlantList(DEFAULT_SELECTOR, mockedConfigProvider, setHtmlContent);
       
       expect(capturedHtmlContent).to.be.eql('config contains an error');
    });
