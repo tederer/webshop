@@ -6,9 +6,9 @@ require('./Promise.js');
 assertNamespace('shop.configuration');
 
 /**
- * constructor for the ConfigProvider.
+ * constructor for the ResourceProvider.
  */
-shop.configuration.ConfigProvider = function ConfigProvider(configBaseUrl) {
+shop.configuration.ResourceProvider = function ResourceProvider(configBaseUrl) {
    
    this.get = function get(name) {
       var url = configBaseUrl + '/' + name + '.json';

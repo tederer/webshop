@@ -7,7 +7,7 @@
   "undef": true,
   "strict": false,
   "globalstrict": true,
-  "maxparams": 5,
+  "maxparams": 6,
   "maxdepth": 5,
   "maxcomplexity": 15,
   "esversion": 6,

@@ -11,11 +11,12 @@
    <script type="text/javascript" src="javascripts/MenuItem.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/AbstractTabContent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/TabController.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ConfigProvider.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ResourceProvider.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/PlantList.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/AccessoriesList.js" charset="UTF-8"></script>
    <script>
-      var configProvider = new shop.configuration.ConfigProvider('http://localhost:8080/configuration');
+      var configProvider   = new shop.configuration.ResourceProvider('http://localhost:8080/configuration');
+      var templateProvider = new shop.configuration.ResourceProvider('http://localhost:8080/templates');
 
       $(document).ready(function() {
          var tabController = new shop.ui.TabController();
