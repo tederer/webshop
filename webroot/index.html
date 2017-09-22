@@ -12,16 +12,15 @@
    <script type="text/javascript" src="javascripts/AbstractTabContent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/TabController.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ResourceProvider.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/PlantList.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/AccessoriesList.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/TabContent.js" charset="UTF-8"></script>
    <script>
       var configProvider   = new shop.configuration.ResourceProvider('http://localhost:8080/configuration');
       var templateProvider = new shop.configuration.ResourceProvider('http://localhost:8080/templates');
 
       $(document).ready(function() {
          var tabController = new shop.ui.TabController();
-         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.PlantList('#shop > #content > #plants', configProvider));
-         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.AccessoriesList('#shop > #content > #accessories'));
+         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants', 'pflanzen', undefined, configProvider, templateProvider));
+         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.TabContent('#shop > #content > #accessories', 'ded', undefined, configProvider, templateProvider));
       });
    </script>
 </head>
@@ -38,8 +37,8 @@
    </div>
 
    <div id="content">
-      <div id="plants"/>plants</div>
-      <div id="accessories"/>accessories</div>
+      <div id="plants"/></div>
+      <div id="accessories"/></div>
    </div>
    
    <div id="footer">

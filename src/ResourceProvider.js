@@ -14,14 +14,14 @@ shop.configuration.ResourceProvider = function ResourceProvider(configBaseUrl) {
       var url = configBaseUrl + '/' + name + '.json';
       
       var executor = function executor(fulfill, reject) {
-         
          $.ajax(url, {
             dataType: 'text',
             success: function(data) {
                fulfill(data);
                },
             error: function(jqXHR) {
-               reject('failed to download ' + url + ': ' + jqXHR.status + ' ' + jqXHR.statusText);
+               var errorMessage = 'failed to download ' + url + ': ' + jqXHR.status + ' ' + jqXHR.statusText;
+               reject(errorMessage);
                }
             });
       };

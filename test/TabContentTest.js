@@ -59,6 +59,10 @@ var givenDefaultTabContent = function givenDefaultTabContent() {
    return new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
 };
 
+var givenTabContentWithUndefinedContentTemplateName = function givenTabContentWithUndefinedContentTemplateName() {
+   return new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+};
+
 var givenTemplateRejects = function givenTemplateRejects() {
    templateProviderRejects = true;
 };
@@ -143,6 +147,14 @@ describe('TabContent', function() {
       expect(capturedHtmlContent).to.be.eql('<h1>Hello World</h1><table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr><tr><td>Cattleya walkeriana</td><td>8 EUR</td></tr></table><p>after configured content</p>');
    });
    
+   it('the TabContent publishes a table with the configured plants when contentTemplateName is undefined', function() {
+      
+      givenConfigurationContains('{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplateContains('somePrefix' + placeholder + 'someSuffix');
+      givenTabContentWithUndefinedContentTemplateName();
+      expect(capturedHtmlContent).to.be.eql('<table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr><tr><td>Cattleya walkeriana</td><td>8 EUR</td></tr></table>');
+   });
+   
    it('the TabContent publishes an error when the config contains an error', function() {
       
       givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
@@ -150,6 +162,7 @@ describe('TabContent', function() {
       givenDefaultTabContent();
       expectContentContainesTemplateWithErrorMessage();
    });
+   
    it('the TabContent publishes an error when the config cannot be provided', function() {
       
       givenConfigurationRejects();
@@ -175,5 +188,18 @@ describe('TabContent', function() {
       expectContentContainesErrorMessage();
    });
    
-   //TODO testen wenn config und template hin sind
+   it('the TabContent publishes an error when the config contains an error and template is undefined', function() {
+      
+      givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenTemplateContains('a' + placeholder + 'b');
+      givenTabContentWithUndefinedContentTemplateName();
+      expectContentContainesErrorMessage();
+   });   
+   it('the TabContent publishes an error when the config cannot be provided and template is undefined', function() {
+      
+      givenConfigurationRejects();
+      givenTemplateContains('a' + placeholder + 'b');
+      givenTabContentWithUndefinedContentTemplateName();
+      expectContentContainesErrorMessage();
+   });
 });  

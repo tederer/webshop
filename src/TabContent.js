@@ -5,12 +5,16 @@ require('./AbstractTabContent.js');
 
 assertNamespace('shop.ui');
 
+/**
+ * If no template is required, then contentTemplateName should be set to undefined.
+ */
 shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, configProvider, templateProvider, optionalSetHtmlContent) {
    
    var State = {
-      PENDING: 'pending',
-      LOADED:  'loaded',
-      ERROR:   'error'
+      PENDING:       'pending',
+      LOADED:        'loaded',
+      ERROR:         'error',
+      NOT_REQUIRED:  'not required'
    };
    
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
@@ -92,15 +96,23 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
       
       if (downloadTasksFished()) {
          
-         if (configDownloadState === State.LOADED && templateDownloadState === State.LOADED) {
+         if (configDownloadState === State.LOADED && (templateDownloadState === State.LOADED || templateDownloadState === State.NOT_REQUIRED)) {
+            
+            if (templateDownloadState === State.NOT_REQUIRED) {
+               templateContent = PLACEHOLDER;
+            }
             
             createDynamicHtmlContent()
                .then(insertContentIntoTemplate, function(error) { return insertContentIntoTemplate(formatErrorMessage('Failed to parse config: ' + error));})
                .then(setHtmlContent, setErrorHtmlContent.bind(this, 'Failed to update HTML content'));
          }
 
-         if (templateDownloadState === State.LOADED && configDownloadState === State.ERROR) {
-               (new common.Promise(function(fulfill) { fulfill(formatErrorMessage(getErrorsAsString())); })).then(insertContentIntoTemplate).then(setHtmlContent);
+         if ((templateDownloadState === State.LOADED || templateDownloadState === State.NOT_REQUIRED) && configDownloadState === State.ERROR) {
+            if (templateDownloadState === State.NOT_REQUIRED) {
+               templateContent = PLACEHOLDER;
+            }
+            
+            (new common.Promise(function(fulfill) { fulfill(formatErrorMessage(getErrorsAsString())); })).then(insertContentIntoTemplate).then(setHtmlContent);
          }
          
          if (templateDownloadState === State.ERROR) {
@@ -109,17 +121,32 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
       } 
    };
    
+   var setConfigErrorState = function setConfigErrorState(description, error){
+      configDownloadState = State.ERROR;
+      errors[errors.length] = description + ': ' + error;
+   };
+   
+   var setTemplateErrorState = function setTemplateErrorState(description, error){
+      templateDownloadState = State.ERROR;
+      errors[errors.length] = description + ': ' + error;
+   };
+   
    this.getSelector = function getSelector() {
       return selector;
    };
    
    configProvider.get(configName)
-      .then(setConfigContent, function(error) { configDownloadState = State.ERROR; errors[errors.length] = 'Failed to download config file: ' + error; })
+      .then(setConfigContent, setConfigErrorState.bind(this, 'Failed to download config file'))
       .then(updateHtmlContent);
-      
-   templateProvider.get(contentTemplateName)
-      .then(setTemplateContent, function(error) { templateDownloadState = State.ERROR; errors[errors.length] = 'Failed to download template file: ' + error; })
-      .then(updateHtmlContent);
+     
+   if (contentTemplateName === undefined) {
+      templateDownloadState = State.NOT_REQUIRED;
+      updateHtmlContent();
+   } else {
+      templateProvider.get(contentTemplateName)
+         .then(setTemplateContent, setTemplateErrorState.bind(this, 'Failed to download template file'))
+         .then(updateHtmlContent);
+   }
 };
 
 shop.ui.TabContent.prototype = new shop.ui.AbstractTabContent();
