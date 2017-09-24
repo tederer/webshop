@@ -56,8 +56,12 @@ var setHtmlContent = function setHtmlContent(selector, content) {
    capturedHtmlContent = content;
 };
 
-var givenPublishedLanguage = function givenPublishedLanguage() {
+var givenPublishedLanguageIsGerman = function givenPublishedLanguageIsGerman() {
    instance.onLanguageChanged(shop.Language.DE);
+};
+
+var givenPublishedLanguageIsEnglish = function givenPublishedLanguageIsEnglish() {
+   instance.onLanguageChanged(shop.Language.EN);
 };
 
 var givenDefaultTabContentWithoutLanguage = function givenDefaultTabContentWithoutLanguage() {
@@ -66,17 +70,17 @@ var givenDefaultTabContentWithoutLanguage = function givenDefaultTabContentWitho
 
 var givenDefaultTabContent = function givenDefaultTabContent() {
    givenDefaultTabContentWithoutLanguage();
-   givenPublishedLanguage();
+   givenPublishedLanguageIsGerman();
 };
 
 var givenTabContentWithUndefinedContentTemplateName = function givenTabContentWithUndefinedContentTemplateName() {
    instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-   givenPublishedLanguage();
+   givenPublishedLanguageIsGerman();
 };
 
 var givenTabContentWithUndefinedConfigName = function givenTabContentWithUndefinedConfigName() {
    instance = new shop.ui.TabContent(DEFAULT_SELECTOR, undefined, DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-   givenPublishedLanguage();
+   givenPublishedLanguageIsGerman();
 };
 
 var givenTemplateRejects = function givenTemplateRejects() {
@@ -146,15 +150,22 @@ describe('TabContent', function() {
    it('TabContent requests its config file', function() {
       
       instance = new shop.ui.TabContent(DEFAULT_SELECTOR, 'config1', DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-      givenPublishedLanguage();
+      givenPublishedLanguageIsGerman();
       expect(capturedConfigName).to.be.eql('config1');
    });
    
-   it('TabContent requests its template file', function() {
+   it('TabContent requests its template file for german', function() {
       
       instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, 'template1', mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-      givenPublishedLanguage();
-      expect(capturedTemplateName).to.be.eql('template1');
+      givenPublishedLanguageIsGerman();
+      expect(capturedTemplateName).to.be.eql('de/template1');
+   });
+   
+   it('TabContent requests its template file for english', function() {
+      
+      instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, 'template1', mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+      givenPublishedLanguageIsEnglish();
+      expect(capturedTemplateName).to.be.eql('en/template1');
    });
    
    it('the TabContent does not publish something when no language publication is available', function() {

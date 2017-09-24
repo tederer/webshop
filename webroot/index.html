@@ -19,15 +19,15 @@
    <script type="text/javascript" src="javascripts/ui/TabController.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/TabContent.js" charset="UTF-8"></script>
    <script>
-      var configProvider   = new shop.configuration.ResourceProvider('http://localhost:8080/configuration');
-      var templateProvider = new shop.configuration.ResourceProvider('http://localhost:8080/templates');
+      var configProvider   = new shop.configuration.ResourceProvider('http://localhost:8080/configuration', 'json');
+      var templateProvider = new shop.configuration.ResourceProvider('http://localhost:8080/templates', 'html');
 
       $(document).ready(function() {
       
          shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
          
          var tabController = new shop.ui.TabController();
-         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants', 'pflanzen', undefined, configProvider, templateProvider));
+         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants', 'pflanzen', 'pflanzen_template', configProvider, templateProvider));
          tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.TabContent('#shop > #content > #accessories', 'ded', undefined, configProvider, templateProvider));
       });
    </script>

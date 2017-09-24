@@ -154,7 +154,7 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
          templateDownloadState = State.NOT_REQUIRED;
          updateHtmlContent();
       } else {
-         templateProvider.get(contentTemplateName)
+         templateProvider.get(newLanguage + '/' + contentTemplateName)
             .then(setTemplateContent, setTemplateErrorState.bind(this, 'Failed to download template file'))
             .then(updateHtmlContent);
       }
