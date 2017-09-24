@@ -1,6 +1,6 @@
 /* global shop, assertNamespace */
 
-require('./NamespaceUtils.js');
+require('../NamespaceUtils.js');
 
 assertNamespace('shop.ui');
 

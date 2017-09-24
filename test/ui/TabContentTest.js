@@ -1,6 +1,6 @@
 /* global global, shop, common, Map, setTimeout */
 
-require(global.PROJECT_SOURCE_ROOT_PATH + '/TabContent.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/TabContent.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Promise.js');
 
 function valueIsAnObject(val) {
