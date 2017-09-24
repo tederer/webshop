@@ -12,6 +12,7 @@ var DEFAULT_SELECTOR = 'defaultSelector';
 var DEFAULT_CONFIG_NAME = 'defaultConfig';
 var DEFAULT_CONTENT_TEMPLATE_NAME = 'defaultContentTemplateName';
 
+var instance;
 var templatePrefix;
 var placeholder;
 var suffix;
@@ -55,12 +56,22 @@ var setHtmlContent = function setHtmlContent(selector, content) {
    capturedHtmlContent = content;
 };
 
+var givenPublishedLanguage = function givenPublishedLanguage() {
+   instance.onLanguageChanged(shop.Language.DE);
+};
+
+var givenDefaultTabContentWithoutLanguage = function givenDefaultTabContentWithoutLanguage() {
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+};
+
 var givenDefaultTabContent = function givenDefaultTabContent() {
-   return new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+   givenDefaultTabContentWithoutLanguage();
+   givenPublishedLanguage();
 };
 
 var givenTabContentWithUndefinedContentTemplateName = function givenTabContentWithUndefinedContentTemplateName() {
-   return new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+   givenPublishedLanguage();
 };
 
 var givenTemplateRejects = function givenTemplateRejects() {
@@ -123,20 +134,30 @@ describe('TabContent', function() {
    
    it('creating an instance of a TabContent is an instance/object', function() {
       
-      var tabContent = givenDefaultTabContent();
-      expect(valueIsAnObject(tabContent)).to.be.eql(true);
+      givenDefaultTabContent();
+      expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
    it('TabContent requests its config file', function() {
       
-      new shop.ui.TabContent(DEFAULT_SELECTOR, 'config1', DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+      instance = new shop.ui.TabContent(DEFAULT_SELECTOR, 'config1', DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+      givenPublishedLanguage();
       expect(capturedConfigName).to.be.eql('config1');
    });
    
    it('TabContent requests its template file', function() {
       
-      new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, 'template1', mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+      instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, 'template1', mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+      givenPublishedLanguage();
       expect(capturedTemplateName).to.be.eql('template1');
+   });
+   
+   it('the TabContent does not publish something when no language publication is available', function() {
+      
+      givenConfigurationContains('{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplateContains(templatePrefix + placeholder + suffix);
+      givenDefaultTabContentWithoutLanguage();
+      expect(capturedHtmlContent).to.be.eql(undefined);
    });
    
    it('the TabContent publishes a table with the configured plants', function() {

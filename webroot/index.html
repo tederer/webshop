@@ -11,9 +11,11 @@
    <script type="text/javascript" src="javascripts/Topics.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/bus/Bus.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/Context.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/Language.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ResourceProvider.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/MenuItem.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/AbstractLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractTabContent.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/MenuItem.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/TabController.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/TabContent.js" charset="UTF-8"></script>
    <script>
@@ -21,6 +23,9 @@
       var templateProvider = new shop.configuration.ResourceProvider('http://localhost:8080/templates');
 
       $(document).ready(function() {
+      
+         shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
+         
          var tabController = new shop.ui.TabController();
          tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants', 'pflanzen', undefined, configProvider, templateProvider));
          tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.TabContent('#shop > #content > #accessories', 'ded', undefined, configProvider, templateProvider));

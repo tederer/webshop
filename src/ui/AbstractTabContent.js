@@ -1,9 +1,16 @@
 /* global shop, assertNamespace */
 
 require('../NamespaceUtils.js');
+require('./AbstractLanguageDependentComponent.js');
 
 assertNamespace('shop.ui');
 
+/**
+ * Derived objects have to:
+ *    *) override getSelector
+ *    *) override onLanguageChanged (defined in AbstractLanguageDependentComponent)
+ *    *) call the initialize (defined in AbstractLanguageDependentComponent)
+ */
 shop.ui.AbstractTabContent = function AbstractTabContent() {
    
    this.getSelector = function getSelector() {
@@ -19,4 +26,4 @@ shop.ui.AbstractTabContent = function AbstractTabContent() {
    };
 };
    
-   
+shop.ui.AbstractTabContent.prototype = new shop.ui.AbstractLanguageDependentComponent();

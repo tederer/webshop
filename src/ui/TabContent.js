@@ -135,18 +135,23 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
       return selector;
    };
    
-   configProvider.get(configName)
-      .then(setConfigContent, setConfigErrorState.bind(this, 'Failed to download config file'))
-      .then(updateHtmlContent);
-     
-   if (contentTemplateName === undefined) {
-      templateDownloadState = State.NOT_REQUIRED;
-      updateHtmlContent();
-   } else {
-      templateProvider.get(contentTemplateName)
-         .then(setTemplateContent, setTemplateErrorState.bind(this, 'Failed to download template file'))
+   this.onLanguageChanged = function onLanguageChanged(newLanguage) {
+   
+      configProvider.get(configName)
+         .then(setConfigContent, setConfigErrorState.bind(this, 'Failed to download config file'))
          .then(updateHtmlContent);
-   }
+        
+      if (contentTemplateName === undefined) {
+         templateDownloadState = State.NOT_REQUIRED;
+         updateHtmlContent();
+      } else {
+         templateProvider.get(contentTemplateName)
+            .then(setTemplateContent, setTemplateErrorState.bind(this, 'Failed to download template file'))
+            .then(updateHtmlContent);
+      }
+   };
+   
+   this.initialize();
 };
 
 shop.ui.TabContent.prototype = new shop.ui.AbstractTabContent();
