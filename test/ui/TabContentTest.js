@@ -74,6 +74,11 @@ var givenTabContentWithUndefinedContentTemplateName = function givenTabContentWi
    givenPublishedLanguage();
 };
 
+var givenTabContentWithUndefinedConfigName = function givenTabContentWithUndefinedConfigName() {
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, undefined, DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
+   givenPublishedLanguage();
+};
+
 var givenTemplateRejects = function givenTemplateRejects() {
    templateProviderRejects = true;
 };
@@ -215,12 +220,21 @@ describe('TabContent', function() {
       givenTemplateContains('a' + placeholder + 'b');
       givenTabContentWithUndefinedContentTemplateName();
       expectContentContainesErrorMessage();
-   });   
+   }); 
+   
    it('the TabContent publishes an error when the config cannot be provided and template is undefined', function() {
       
       givenConfigurationRejects();
       givenTemplateContains('a' + placeholder + 'b');
       givenTabContentWithUndefinedContentTemplateName();
       expectContentContainesErrorMessage();
+   });   
+   
+   it('the TabContent publishes the template without changes when the config is undefined', function() {
+      
+      givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenTemplateContains('<p>hello world</p>');
+      givenTabContentWithUndefinedConfigName();
+      expect(capturedHtmlContent).to.be.eql('<p>hello world</p>');
    });
 });  

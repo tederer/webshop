@@ -107,12 +107,16 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
                .then(setHtmlContent, setErrorHtmlContent.bind(this, 'Failed to update HTML content'));
          }
 
-         if ((templateDownloadState === State.LOADED || templateDownloadState === State.NOT_REQUIRED) && configDownloadState === State.ERROR) {
+         if (configDownloadState === State.ERROR && (templateDownloadState === State.LOADED || templateDownloadState === State.NOT_REQUIRED)) {
             if (templateDownloadState === State.NOT_REQUIRED) {
                templateContent = PLACEHOLDER;
             }
             
             (new common.Promise(function(fulfill) { fulfill(formatErrorMessage(getErrorsAsString())); })).then(insertContentIntoTemplate).then(setHtmlContent);
+         }
+         
+         if (configDownloadState === State.NOT_REQUIRED && templateDownloadState === State.LOADED) {
+            setHtmlContent(templateContent);
          }
          
          if (templateDownloadState === State.ERROR) {
@@ -137,10 +141,15 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    
    this.onLanguageChanged = function onLanguageChanged(newLanguage) {
    
-      configProvider.get(configName)
-         .then(setConfigContent, setConfigErrorState.bind(this, 'Failed to download config file'))
-         .then(updateHtmlContent);
-        
+      if (configName === undefined) {
+         configDownloadState = State.NOT_REQUIRED;
+         updateHtmlContent();
+      } else {
+         configProvider.get(configName)
+            .then(setConfigContent, setConfigErrorState.bind(this, 'Failed to download config file'))
+            .then(updateHtmlContent);
+      }
+      
       if (contentTemplateName === undefined) {
          templateDownloadState = State.NOT_REQUIRED;
          updateHtmlContent();
