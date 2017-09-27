@@ -8,10 +8,10 @@ assertNamespace('shop.configuration');
 /**
  * constructor for the ResourceProvider.
  */
-shop.configuration.ResourceProvider = function ResourceProvider(configBaseUrl, fileExtension) {
+shop.configuration.ResourceProvider = function ResourceProvider(configBaseUrl) {
    
    this.get = function get(name) {
-      var url = configBaseUrl + '/' + name + '.' + fileExtension;
+      var url = configBaseUrl + '/' + name;
       
       var executor = function executor(fulfill, reject) {
          $.ajax(url, {
