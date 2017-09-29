@@ -6,26 +6,33 @@ require('./ResourceProvider.js');
 assertNamespace('shop.configuration');
 
 /**
- * A HtmlContentLoader loads HTML content and publishes the content on the bus.
+ * A JsonContentLoader loads JSON content and publishes the content on the bus.
  * 
  * To start loading, call load() and provide the names of the files (without file extension) that should get loaded.
  * 
- * Content topic: /htmlContent/<language>/<contentName>
+ * Content topic: /jsonContent/<language>/<contentName>
  *
- * example: The german content of "food" will get published on the topic "/htmlContent/de/food".
+ * example: The german content of "food" will get published on the topic "/jsonContent/de/food".
  */
-shop.configuration.HtmlContentLoader = function HtmlContentLoader(downloadBaseUrl, languages, optionalBus) {
+shop.configuration.JsonContentLoader = function JsonContentLoader(downloadBaseUrl, languages, optionalBus) {
    
-   var FILE_EXTENSION = '.html';
+   var FILE_EXTENSION = '.json';
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    
    var getTopicForName = function getTopicForName(name) {
-      return '/htmlContent/' + name.substring(0, name.length - FILE_EXTENSION.length);
+      return '/jsonContent/' + name.substring(0, name.length - FILE_EXTENSION.length);
    };
    
    this.onContentLoaded = function onContentLoaded(name, content) {
-      bus.publish(getTopicForName(name), content);
+      var data;
+      
+      try {
+         data = JSON.parse(content);
+      } catch (error) {
+         data = new Error(error);
+      }
+      bus.publish(getTopicForName(name), data);
    };
    
    this.onContentLoadingFailed = function onContentLoadingFailed(name, error) {
@@ -40,8 +47,8 @@ shop.configuration.HtmlContentLoader = function HtmlContentLoader(downloadBaseUr
             namesWithLanguageAndFileExtension[namesWithLanguageAndFileExtension.length] = languages[languageIndex] + '/' + names[nameIndex] + FILE_EXTENSION;
          }
       }
-      shop.configuration.HtmlContentLoader.prototype.load.call(this, downloadBaseUrl, namesWithLanguageAndFileExtension);
+      shop.configuration.JsonContentLoader.prototype.load.call(this, downloadBaseUrl, namesWithLanguageAndFileExtension);
    };
 };
 
-shop.configuration.HtmlContentLoader.prototype = new shop.configuration.AbstractContentLoader();
+shop.configuration.JsonContentLoader.prototype = new shop.configuration.AbstractContentLoader();

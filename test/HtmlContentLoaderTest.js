@@ -147,4 +147,12 @@ describe('HtmlContentLoader', function() {
       expect(capturedPublicationsContains({topic: '/htmlContent/' + shop.Language.DE + '/trees', data: 'Hier steht ein Wald!'})).to.be.eql(true);
       expect(capturedPublicationsContains({topic: '/htmlContent/' + shop.Language.DE + '/fruits', data: 'Fruchtsalat'})).to.be.eql(true);
    });
+   
+   it('HtmlContentLoader publishes an Error when it was not possible to load the content', function() {
+      givenHtmlContentLoader('http://127.0.0.1/test', [shop.Language.DE]);
+      whenContentGetsLoaded(['buildings']);
+      expect(capturedPublications.length).to.be.eql(1);
+      expect(capturedPublications[0].topic).to.be.eql('/htmlContent/' + shop.Language.DE + '/buildings');
+      expect(capturedPublications[0].data instanceof Error).to.be.eql(true);
+   });
 });
