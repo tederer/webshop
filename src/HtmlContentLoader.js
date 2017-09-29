@@ -9,19 +9,31 @@ assertNamespace('shop.configuration');
 /**
  * constructor for the HtmlContentLoader.
  */
-shop.configuration.HtmlContentLoader = function HtmlContentLoader(config) {
+shop.configuration.HtmlContentLoader = function HtmlContentLoader(downloadBaseUrl, languages, optionalBus) {
+   
+   var FILE_EXTENSION = '.html';
+   
+   var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    
    this.onContentLoaded = function onContentLoaded(name, content) {
-      console.log('HtmlContentLoader.onContentLoaded()');
+      var topic = '/htmlContent/' + name.substring(0, name.length - FILE_EXTENSION.length);
+      bus.publish(topic, content);
    };
    
    this.onContentLoadingFailed = function onContentLoadingFailed(name, error) {
-      console.log('HtmlContentLoader.onContentLoaded()');
+      console.log('HtmlContentLoader.onContentLoadingFailed()');
    };
    
-   var names = config.contents.map(function(contentConfig) { return contentConfig.name; });
-   console.log(names);
-   this.load(config.contentBaseUrl, names);
+   this.load = function load(names) {
+      var namesWithLanguageAndFileExtension = [];
+      
+      for (var languageIndex = 0; languageIndex < languages.length; languageIndex++) {
+         for (var nameIndex = 0; nameIndex < names.length; nameIndex++) {
+            namesWithLanguageAndFileExtension[namesWithLanguageAndFileExtension.length] = languages[languageIndex] + '/' + names[nameIndex] + FILE_EXTENSION;
+         }
+      }
+      shop.configuration.HtmlContentLoader.prototype.load.call(this, downloadBaseUrl, namesWithLanguageAndFileExtension);
+   };
 };
 
 shop.configuration.HtmlContentLoader.prototype = new shop.configuration.AbstractContentLoader();
