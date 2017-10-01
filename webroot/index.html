@@ -13,22 +13,29 @@
    <script type="text/javascript" src="javascripts/Context.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/Language.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ResourceProvider.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/AbstractContentLoader.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/JsonContentLoader.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/HtmlContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractTabContent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/MenuItem.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/TabController.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/TabContent.js" charset="UTF-8"></script>
    <script>
-      var configProvider   = new shop.configuration.ResourceProvider('http://localhost:8080/configuration', 'json');
-      var templateProvider = new shop.configuration.ResourceProvider('http://localhost:8080/templates', 'html');
-
+      var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
+      var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
+      var htmlContentLoader   = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
+      
+      htmlContentLoader.load(['pflanzen_template']);
+      configContentLoader.load(['pflanzen', 'accessories']);
+      
       $(document).ready(function() {
       
          shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
          
          var tabController = new shop.ui.TabController();
-         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants', 'pflanzen', 'pflanzen_template', configProvider, templateProvider));
-         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.TabContent('#shop > #content > #accessories', 'ded', undefined, configProvider, templateProvider));
+         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants',        'pflanzen',    'pflanzen_template', supportedLanguages));
+         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.TabContent('#shop > #content > #accessories',   'accessories', undefined,           supportedLanguages));
       });
    </script>
 </head>

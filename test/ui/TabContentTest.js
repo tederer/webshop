@@ -1,54 +1,27 @@
 /* global global, shop, common, Map, setTimeout */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/TabContent.js');
-require(global.PROJECT_SOURCE_ROOT_PATH + '/Promise.js');
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
    return ( (typeof val === 'function') || (typeof val === 'object') );
 }
 
-var DEFAULT_SELECTOR = 'defaultSelector';
-var DEFAULT_CONFIG_NAME = 'defaultConfig';
-var DEFAULT_CONTENT_TEMPLATE_NAME = 'defaultContentTemplateName';
-
+var DEFAULT_SELECTOR          = 'defaultSelector';
+var DEFAULT_CONFIG_NAME       = 'myConfig';
+var DEFAULT_TEMPLATE_NAME     = 'myTemplate';
+var DEFAULT_LANGUAGES         = [shop.Language.DE, shop.Language.EN];
 var instance;
 var templatePrefix;
 var placeholder;
 var suffix;
 
-
-var configContent;
-var templateContent;
 var capturedHtmlContent;
-var capturedConfigName;
-var capturedTemplateName;
-var templateProviderRejects;
-var configProviderRejects;
+var publications;
 
-var mockedConfigProvider = {
-   get: function get(name) { 
-         capturedConfigName = name; 
-         return new common.Promise(function(fulfill, reject) { 
-               if (configProviderRejects) {
-                  reject('config cannot be provided');
-               } else {
-                  fulfill(configContent); 
-               }
-            });
-   }
-};
-
-var mockedTemplateProvider = {
-   get: function get(name) { 
-         capturedTemplateName = name; 
-         return new common.Promise(function(fulfill, reject) { 
-               if (templateProviderRejects) {
-                  reject('template cannot be provided');
-               } else {
-                  fulfill(templateContent); 
-               }
-            });
+var mockedBus = {
+   subscribeToPublication: function subscribeToPublication(topic, callback) {
+      callback(publications[topic]);
    }
 };
 
@@ -60,43 +33,35 @@ var givenPublishedLanguageIsGerman = function givenPublishedLanguageIsGerman() {
    instance.onLanguageChanged(shop.Language.DE);
 };
 
+// TODo not used yet
 var givenPublishedLanguageIsEnglish = function givenPublishedLanguageIsEnglish() {
    instance.onLanguageChanged(shop.Language.EN);
 };
 
-var givenDefaultTabContentWithoutLanguage = function givenDefaultTabContentWithoutLanguage() {
-   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-};
-
 var givenDefaultTabContent = function givenDefaultTabContent() {
-   givenDefaultTabContentWithoutLanguage();
-   givenPublishedLanguageIsGerman();
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
 };
 
-var givenTabContentWithUndefinedContentTemplateName = function givenTabContentWithUndefinedContentTemplateName() {
-   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-   givenPublishedLanguageIsGerman();
+var givenTabContentWithUndefinedContentTemplateTopic = function givenTabContentWithUndefinedContentTemplateTopic() {
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
 };
 
-var givenTabContentWithUndefinedConfigName = function givenTabContentWithUndefinedConfigName() {
-   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, undefined, DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-   givenPublishedLanguageIsGerman();
+var givenTabContentWithUndefinedConfigTopic = function givenTabContentWithUndefinedConfigTopic() {
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, undefined, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
 };
 
-var givenTemplateRejects = function givenTemplateRejects() {
-   templateProviderRejects = true;
+var givenConfigPublication = function givenConfigPublication(name, language, data) {
+   var dataToUse = data;
+   
+   if (data !== undefined && !(data instanceof Error)) {
+      dataToUse = JSON.parse(data);
+   }
+   
+   publications['/jsonContent/' + language + '/' + name] = dataToUse;
 };
 
-var givenConfigurationRejects = function givenConfigurationRejects() {
-   configProviderRejects = true;
-};
-
-var givenConfigurationContains = function givenConfigurationContains(content) {
-   configContent = content;
-};
-
-var givenTemplateContains = function givenTemplateContains(content) {
-   templateContent = content;
+var givenTemplatePublication = function givenConfigPublication(name, language, data) {
+   publications['/htmlContent/' + language + '/' + name] = data;
 };
 
 var expectContentContainesErrorMessage = function expectContentContainesErrorMessage() {
@@ -126,12 +91,8 @@ var expectContentContainesTemplateWithErrorMessage = function expectContentConta
 };
 
 var setup = function setup() {
-   configContent = undefined;
+   publications = {};
    capturedHtmlContent = undefined;
-   capturedConfigName = undefined;
-   capturedTemplateName = undefined;
-   templateProviderRejects = false;
-   configProviderRejects = false;
    templatePrefix = '<h1>Hello World</h1>';
    placeholder = '<!--DYNAMIC_CONTENT-->';
    suffix = '<p>after configured content</p>';
@@ -147,105 +108,100 @@ describe('TabContent', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
-   it('TabContent requests its config file', function() {
-      
-      instance = new shop.ui.TabContent(DEFAULT_SELECTOR, 'config1', DEFAULT_CONTENT_TEMPLATE_NAME, mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-      givenPublishedLanguageIsGerman();
-      expect(capturedConfigName).to.be.eql('config1');
-   });
-   
-   it('TabContent requests its template file for german', function() {
-      
-      instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, 'template1', mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-      givenPublishedLanguageIsGerman();
-      expect(capturedTemplateName).to.be.eql('de/template1');
-   });
-   
-   it('TabContent requests its template file for english', function() {
-      
-      instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, 'template1', mockedConfigProvider, mockedTemplateProvider, setHtmlContent);
-      givenPublishedLanguageIsEnglish();
-      expect(capturedTemplateName).to.be.eql('en/template1');
-   });
-   
    it('the TabContent does not publish something when no language publication is available', function() {
       
-      givenConfigurationContains('{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenTemplateContains(templatePrefix + placeholder + suffix);
-      givenDefaultTabContentWithoutLanguage();
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenDefaultTabContent();
       expect(capturedHtmlContent).to.be.eql(undefined);
    });
    
    it('the TabContent publishes a table with the configured plants', function() {
       
-      givenConfigurationContains('{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenTemplateContains(templatePrefix + placeholder + suffix);
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
       givenDefaultTabContent();
+      givenPublishedLanguageIsGerman();
       expect(capturedHtmlContent).to.be.eql('<h1>Hello World</h1><table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr><tr><td>Cattleya walkeriana</td><td>8 EUR</td></tr></table><p>after configured content</p>');
    });
    
    it('the TabContent publishes a table with the configured plants when contentTemplateName is undefined', function() {
       
-      givenConfigurationContains('{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenTemplateContains('somePrefix' + placeholder + 'someSuffix');
-      givenTabContentWithUndefinedContentTemplateName();
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'somePrefix' + placeholder + 'someSuffix');
+      givenTabContentWithUndefinedContentTemplateTopic();
+      givenPublishedLanguageIsGerman();
       expect(capturedHtmlContent).to.be.eql('<table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr><tr><td>Cattleya walkeriana</td><td>8 EUR</td></tr></table>');
    });
    
-   it('the TabContent publishes an error when the config contains an error', function() {
+   it('the TabContent publishes an error when the config is not available yet', function() {
       
-      givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplateContains(templatePrefix + placeholder + suffix);
+      givenConfigPublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, '<h1>Hello World</h1><!--DYNAMIC_CONTENT--><p>after configured content</p>');
       givenDefaultTabContent();
+      givenPublishedLanguageIsGerman();
       expectContentContainesTemplateWithErrorMessage();
    });
    
-   it('the TabContent publishes an error when the config cannot be provided', function() {
+   it('the TabContent publishes an error when the template is not available yet', function() {
       
-      givenConfigurationRejects();
-      givenTemplateContains('<h1>Hello World</h1><!--DYNAMIC_CONTENT--><p>after configured content</p>');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
       givenDefaultTabContent();
-      expectContentContainesTemplateWithErrorMessage();
+      givenPublishedLanguageIsGerman();
+      expectContentContainesErrorMessage();
    });
    
-   it('the TabContent publishes an error when the template can not be provided', function() {
+   it('the TabContent publishes an error when the template cannot be loaded', function() {
       
-      givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplateContains(templatePrefix + placeholder + suffix);
-      givenTemplateRejects();
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, new Error('failed to load ' + DEFAULT_TEMPLATE_NAME));
       givenDefaultTabContent();
+      givenPublishedLanguageIsGerman();
       expectContentContainesErrorMessage();
    });
    
    it('the TabContent publishes an error when the template does not contain a placeholder', function() {
       
-      givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplateContains(templatePrefix + suffix);
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + suffix);
       givenDefaultTabContent();
+      givenPublishedLanguageIsGerman();
       expectContentContainesErrorMessage();
    });
    
    it('the TabContent publishes an error when the config contains an error and template is undefined', function() {
       
-      givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplateContains('a' + placeholder + 'b');
-      givenTabContentWithUndefinedContentTemplateName();
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, new Error('error in configuration ' + DEFAULT_CONFIG_NAME));
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE,'a' + placeholder + 'b');
+      givenTabContentWithUndefinedContentTemplateTopic();
+      givenPublishedLanguageIsGerman();
       expectContentContainesErrorMessage();
    }); 
    
-   it('the TabContent publishes an error when the config cannot be provided and template is undefined', function() {
+   it('the TabContent publishes an error when the config is not available yet and template is undefined', function() {
       
-      givenConfigurationRejects();
-      givenTemplateContains('a' + placeholder + 'b');
-      givenTabContentWithUndefinedContentTemplateName();
+      givenConfigPublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'a' + placeholder + 'b');
+      givenTabContentWithUndefinedContentTemplateTopic();
+      givenPublishedLanguageIsGerman();
       expectContentContainesErrorMessage();
    });   
    
    it('the TabContent publishes the template without changes when the config is undefined', function() {
       
-      givenConfigurationContains('{"plants"= [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplateContains('<p>hello world</p>');
-      givenTabContentWithUndefinedConfigName();
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE,'<p>hello world' + placeholder + '</p>');
+      givenTabContentWithUndefinedConfigTopic();
+      givenPublishedLanguageIsGerman();
+      expect(capturedHtmlContent).to.be.eql('<p>hello world' + placeholder + '</p>');
+   });
+   
+   it('the TabContent publishes the template, that does not contain the placeholder, without changes when the config is undefined', function() {
+      
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE,'<p>hello world</p>');
+      givenTabContentWithUndefinedConfigTopic();
+      givenPublishedLanguageIsGerman();
       expect(capturedHtmlContent).to.be.eql('<p>hello world</p>');
    });
 });  

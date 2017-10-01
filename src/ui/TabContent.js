@@ -2,69 +2,58 @@
 
 require('../NamespaceUtils.js');
 require('./AbstractTabContent.js');
+require('../Promise.js');
 
 assertNamespace('shop.ui');
 
 /**
  * If no template is required, then contentTemplateName should be set to undefined.
  */
-shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, configProvider, templateProvider, optionalSetHtmlContent) {
+shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus) {
    
-   var State = {
-      PENDING:       'pending',
-      LOADED:        'loaded',
-      ERROR:         'error',
-      NOT_REQUIRED:  'not required'
-   };
+   var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
-   var configContent;
-   var templateContent;
-   var configDownloadState = State.PENDING;
-   var templateDownloadState = State.PENDING;
-   var errors = [];
+   var configs = {};
+   var templateContents = {};
+   var activeLanguage;
    
+   // TODO kann man mit bind lösen
    var defaultSetHtmlContent = function defaultSetHtmlContent(content) {
       $(selector).html(content);
    };
    
    var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultSetHtmlContent : optionalSetHtmlContent.bind(this, selector);
    
-   var setConfigContent = function setConfigContent(content) {
-      configContent = content;
-      configDownloadState = State.LOADED;
-   };
-   
-   var setTemplateContent = function setTemplateContent(content) {
-      templateContent = content;
-      templateDownloadState = State.LOADED;
-   };
-   
    var formatErrorMessage = function formatErrorMessage(message) {
       return '<p class="errorMessage">' + message + '</p>';
    };
    
-   var setErrorHtmlContent = function setErrorHtmlContent(description, error) {
-      setHtmlContent(formatErrorMessage(description + ': ' + error));
-   };
-   
-   var getErrorsAsString = function getErrorsAsString() {
-      return errors.join('<br>');
-   };
-   
    var createDynamicHtmlContent = function createDynamicHtmlContent() {
-      
       var executor = function executor(fulfill, reject) {
 
-         try {
-            var content = '<table>';
-            var config = JSON.parse(configContent);
-            config.plants.forEach(function(plant) { content = content + '<tr><td>' + plant.name + '</td><td>' + plant.price + ' EUR</td></tr>'; });  
-            content = content + '</table>';
-            fulfill(content);
-         } catch(e) {
-            reject(e);
+         if (configName === undefined) {
+            fulfill('');
+         } else {
+            if (activeLanguage === undefined) {
+               reject('can not create dynamic HTML content because no language is active!');
+            } else {
+               var data = configs[configName + '_' + activeLanguage];
+               if (data instanceof Error) {
+                  fulfill(formatErrorMessage(data.message));
+               } else {
+                  if (data === undefined) {
+                     fulfill(formatErrorMessage('configuration ' + configName + ' is not available!'));
+                  } else {
+                     // TODO extract config compiler
+                     var content = '<table>';
+                     data.plants.forEach(function(plant) { content = content + '<tr><td>' + plant.name + '</td><td>' + plant.price + ' EUR</td></tr>'; });  
+                     content = content + '</table>';
+                     fulfill(content);
+                  }
+               }
+            }
          }
       };
       
@@ -74,65 +63,42 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    var insertContentIntoTemplate = function insertContentIntoTemplate(dynamicContent) {
       
       var content = '';
-      var placeholderStartPosition = templateContent.indexOf(PLACEHOLDER);
-      var placeholderEndPosition = Math.min(templateContent.length - 1, placeholderStartPosition + PLACEHOLDER.length - 1);
       
-      if (placeholderStartPosition > -1) {
-         var prefix = templateContent.substring(0, placeholderStartPosition);
-         var suffix = templateContent.substring(placeholderEndPosition + 1);
-         content = prefix + dynamicContent + suffix;
+      if (activeLanguage === undefined) {
+         throw 'can not insert dynamic HTML content into template because no language is active!';
       } else {
-         throw 'Template does not contain placeholder';
+         var templateContent = (contentTemplateName === undefined) ? PLACEHOLDER : templateContents[contentTemplateName + '_' + activeLanguage];
+         if (templateContent === undefined) {
+            content = formatErrorMessage('template content ' + contentTemplateName + ' is not available!');
+         } else {
+            if (templateContent instanceof Error) {
+               content = formatErrorMessage(templateContent.message);
+            } else {
+               if (dynamicContent.length === 0) {
+                  content = templateContent;
+               } else {
+                  var placeholderStartPosition = templateContent.indexOf(PLACEHOLDER);
+                  var placeholderEndPosition = Math.min(templateContent.length - 1, placeholderStartPosition + PLACEHOLDER.length - 1);
+                  
+                  if (placeholderStartPosition > -1) {
+                     var prefix = templateContent.substring(0, placeholderStartPosition);
+                     var suffix = templateContent.substring(placeholderEndPosition + 1);
+                     content = prefix + dynamicContent + suffix;
+                  } else {
+                     content = formatErrorMessage('Template does not contain placeholder');
+                  }
+               }
+            }
+         }
       }
       
       return content;
    };
    
-   var downloadTasksFished = function downloadTasksFished() {
-      return configDownloadState !== State.PENDING && templateDownloadState !== State.PENDING;
-   };
-   
    var updateHtmlContent = function updateHtmlContent() {
-      
-      if (downloadTasksFished()) {
-         
-         if (configDownloadState === State.LOADED && (templateDownloadState === State.LOADED || templateDownloadState === State.NOT_REQUIRED)) {
-            
-            if (templateDownloadState === State.NOT_REQUIRED) {
-               templateContent = PLACEHOLDER;
-            }
-            
-            createDynamicHtmlContent()
-               .then(insertContentIntoTemplate, function(error) { return insertContentIntoTemplate(formatErrorMessage('Failed to parse config: ' + error));})
-               .then(setHtmlContent, setErrorHtmlContent.bind(this, 'Failed to update HTML content'));
-         }
-
-         if (configDownloadState === State.ERROR && (templateDownloadState === State.LOADED || templateDownloadState === State.NOT_REQUIRED)) {
-            if (templateDownloadState === State.NOT_REQUIRED) {
-               templateContent = PLACEHOLDER;
-            }
-            
-            (new common.Promise(function(fulfill) { fulfill(formatErrorMessage(getErrorsAsString())); })).then(insertContentIntoTemplate).then(setHtmlContent);
-         }
-         
-         if (configDownloadState === State.NOT_REQUIRED && templateDownloadState === State.LOADED) {
-            setHtmlContent(templateContent);
-         }
-         
-         if (templateDownloadState === State.ERROR) {
-            setHtmlContent(formatErrorMessage(getErrorsAsString()));
-         }
-      } 
-   };
-   
-   var setConfigErrorState = function setConfigErrorState(description, error){
-      configDownloadState = State.ERROR;
-      errors[errors.length] = description + ': ' + error;
-   };
-   
-   var setTemplateErrorState = function setTemplateErrorState(description, error){
-      templateDownloadState = State.ERROR;
-      errors[errors.length] = description + ': ' + error;
+      createDynamicHtmlContent()
+         .then(insertContentIntoTemplate)
+         .then(setHtmlContent, console.log);  // TODO remove console.log
    };
    
    this.getSelector = function getSelector() {
@@ -141,24 +107,25 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    
    this.onLanguageChanged = function onLanguageChanged(newLanguage) {
    
-      if (configName === undefined) {
-         configDownloadState = State.NOT_REQUIRED;
-         updateHtmlContent();
-      } else {
-         configProvider.get(configName)
-            .then(setConfigContent, setConfigErrorState.bind(this, 'Failed to download config file'))
-            .then(updateHtmlContent);
+      activeLanguage = newLanguage;
+      updateHtmlContent();
+    };
+   
+   var setMapContent = function setMapContent(map, key, value) {
+      map[key] = value;
+   };
+   
+   for (var index = 0; index < languages.length; index++) {
+      var language = languages[index];
+      
+      if (configName !== undefined) {
+         bus.subscribeToPublication('/jsonContent/' + language + '/' + configName, setMapContent.bind(this, configs, configName + '_' + language));
       }
       
-      if (contentTemplateName === undefined) {
-         templateDownloadState = State.NOT_REQUIRED;
-         updateHtmlContent();
-      } else {
-         templateProvider.get(newLanguage + '/' + contentTemplateName)
-            .then(setTemplateContent, setTemplateErrorState.bind(this, 'Failed to download template file'))
-            .then(updateHtmlContent);
+      if (contentTemplateName !== undefined) {
+         bus.subscribeToPublication('/htmlContent/' + language + '/' + contentTemplateName, setMapContent.bind(this, templateContents, contentTemplateName + '_' + language));
       }
-   };
+   }
    
    this.initialize();
 };
