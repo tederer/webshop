@@ -9,9 +9,10 @@ assertNamespace('shop.ui');
 /**
  * If no template is required, then contentTemplateName should be set to undefined.
  */
-shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus) {
+shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus, optionalLog) {
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
+   var log = (optionalLog === undefined) ? console.log : optionalLog;
    
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
@@ -19,7 +20,6 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    var templateContents = {};
    var activeLanguage;
    
-   // TODO kann man mit bind lösen
    var defaultSetHtmlContent = function defaultSetHtmlContent(content) {
       $(selector).html(content);
    };
@@ -37,7 +37,7 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
             fulfill('');
          } else {
             if (activeLanguage === undefined) {
-               reject('can not create dynamic HTML content because no language is active!');
+               reject('can not create dynamic HTML content for ' + configName + ' because no language is active!');
             } else {
                var data = configs[configName + '_' + activeLanguage];
                if (data instanceof Error) {
@@ -61,7 +61,6 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    };
    
    var insertContentIntoTemplate = function insertContentIntoTemplate(dynamicContent) {
-      
       var content = '';
       
       if (activeLanguage === undefined) {
@@ -91,14 +90,13 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
             }
          }
       }
-      
       return content;
    };
    
    var updateHtmlContent = function updateHtmlContent() {
       createDynamicHtmlContent()
          .then(insertContentIntoTemplate)
-         .then(setHtmlContent, console.log);  // TODO remove console.log
+         .then(setHtmlContent, log);
    };
    
    this.getSelector = function getSelector() {
@@ -113,6 +111,7 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    
    var setMapContent = function setMapContent(map, key, value) {
       map[key] = value;
+      updateHtmlContent();
    };
    
    for (var index = 0; index < languages.length; index++) {

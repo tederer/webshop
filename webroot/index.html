@@ -26,13 +26,12 @@
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
       var htmlContentLoader   = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
       
+      shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
+         
       htmlContentLoader.load(['pflanzen_template']);
       configContentLoader.load(['pflanzen', 'accessories']);
       
       $(document).ready(function() {
-      
-         shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
-         
          var tabController = new shop.ui.TabController();
          tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants',        'pflanzen',    'pflanzen_template', supportedLanguages));
          tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.TabContent('#shop > #content > #accessories',   'accessories', undefined,           supportedLanguages));

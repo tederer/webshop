@@ -1,7 +1,6 @@
 /* global shop, common, assertNamespace */
 
 require('./NamespaceUtils.js');
-require('./ResourceProvider.js');
 
 assertNamespace('shop.configuration');
 
