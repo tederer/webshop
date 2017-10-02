@@ -128,14 +128,14 @@ describe('TabContent', function() {
    
    it('the TabContent does not publish something when no language publication is available', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenDefaultTabContent();
       expect(capturedHtmlContent).to.be.eql(undefined);
    });
    
    it('the TabContent publishes a table with the configured plants', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
       givenDefaultTabContent();
       givenPublishedLanguageIsGerman();
@@ -144,7 +144,7 @@ describe('TabContent', function() {
    
    it('the TabContent publishes a table with the configured plants when contentTemplateName is undefined', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'somePrefix' + placeholder + 'someSuffix');
       givenTabContentWithUndefinedContentTemplateTopic();
       givenPublishedLanguageIsGerman();
@@ -162,7 +162,7 @@ describe('TabContent', function() {
    
    it('the TabContent publishes an error when the template is not available yet', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
       givenDefaultTabContent();
       givenPublishedLanguageIsGerman();
@@ -171,7 +171,7 @@ describe('TabContent', function() {
    
    it('the TabContent publishes an error when the template cannot be loaded', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, new Error('failed to load ' + DEFAULT_TEMPLATE_NAME));
       givenDefaultTabContent();
       givenPublishedLanguageIsGerman();
@@ -180,7 +180,7 @@ describe('TabContent', function() {
    
    it('the TabContent publishes an error when the template does not contain a placeholder', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + suffix);
       givenDefaultTabContent();
       givenPublishedLanguageIsGerman();
@@ -207,7 +207,7 @@ describe('TabContent', function() {
    
    it('the TabContent publishes the template without changes when the config is undefined', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN,'<p>hello world' + placeholder + '</p>');
       givenTabContentWithUndefinedConfigTopic();
       givenPublishedLanguageIsEnglish();
@@ -216,7 +216,7 @@ describe('TabContent', function() {
    
    it('the TabContent publishes the template, that does not contain the placeholder, without changes when the config is undefined', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE,'<p>hello world</p>');
       givenTabContentWithUndefinedConfigTopic();
       givenPublishedLanguageIsGerman();
@@ -225,17 +225,17 @@ describe('TabContent', function() {
    
    it('the TabContent updates the content when a new config is received', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN, templatePrefix + placeholder + suffix);
       givenDefaultTabContent();
       givenPublishedLanguageIsEnglish();
-      whenConfigPublicationGetsUpdated(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"plants": [{"name": "Sophronitis coccinea", "price":  15}]}');
+      whenConfigPublicationGetsUpdated(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Sophronitis coccinea", "price":  15}]}');
       expect(capturedHtmlContent).to.be.eql('<h1>Hello World</h1><table><tr><td>Sophronitis coccinea</td><td>15 EUR</td></tr></table><p>after configured content</p>');
    });
    
    it('the TabContent updates the content when a new template content is received', function() {
       
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"plants": [{"name": "Aerangis ellisii", "price": 10}]}');
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN, templatePrefix + placeholder + suffix);
       givenDefaultTabContent();
       givenPublishedLanguageIsEnglish();

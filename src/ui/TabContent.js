@@ -48,7 +48,7 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
                   } else {
                      // TODO extract config compiler
                      var content = '<table>';
-                     data.plants.forEach(function(plant) { content = content + '<tr><td>' + plant.name + '</td><td>' + plant.price + ' EUR</td></tr>'; });  
+                     data.products.forEach(function(plant) { content = content + '<tr><td>' + plant.name + '</td><td>' + plant.price + ' EUR</td></tr>'; });  
                      content = content + '</table>';
                      fulfill(content);
                   }
