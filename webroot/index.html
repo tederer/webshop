@@ -16,6 +16,7 @@
    <script type="text/javascript" src="javascripts/AbstractContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/JsonContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/HtmlContentLoader.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/LanguageDependentTexts.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractTabContent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/MenuItem.js" charset="UTF-8"></script>
@@ -25,11 +26,13 @@
       var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
       var htmlContentLoader   = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
+      var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
       
       shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
          
       htmlContentLoader.load(['pflanzen_template']);
       configContentLoader.load(['pflanzen', 'accessories']);
+      languageDependentTexts.load();
       
       $(document).ready(function() {
          var tabController = new shop.ui.TabController();
