@@ -1,6 +1,9 @@
-/* global global, shop, common, Map, setTimeout */
+/* global global, shop, common, Map, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/TabContent.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
+
+assertNamespace('shop.Context');
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -19,8 +22,6 @@ var suffix;
 var capturedHtmlContent;
 var publications;
 var capturedSubscriptionCallbacks;
-
-var quietLog = function quietLog(message) {};
 
 var mockedBus = {
    subscribeToPublication: function subscribeToPublication(topic, callback) {
@@ -42,15 +43,15 @@ var givenPublishedLanguageIsEnglish = function givenPublishedLanguageIsEnglish()
 };
 
 var givenDefaultTabContent = function givenDefaultTabContent() {
-   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus, quietLog);
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
 };
 
 var givenTabContentWithUndefinedContentTemplateTopic = function givenTabContentWithUndefinedContentTemplateTopic() {
-   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, DEFAULT_LANGUAGES, setHtmlContent, mockedBus, quietLog);
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
 };
 
 var givenTabContentWithUndefinedConfigTopic = function givenTabContentWithUndefinedConfigTopic() {
-   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, undefined, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus, quietLog);
+   instance = new shop.ui.TabContent(DEFAULT_SELECTOR, undefined, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
 };
 
 var givenConfigPublication = function givenConfigPublication(name, language, data) {
@@ -114,6 +115,7 @@ var setup = function setup() {
    templatePrefix = '<h1>Hello World</h1>';
    placeholder = '<!--DYNAMIC_CONTENT-->';
    suffix = '<p>after configured content</p>';
+   shop.Context.log = function log(message) {};
 };
 
 describe('TabContent', function() {

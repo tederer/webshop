@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
 require('./NamespaceUtils.js');
+require('./Context.js');
 require('./Promise.js');
 require('./ResourceProvider.js');
 
@@ -25,11 +26,11 @@ shop.configuration.AbstractContentLoader = function AbstractContentLoader(option
                                              defaultresourceProviderFactoryFunction : optionalresourceProviderFactoryFunction;
    
    this.onContentLoaded = function onContentLoaded(name, content) {
-      console.log('Derived object does not override onContentLoaded() of AbstractContentLoader!');
+      shop.Context.log('Derived object does not override onContentLoaded() of AbstractContentLoader!');
    };
    
    this.onContentLoadingFailed = function onContentLoadingFailed(name, error) {
-      console.log('Derived object does not override onContentLoaded() of AbstractContentLoader!');
+      shop.Context.log('Derived object does not override onContentLoaded() of AbstractContentLoader!');
    };
    
    /**

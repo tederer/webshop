@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
 require('../NamespaceUtils.js');
+require('../Context.js');
 require('./AbstractTabContent.js');
 require('../Promise.js');
 
@@ -9,10 +10,9 @@ assertNamespace('shop.ui');
 /**
  * If no template is required, then contentTemplateName should be set to undefined.
  */
-shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus, optionalLog) {
+shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus) {
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var log = (optionalLog === undefined) ? console.log : optionalLog;
    
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
@@ -96,7 +96,7 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    var updateHtmlContent = function updateHtmlContent() {
       createDynamicHtmlContent()
          .then(insertContentIntoTemplate)
-         .then(setHtmlContent, log);
+         .then(setHtmlContent, shop.Context.log);
    };
    
    this.getSelector = function getSelector() {

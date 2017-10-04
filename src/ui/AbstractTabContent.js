@@ -1,6 +1,7 @@
 /* global shop, assertNamespace */
 
 require('../NamespaceUtils.js');
+require('../Context.js');
 require('./AbstractLanguageDependentComponent.js');
 
 assertNamespace('shop.ui');
@@ -14,7 +15,7 @@ assertNamespace('shop.ui');
 shop.ui.AbstractTabContent = function AbstractTabContent() {
    
    this.getSelector = function getSelector() {
-      console.log('Subclass does not override getSelector() in AbstractTabContent!');
+      shop.Context.log('Subclass does not override getSelector() in AbstractTabContent!');
    };
    
    this.show = function show() {

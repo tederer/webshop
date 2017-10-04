@@ -11,7 +11,7 @@ assertNamespace('shop.ui');
 shop.ui.AbstractLanguageDependentComponent = function AbstractLanguageDependentComponent() {
    
    this.onLanguageChanged = function onLanguageChanged(newLanguage) {
-      console.log('Derived object does not override onLanguageChanged() in AbstractLanguageDependentComponent!');
+      shop.Context.log('Derived object does not override onLanguageChanged() in AbstractLanguageDependentComponent!');
    };
    
    this.initialize = function initialize() {

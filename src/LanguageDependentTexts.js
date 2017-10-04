@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
 require('./NamespaceUtils.js');
+require('./Context.js');
 require('./ResourceProvider.js');
 require('./bus/Bus.js');
 
@@ -27,7 +28,7 @@ assertNamespace('shop');
  *  "button2": { "de": "Kontakt", "en": "contact" } 
  * }
  */
-shop.LanguageDependentTexts = function LanguageDependentTexts(configBaseUrl, optionalBus, optionalResourceProviderFactoryFunction, optionalLog) {
+shop.LanguageDependentTexts = function LanguageDependentTexts(configBaseUrl, optionalBus, optionalResourceProviderFactoryFunction) {
 
    var CONFIG_NAME = 'languageDependentTexts.json';
    var config;
@@ -36,7 +37,6 @@ shop.LanguageDependentTexts = function LanguageDependentTexts(configBaseUrl, opt
    var lastPublishedLanguage;
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var log = (optionalLog === undefined) ? console.log : optionalLog;
    
    var defaultResourceProviderFactoryFunction = function defaultResourceProviderFactoryFunction(baseUrl) {
       return new shop.configuration.ResourceProvider(baseUrl);
@@ -60,7 +60,7 @@ shop.LanguageDependentTexts = function LanguageDependentTexts(configBaseUrl, opt
          configKeys = Object.keys(config);
          updatePublications();
       } catch(e) {
-         log(e);
+         shop.Context.log(e);
       }
    };
    
@@ -72,6 +72,6 @@ shop.LanguageDependentTexts = function LanguageDependentTexts(configBaseUrl, opt
    this.load = function load() {
       bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguageChanged);
       var resourceProvider = resourceProviderFactoryFunction(configBaseUrl);
-      resourceProvider.get(CONFIG_NAME).then(onConfigLoaded, log);
+      resourceProvider.get(CONFIG_NAME).then(onConfigLoaded, shop.Context.log);
    };
 };

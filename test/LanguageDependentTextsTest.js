@@ -1,7 +1,10 @@
-/* global global, shop, common, setTimeout */
+/* global global, shop, common, assertNamespace */
 
+require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/LanguageDependentTexts.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Promise.js');
+
+assertNamespace('shop.Context');
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -18,8 +21,6 @@ var configuredTexts;
 var capturedSubscriptions;
 var capturedResourceName;
 var publications;
-
-var quietLog = function quietLog(message) {};
 
 var mockedBus = {
    subscribeToPublication: function subscribeToPublication(topic, callback) {
@@ -64,7 +65,7 @@ var resourceProviderFactoryFunction = function resourceProviderFactoryFunction(c
 };
 
 var givenDefaultLanguageSelector = function givenDefaultLanguageSelector() {
-   instance = new shop.LanguageDependentTexts(DEFAULT_CONFIG_BASE_URL, mockedBus, resourceProviderFactoryFunction, quietLog);
+   instance = new shop.LanguageDependentTexts(DEFAULT_CONFIG_BASE_URL, mockedBus, resourceProviderFactoryFunction);
 };
 
 var givenConfiguredText = function givenConfiguredText(id, language, text) {
@@ -111,6 +112,7 @@ var setup = function setup() {
    capturedSubscriptions = [];
    capturedResourceName = undefined;
    publications = {};
+   shop.Context.log = function log(message) {};
 };
 
 
