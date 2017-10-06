@@ -7,6 +7,6 @@ assertNamespace('shop');
 
 shop.Context = {
    bus: new common.infrastructure.bus.Bus(),
-   log: function(message) { console.log(message); }
+   log: function(message) { console.log(message); },
 };
    

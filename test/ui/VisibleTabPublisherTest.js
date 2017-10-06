@@ -4,8 +4,12 @@ require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/VisibleTabPublisher.js');
 
+assertNamespace('shop');
+
 var instance;
 var publications;
+
+shop.Context.defaultVisibleTab = 'defaultTab';
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -52,26 +56,33 @@ describe('VisibleTabPublisher', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
-   it('receiving a new state updates the visible tab publiaction', function() {
+   it('receiving a new state updates the visible tab publication', function() {
       
       whenNewStateIs({visibleTab: 'tabA'});
       expect(publications.length).to.be.eql(1);
       expect(publicationsContains('tabA')).to.be.eql(true);
    });
    
-   it('receiving the same state does not updates the visible tab publiaction', function() {
+   it('receiving the same state does not updates the visible tab publication', function() {
       
       whenNewStateIs({visibleTab: 'tabA'});
       whenNewStateIs({visibleTab: 'tabA'});
       expect(publications.length).to.be.eql(1);
    });
    
-   it('receiving another state updates the visible tab publiaction', function() {
+   it('receiving another state updates the visible tab publication', function() {
       
       whenNewStateIs({visibleTab: 'tabA'});
       whenNewStateIs({visibleTab: 'tabB'});
       expect(publications.length).to.be.eql(2);
       expect(publicationsContains('tabA')).to.be.eql(true);
       expect(publicationsContains('tabB')).to.be.eql(true);
+   });
+   
+   it('receiving an invalid state publishes the default default visible tab from the context', function() {
+      
+      whenNewStateIs({someKey: 'tabA'});
+      expect(publications.length).to.be.eql(1);
+      expect(publicationsContains('defaultTab')).to.be.eql(true);
    });
 });  

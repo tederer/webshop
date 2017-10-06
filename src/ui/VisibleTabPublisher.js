@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
 require('../NamespaceUtils.js');
+require('../Context.js');
 
 assertNamespace('shop.ui');
 
@@ -22,6 +23,8 @@ shop.ui.VisibleTabPublisher = function VisibleTabPublisher(optionalBus, optional
             currentState = {visibleTab: newState.visibleTab};
             bus.publish(shop.topics.VISIBLE_TAB, currentState.visibleTab);
          }
+      } else {
+         bus.publish(shop.topics.VISIBLE_TAB, shop.Context.defaultVisibleTab);
       }
    };
 };

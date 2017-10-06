@@ -5,6 +5,7 @@ require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/UiStateSetter.js');
 
 var instance;
 var callbacks;
+var stateConsumerInvocations;
 var capturedState;
 
 function valueIsAnObject(val) {
@@ -13,6 +14,7 @@ function valueIsAnObject(val) {
 }
 
 var mockedStateConsumer = function mockedStateConsumer(state) {
+   stateConsumerInvocations++;
    capturedState = state;
 };
 
@@ -40,6 +42,7 @@ var whenSetVisibleTabCommandWasSentFor =  function whenSetVisibleTabCommandWasSe
 var setup = function setup() {
    callbacks = {};
    capturedState = undefined;
+   stateConsumerInvocations = 0;
    givenDefaultUiStateSetter();
 };
 
@@ -60,5 +63,11 @@ describe('UiStateSetter', function() {
    it('SetVisibleTab command updated the state B', function() {
       whenSetVisibleTabCommandWasSentFor('anotherTab');
       expect(capturedState.visibleTab).to.be.eql('anotherTab');
+   });
+   
+   it('SetVisibleTab command does not updated the state when the visible tab is the same in the next command', function() {
+      whenSetVisibleTabCommandWasSentFor('tabB');
+      whenSetVisibleTabCommandWasSentFor('tabB');
+      expect(stateConsumerInvocations).to.be.eql(1);
    });
 });  

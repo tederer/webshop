@@ -5,6 +5,7 @@
    <link rel="stylesheet" type="text/css" href="css/shop.css">
 
    <script type="text/javascript" src="lib/jquery-3.2.1.min.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="lib/jquery.uriAnchor.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/RequireMock.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/NamespaceUtils.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/Promise.js" charset="UTF-8"></script>
@@ -22,6 +23,9 @@
    <script type="text/javascript" src="javascripts/ui/MenuItem.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/TabController.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/TabContent.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/UiStateSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/VisibleTabPublisher.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/VisibleTabSetter.js" charset="UTF-8"></script>
    <script>
       var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
@@ -29,15 +33,45 @@
       var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
       
       shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
-         
+      shop.Context.defaultVisibleTab = 'startTab';
+
       htmlContentLoader.load(['pflanzen_template']);
       configContentLoader.load(['pflanzen', 'accessories']);
       languageDependentTexts.load();
       
       $(document).ready(function() {
-         var tabController = new shop.ui.TabController();
-         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #plants'),      new shop.ui.TabContent('#shop > #content > #plants',        'pflanzen',    'pflanzen_template', supportedLanguages));
-         tabController.addTab(new shop.ui.MenuItem('#shop > #menu > #accessories'), new shop.ui.TabContent('#shop > #content > #accessories',   'accessories', undefined,           supportedLanguages));
+         var plantTab = new shop.ui.TabContent('#shop > #content > #plants',        'pflanzen',    'pflanzen_template', supportedLanguages);
+         var accessoriesTab = new shop.ui.TabContent('#shop > #content > #accessories',   'accessories', undefined,           supportedLanguages);
+         
+         var onVisibleTabChanged = function onVisibleTabChanged(tabName) {
+            var allTabs = [
+               {tabName: 'plants', tabContent: plantTab},
+               {tabName: 'accessories', tabContent: accessoriesTab}
+            ];
+            for (var index = 0; index < allTabs.length; index++) {
+               var currentTab = allTabs[index];
+               if (currentTab.tabName === tabName) {
+                  currentTab.tabContent.show();
+               } else {
+                  currentTab.tabContent.hide();
+               }
+            }
+         };
+      
+         shop.Context.bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTabChanged);
+         
+         var visibleTabPublisher = new shop.ui.VisibleTabPublisher();
+         new shop.ui.UiStateSetter($.uriAnchor.setAnchor);
+         new shop.ui.VisibleTabSetter('#shop > #menu > #plants',        'plants');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #accessories',   'accessories');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #shipping',      'shipping');
+         
+         var onHashChange = function onHashChange() {
+            var map = $.uriAnchor.makeAnchorMap();
+            visibleTabPublisher.setNewState(map);
+         };
+         
+         $(window).bind( 'hashchange', onHashChange ).trigger( 'hashchange' );
       });
    </script>
 </head>

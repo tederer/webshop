@@ -10,11 +10,13 @@ assertNamespace('shop.ui');
 shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
 
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var state = {};
+   var lastVisibleTab;
    
    var onSetVisibleTab = function onSetVisibleTab(tabName) {
-      state.visibleTab = tabName;
-      stateConsumer(state);
+      if (lastVisibleTab === undefined || lastVisibleTab !== tabName) {
+         lastVisibleTab = tabName;
+         stateConsumer({visibleTab:tabName});
+      }
    };
    
    bus.subscribeToCommand(shop.topics.SET_VISIBLE_TAB, onSetVisibleTab);

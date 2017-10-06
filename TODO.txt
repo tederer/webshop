@@ -1,2 +1,2 @@
-* jqeuery anchor benutzen
+* TabController & Co aufräumen
 * sprachauswahlknopf bauen
