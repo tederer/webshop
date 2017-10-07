@@ -2,15 +2,16 @@
 
 require('../NamespaceUtils.js');
 require('../Context.js');
-require('./AbstractTabContent.js');
+require('../bus/Bus.js');
 require('../Promise.js');
+require('./AbstractTab.js');
 
 assertNamespace('shop.ui');
 
 /**
  * If no template is required, then contentTemplateName should be set to undefined.
  */
-shop.ui.TabContent = function TabContent(selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus) {
+shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus) {
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    
@@ -19,6 +20,7 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
    var configs = {};
    var templateContents = {};
    var activeLanguage;
+   var visible = false;
    
    var defaultSetHtmlContent = function defaultSetHtmlContent(content) {
       $(selector).html(content);
@@ -109,6 +111,19 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
       updateHtmlContent();
     };
    
+   var onVisibleTab = function onVisibleTab(publishedTabId) {
+      var newVisible = tabId === publishedTabId;
+      
+      if (newVisible !== visible) {
+         if (newVisible) {
+            shop.ui.Tab.prototype.show.call(this);
+         } else {
+            shop.ui.Tab.prototype.hide.call(this);
+         }
+         visible = newVisible;
+      }
+   };
+   
    var setMapContent = function setMapContent(map, key, value) {
       map[key] = value;
       updateHtmlContent();
@@ -126,7 +141,9 @@ shop.ui.TabContent = function TabContent(selector, configName, contentTemplateNa
       }
    }
    
+   bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTab.bind(this));
+   
    this.initialize();
 };
 
-shop.ui.TabContent.prototype = new shop.ui.AbstractTabContent();
+shop.ui.Tab.prototype = new shop.ui.AbstractTab();

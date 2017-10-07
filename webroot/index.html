@@ -19,10 +19,9 @@
    <script type="text/javascript" src="javascripts/HtmlContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/LanguageDependentTexts.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractLanguageDependentComponent.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/AbstractTabContent.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/AbstractTab.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/MenuItem.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/TabController.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/TabContent.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/Tab.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/UiStateSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/VisibleTabPublisher.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/VisibleTabSetter.js" charset="UTF-8"></script>
@@ -40,25 +39,8 @@
       languageDependentTexts.load();
       
       $(document).ready(function() {
-         var plantTab = new shop.ui.TabContent('#shop > #content > #plants',        'pflanzen',    'pflanzen_template', supportedLanguages);
-         var accessoriesTab = new shop.ui.TabContent('#shop > #content > #accessories',   'accessories', undefined,           supportedLanguages);
-         
-         var onVisibleTabChanged = function onVisibleTabChanged(tabName) {
-            var allTabs = [
-               {tabName: 'plants', tabContent: plantTab},
-               {tabName: 'accessories', tabContent: accessoriesTab}
-            ];
-            for (var index = 0; index < allTabs.length; index++) {
-               var currentTab = allTabs[index];
-               if (currentTab.tabName === tabName) {
-                  currentTab.tabContent.show();
-               } else {
-                  currentTab.tabContent.hide();
-               }
-            }
-         };
-      
-         shop.Context.bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTabChanged);
+         var plantTab = new shop.ui.Tab('plants', '#shop > #content > #plants',        'pflanzen',    'pflanzen_template', supportedLanguages);
+         var accessoriesTab = new shop.ui.Tab('accessories', '#shop > #content > #accessories',   'accessories', undefined,           supportedLanguages);
          
          var visibleTabPublisher = new shop.ui.VisibleTabPublisher();
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);

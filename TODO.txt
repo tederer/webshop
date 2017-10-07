@@ -1,2 +1,3 @@
 * TabController & Co aufräumen
+* "can not create dynamic HTML content for pflanzen because no language is active!" nur dann loggen, wenn die aktive sprache undefined ist
 * sprachauswahlknopf bauen
