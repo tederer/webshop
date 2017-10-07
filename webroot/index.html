@@ -39,8 +39,25 @@
       languageDependentTexts.load();
       
       $(document).ready(function() {
-         var plantTab = new shop.ui.Tab('plants', '#shop > #content > #plants',        'pflanzen',    'pflanzen_template', supportedLanguages);
-         var accessoriesTab = new shop.ui.Tab('accessories', '#shop > #content > #accessories',   'accessories', undefined,           supportedLanguages);
+         var plantTabConfig = {
+            tabId: 'plants',
+            selector: '#shop > #content > #plants',
+            configName: 'pflanzen',
+            contentTemplateName: 'pflanzen_template',
+            languages: supportedLanguages
+         };
+         
+         var plantTab = new shop.ui.Tab(plantTabConfig);
+         
+         var accessoriesTabConfig = {
+            tabId: 'accessories',
+            selector: '#shop > #content > #accessories',
+            configName: 'accessories',
+            contentTemplateName: undefined,
+            languages: supportedLanguages
+         };
+         
+         var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
          
          var visibleTabPublisher = new shop.ui.VisibleTabPublisher();
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);

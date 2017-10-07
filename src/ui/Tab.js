@@ -11,8 +11,7 @@ assertNamespace('shop.ui');
 /**
  * If no template is required, then contentTemplateName should be set to undefined.
  */
-shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, languages, optionalSetHtmlContent, optionalBus) {
-   
+shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalBus) {
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
@@ -23,10 +22,10 @@ shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, lan
    var visible = false;
    
    var defaultSetHtmlContent = function defaultSetHtmlContent(content) {
-      $(selector).html(content);
+      $(config.selector).html(content);
    };
    
-   var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultSetHtmlContent : optionalSetHtmlContent.bind(this, selector);
+   var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultSetHtmlContent : optionalSetHtmlContent.bind(this, config.selector);
    
    var formatErrorMessage = function formatErrorMessage(message) {
       return '<p class="errorMessage">' + message + '</p>';
@@ -35,18 +34,18 @@ shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, lan
    var createDynamicHtmlContent = function createDynamicHtmlContent() {
       var executor = function executor(fulfill, reject) {
 
-         if (configName === undefined) {
+         if (config.configName === undefined) {
             fulfill('');
          } else {
             if (activeLanguage === undefined) {
-               reject('can not create dynamic HTML content for ' + configName + ' because no language is active!');
+               reject('can not create dynamic HTML content for ' + config.configName + ' because no language is active!');
             } else {
-               var data = configs[configName + '_' + activeLanguage];
+               var data = configs[config.configName + '_' + activeLanguage];
                if (data instanceof Error) {
                   fulfill(formatErrorMessage(data.message));
                } else {
                   if (data === undefined) {
-                     fulfill(formatErrorMessage('configuration ' + configName + ' is not available!'));
+                     fulfill(formatErrorMessage('configuration ' + config.configName + ' is not available!'));
                   } else {
                      // TODO extract config compiler
                      var content = '<table>';
@@ -68,9 +67,9 @@ shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, lan
       if (activeLanguage === undefined) {
          throw 'can not insert dynamic HTML content into template because no language is active!';
       } else {
-         var templateContent = (contentTemplateName === undefined) ? PLACEHOLDER : templateContents[contentTemplateName + '_' + activeLanguage];
+         var templateContent = (config.contentTemplateName === undefined) ? PLACEHOLDER : templateContents[config.contentTemplateName + '_' + activeLanguage];
          if (templateContent === undefined) {
-            content = formatErrorMessage('template content ' + contentTemplateName + ' is not available!');
+            content = formatErrorMessage('template content ' + config.contentTemplateName + ' is not available!');
          } else {
             if (templateContent instanceof Error) {
                content = formatErrorMessage(templateContent.message);
@@ -102,7 +101,7 @@ shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, lan
    };
    
    this.getSelector = function getSelector() {
-      return selector;
+      return config.selector;
    };
    
    this.onLanguageChanged = function onLanguageChanged(newLanguage) {
@@ -112,7 +111,7 @@ shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, lan
     };
    
    var onVisibleTab = function onVisibleTab(publishedTabId) {
-      var newVisible = tabId === publishedTabId;
+      var newVisible = config.tabId === publishedTabId;
       
       if (newVisible !== visible) {
          if (newVisible) {
@@ -129,15 +128,15 @@ shop.ui.Tab = function Tab(tabId, selector, configName, contentTemplateName, lan
       updateHtmlContent();
    };
    
-   for (var index = 0; index < languages.length; index++) {
-      var language = languages[index];
+   for (var index = 0; index < config.languages.length; index++) {
+      var language = config.languages[index];
       
-      if (configName !== undefined) {
-         bus.subscribeToPublication('/jsonContent/' + language + '/' + configName, setMapContent.bind(this, configs, configName + '_' + language));
+      if (config.configName !== undefined) {
+         bus.subscribeToPublication('/jsonContent/' + language + '/' + config.configName, setMapContent.bind(this, configs, config.configName + '_' + language));
       }
       
-      if (contentTemplateName !== undefined) {
-         bus.subscribeToPublication('/htmlContent/' + language + '/' + contentTemplateName, setMapContent.bind(this, templateContents, contentTemplateName + '_' + language));
+      if (config.contentTemplateName !== undefined) {
+         bus.subscribeToPublication('/htmlContent/' + language + '/' + config.contentTemplateName, setMapContent.bind(this, templateContents, config.contentTemplateName + '_' + language));
       }
    }
    

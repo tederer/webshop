@@ -15,6 +15,7 @@ var DEFAULT_SELECTOR          = 'defaultSelector';
 var DEFAULT_CONFIG_NAME       = 'myConfig';
 var DEFAULT_TEMPLATE_NAME     = 'myTemplate';
 var DEFAULT_LANGUAGES         = [shop.Language.DE, shop.Language.EN];
+   
 var instance;
 var templatePrefix;
 var placeholder;
@@ -55,6 +56,16 @@ var setHtmlContent = function setHtmlContent(selector, content) {
    capturedHtmlContent = content;
 };
 
+var getDefaultConfig = function getDefaultConfig() {
+   return {
+      tabId: DEFAULT_TAB_ID,
+      selector: DEFAULT_SELECTOR,
+      configName: DEFAULT_CONFIG_NAME,
+      contentTemplateName: DEFAULT_TEMPLATE_NAME,
+      languages: DEFAULT_LANGUAGES
+   };
+};
+
 var givenPublishedLanguageIsGerman = function givenPublishedLanguageIsGerman() {
    instance.onLanguageChanged(shop.Language.DE);
 };
@@ -64,19 +75,25 @@ var givenPublishedLanguageIsEnglish = function givenPublishedLanguageIsEnglish()
 };
 
 var givenTabWithMockedPrototype = function givenTabWithMockedPrototype(tabId) {
-   instance = new shop.ui.Tab(tabId, DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
+   var config = getDefaultConfig();
+   config.tabId = tabId;
+   instance = new shop.ui.Tab(config, setHtmlContent, mockedBus);
 };
 
 var givenDefaultTab = function givenDefaultTab() {
-   instance = new shop.ui.Tab(DEFAULT_TAB_ID, DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
+   instance = new shop.ui.Tab(getDefaultConfig(), setHtmlContent, mockedBus);
 };
 
 var givenTabWithUndefinedContentTemplateTopic = function givenTabWithUndefinedContentTemplateTopic() {
-   instance = new shop.ui.Tab(DEFAULT_TAB_ID, DEFAULT_SELECTOR, DEFAULT_CONFIG_NAME, undefined, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
+   var config = getDefaultConfig();
+   config.contentTemplateName = undefined;
+   instance = new shop.ui.Tab(config, setHtmlContent, mockedBus);
 };
 
 var givenTabWithUndefinedConfigTopic = function givenTabWithUndefinedConfigTopic() {
-   instance = new shop.ui.Tab(DEFAULT_TAB_ID, DEFAULT_SELECTOR, undefined, DEFAULT_TEMPLATE_NAME, DEFAULT_LANGUAGES, setHtmlContent, mockedBus);
+   var config = getDefaultConfig();
+   config.configName = undefined;
+   instance = new shop.ui.Tab(config, setHtmlContent, mockedBus);
 };
 
 var givenConfigPublication = function givenConfigPublication(name, language, data) {
