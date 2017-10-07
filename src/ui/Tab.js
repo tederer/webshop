@@ -38,14 +38,14 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalBus) {
             fulfill('');
          } else {
             if (activeLanguage === undefined) {
-               reject('can not create dynamic HTML content for ' + config.configName + ' because no language is active!');
+               fulfill('');
             } else {
                var data = configs[config.configName + '_' + activeLanguage];
                if (data instanceof Error) {
                   fulfill(formatErrorMessage(data.message));
                } else {
                   if (data === undefined) {
-                     fulfill(formatErrorMessage('configuration ' + config.configName + ' is not available!'));
+                     fulfill(formatErrorMessage('configuration ' + config.configName + ' is not available in language ' + activeLanguage + '!'));
                   } else {
                      // TODO extract config compiler
                      var content = '<table>';
@@ -110,7 +110,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalBus) {
       updateHtmlContent();
     };
    
-   var onVisibleTab = function onVisibleTab(publishedTabId) {
+   var onVisibleTabPublication = function onVisibleTabPublication(publishedTabId) {
       var newVisible = config.tabId === publishedTabId;
       
       if (newVisible !== visible) {
@@ -140,7 +140,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalBus) {
       }
    }
    
-   bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTab.bind(this));
+   bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTabPublication.bind(this));
    
    this.initialize();
 };
