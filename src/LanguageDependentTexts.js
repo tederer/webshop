@@ -48,7 +48,7 @@ shop.LanguageDependentTexts = function LanguageDependentTexts(configBaseUrl, opt
    var updatePublications = function updatePublications() {
       if (config !== undefined && currentLanguage !== undefined && lastPublishedLanguage !== currentLanguage) {
          for (var index = 0; index < configKeys.length; index++) {
-            bus.publish('/languageDependentText/' + configKeys[index], config[configKeys[index]][currentLanguage]);
+            bus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + configKeys[index], config[configKeys[index]][currentLanguage]);
          }
          lastPublishedLanguage = currentLanguage;
       }

@@ -24,6 +24,7 @@
    <script type="text/javascript" src="javascripts/ui/UiStateSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/VisibleTabPublisher.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/VisibleTabSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/LanguageSelector.js" charset="UTF-8"></script>
    <script>
       var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
@@ -31,13 +32,23 @@
       var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
       
       shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
-      shop.Context.defaultVisibleTab = 'startTab';
+      shop.Context.defaultVisibleTab = 'start';
 
-      htmlContentLoader.load(['pflanzen_template']);
+      htmlContentLoader.load(['pflanzen_template', 'start_template']);
       configContentLoader.load(['pflanzen', 'accessories']);
       languageDependentTexts.load();
       
       $(document).ready(function() {
+         var startTabConfig = {
+            tabId: 'start',
+            selector: '#shop > #content > #start',
+            configName: undefined,
+            contentTemplateName: 'start_template',
+            languages: supportedLanguages
+         };
+         
+         var startTab = new shop.ui.Tab(startTabConfig);
+         
          var plantTabConfig = {
             tabId: 'plants',
             selector: '#shop > #content > #plants',
@@ -58,8 +69,18 @@
          
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
          
+         var languageSelectorConfig = {
+            uiComponentProvider:       function() { return $('#shop > #menu > #languageSelector'); },
+            languageDependentTextId:   'currentLanguage',
+            defaultLanguage:           shop.Language.DE, 
+            alternativeLanguage:       shop.Language.EN
+         };
+         
+         new shop.ui.LanguageSelector(languageSelectorConfig);
+         
          var visibleTabPublisher = new shop.ui.VisibleTabPublisher();
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);
+         new shop.ui.VisibleTabSetter('#shop > #menu > #start',         'start');
          new shop.ui.VisibleTabSetter('#shop > #menu > #plants',        'plants');
          new shop.ui.VisibleTabSetter('#shop > #menu > #accessories',   'accessories');
          new shop.ui.VisibleTabSetter('#shop > #menu > #shipping',      'shipping');
@@ -80,12 +101,15 @@
    <div id="header">header</div>
 
    <div id="menu">
+      <button id="start">Start</button> 
       <button id="plants">Pflanzen</button> 
       <button id="accessories">Zubehör</button> 
       <button id="shipping">Versandbedingungen</button> 
+      <button id="languageSelector"></button> 
    </div>
 
    <div id="content">
+      <div id="start"/></div>
       <div id="plants"/></div>
       <div id="accessories"/></div>
    </div>

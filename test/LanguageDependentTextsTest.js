@@ -2,6 +2,7 @@
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/LanguageDependentTexts.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Promise.js');
 
 assertNamespace('shop.Context');
@@ -163,7 +164,7 @@ describe('LanguageDependentTexts', function() {
       givenTextsAreLoaded();
       whenCurrentLanguageIs(shop.Language.DE);
       expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublicationsContains({topic: '/languageDependentText/buttonA', data: 'Knopf A'})).to.be.eql(true);
+      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Knopf A'})).to.be.eql(true);
    });
       
    it('LanguageDependentTexts publishes multiple texts', function() {
@@ -175,8 +176,8 @@ describe('LanguageDependentTexts', function() {
       givenTextsAreLoaded();
       whenCurrentLanguageIs(shop.Language.EN);
       expect(capturedPublications.length).to.be.eql(2);
-      expect(capturedPublicationsContains({topic: '/languageDependentText/buttonA', data: 'Button A'})).to.be.eql(true);
-      expect(capturedPublicationsContains({topic: '/languageDependentText/buttonB', data: 'Button B'})).to.be.eql(true);
+      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Button A'})).to.be.eql(true);
+      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonB', data: 'Button B'})).to.be.eql(true);
    });
       
    it('LanguageDependentTexts publishes english text', function() {
@@ -186,7 +187,7 @@ describe('LanguageDependentTexts', function() {
       givenTextsAreLoaded();
       whenCurrentLanguageIs(shop.Language.EN);
       expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublicationsContains({topic: '/languageDependentText/buttonA', data: 'Button A'})).to.be.eql(true);
+      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Button A'})).to.be.eql(true);
    });
       
    it('LanguageDependentTexts publishes german text independent of the order of current language and config publication', function() {
@@ -196,7 +197,7 @@ describe('LanguageDependentTexts', function() {
       givenCurrentLanguageIs(shop.Language.DE);
       whenTextsAreLoaded();
       expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublicationsContains({topic: '/languageDependentText/buttonA', data: 'Knopf A'})).to.be.eql(true);
+      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Knopf A'})).to.be.eql(true);
    });
    
    it('LanguageDependentTexts publishes nothing when config can not be parsed', function() {

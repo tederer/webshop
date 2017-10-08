@@ -10,7 +10,7 @@ shop.topics.CURRENT_LANGUAGE = '/currentLanguage';
 
 shop.topics.VISIBLE_TAB = '/visibleTab';
 
-
+shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX = '/languageDependentText/';
 
 //                COMMANDS
 

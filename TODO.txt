@@ -1,1 +1,2 @@
-* sprachauswahlknopf bauen
+* sprachauswahlknopf soll die nächste sprache anzeigen und nicht die aktuelle !
+* kontrollieren ob noch wo console.log verwendet wird

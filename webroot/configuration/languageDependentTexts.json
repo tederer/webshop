@@ -1,4 +1,5 @@
 {
   "button1": { "de": "Anleitungen", "en": "tutorials" }, 
-  "button2": { "de": "Kontakt", "en": "contact" } 
+  "button2": { "de": "Kontakt", "en": "contact" } ,
+  "currentLanguage": { "de": "Deutsch", "en": "English" }
 }
