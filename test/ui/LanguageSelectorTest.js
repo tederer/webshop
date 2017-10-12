@@ -55,35 +55,8 @@ var givenLanguageDependentTextPublication = function givenLanguageDependentTextP
 };
 
 var givenDefaultLanguageSelector = function givenDefaultLanguageSelector() {
-   var config = {
-      uiComponentProvider:       mockedUiComponentProvider,
-      languageDependentTextId:   DEFAULT_LANGUAGE_DEPENDENT_TEXT_ID,
-      defaultLanguage:           DEFAULT_LANGUAGE, 
-      alternativeLanguage:       DEFAULT_ALTERNATIVE_LANGUAGE
-   };
-   instance = new shop.ui.LanguageSelector(config, mockedBus);
+   instance = new shop.ui.LanguageSelector(mockedUiComponentProvider, mockedBus);
 };
-
-var givenLanguageSelectorWithLanguages = function givenLanguageSelectorWithLanguages(defaultLanguage, alternativeLanguage) {
-   var config = {
-      uiComponentProvider:       mockedUiComponentProvider,
-      languageDependentTextId:   DEFAULT_LANGUAGE_DEPENDENT_TEXT_ID,
-      defaultLanguage:           defaultLanguage, 
-      alternativeLanguage:       alternativeLanguage
-   };
-   instance = new shop.ui.LanguageSelector(config, mockedBus);
-};
-
-var givenLanguageSelectorWithTextId = function givenLanguageSelectorWithTextId(textId) {
-   var config = {
-      uiComponentProvider:       mockedUiComponentProvider,
-      languageDependentTextId:   textId,
-      defaultLanguage:           DEFAULT_LANGUAGE, 
-      alternativeLanguage:       DEFAULT_ALTERNATIVE_LANGUAGE
-   };
-   instance = new shop.ui.LanguageSelector(config, mockedBus);
-};
-
 
 var whenTheComponentGetsClicked = function whenTheComponentGetsClicked() {
    capturedCallback();
@@ -107,20 +80,12 @@ describe('LanguageSelector', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
-   it('a new instance publishes sets the current language to the default language A', function() {
+   it('a new instance publishes german as current language A', function() {
       
       givenDefaultLanguageSelector();
       expect(publications.length).to.be.eql(1);
       expect(publications[0].topic).to.be.eql(shop.topics.CURRENT_LANGUAGE);
-      expect(publications[0].data).to.be.eql(DEFAULT_LANGUAGE);
-   });
-   
-   it('a new instance publishes sets the current language to the default language B', function() {
-      
-      givenLanguageSelectorWithLanguages(shop.Language.EN, shop.Language.DE);
-      expect(publications.length).to.be.eql(1);
-      expect(publications[0].topic).to.be.eql(shop.topics.CURRENT_LANGUAGE);
-      expect(publications[0].data).to.be.eql(shop.Language.EN);
+      expect(publications[0].data).to.be.eql(shop.Language.DE);
    });
    
    it('a new instance registers callback for click events', function() {
@@ -129,7 +94,7 @@ describe('LanguageSelector', function() {
       expect(capturedEventType).to.be.eql('click');
    });
    
-   it('the alternative language gets published when the component gets clicked once', function() {
+   it('english gets published when the component gets clicked once', function() {
       
       givenDefaultLanguageSelector();
       whenTheComponentGetsClicked();
@@ -138,7 +103,7 @@ describe('LanguageSelector', function() {
       expect(publications[1].data).to.be.eql(shop.Language.EN);
    });   
    
-   it('the default language gets published when the component gets clicked twice', function() {
+   it('german gets published when the component gets clicked twice', function() {
       
       givenDefaultLanguageSelector();
       whenTheComponentGetsClicked();
@@ -148,19 +113,18 @@ describe('LanguageSelector', function() {
       expect(publications[2].data).to.be.eql(shop.Language.DE);
    });
    
-   it('a new instance sets the text to the currently published language dependent text A', function() {
+   it('a new instance sets the component text to "English"', function() {
       
       givenDefaultLanguageSelector();
-      givenLanguageDependentTextPublication(DEFAULT_LANGUAGE_DEPENDENT_TEXT_ID, 'english');
       expect(capturedTexts.length).to.be.eql(1);
-      expect(capturedTexts[0]).to.be.eql('english');
+      expect(capturedTexts[0]).to.be.eql('English');
    });
-   
-   it('a new instance sets the text to the currently published language dependent text B', function() {
       
-      givenLanguageSelectorWithTextId('lngButton');
-      givenLanguageDependentTextPublication('lngButton', 'blabla');
-      expect(capturedTexts.length).to.be.eql(1);
-      expect(capturedTexts[0]).to.be.eql('blabla');
+   it('the component text gets set to "Deutsch" when component gets clicked once', function() {
+      
+      givenDefaultLanguageSelector();
+      whenTheComponentGetsClicked();
+      expect(capturedTexts.length).to.be.eql(2);
+      expect(capturedTexts[1]).to.be.eql('Deutsch');
    });
 });  

@@ -2,32 +2,37 @@
 
 require('../NamespaceUtils.js');
 require('../Topics.js');
+require('../Language.js');
+require('../Context.js');
 
 assertNamespace('shop.ui');
 
-shop.ui.LanguageSelector = function LanguageSelector(config, optionalBus ) {
+shop.ui.LanguageSelector = function LanguageSelector(uiComponentProvider, optionalBus ) {
 
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var currentLanguage;
+   var defaultLanguage = shop.Language.DE;
+   var alternativeLanguage = shop.Language.EN;
+   var currentLanguage = defaultLanguage;
+   var text = {};
+   text[shop.Language.DE] = 'Deutsch';
+   text[shop.Language.EN] = 'English';
    
-   var publishLanguage = function publishLanguage(language) {
-      bus.publish(shop.topics.CURRENT_LANGUAGE, language);
+   var getInactiveLanguage = function getInactiveLanguage(language) {
+      return (currentLanguage === defaultLanguage) ? alternativeLanguage : defaultLanguage;
+   };
+   
+   var publishLanguage = function publishCurrentLanguage() {
+      bus.publish(shop.topics.CURRENT_LANGUAGE, currentLanguage);
+      uiComponentProvider().text(text[getInactiveLanguage()]);
    };
    
    var onClicked = function onClicked() {
-      var nextLanguage = (currentLanguage === config.defaultLanguage) ? config.alternativeLanguage : config.defaultLanguage;
-      currentLanguage = nextLanguage;
-      publishLanguage(nextLanguage);
+      currentLanguage = getInactiveLanguage();
+      publishLanguage();
    };
    
-   var onLanguageDependentTextChanged = function onLanguageDependentTextChanged(newText) {
-      config.uiComponentProvider().text(newText);
-   };
+   publishLanguage(defaultLanguage);
    
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + config.languageDependentTextId, onLanguageDependentTextChanged);
-   currentLanguage = config.defaultLanguage;
-   publishLanguage(config.defaultLanguage);
-   
-   config.uiComponentProvider().on('click', onClicked);
+   uiComponentProvider().on('click', onClicked);
 };
 

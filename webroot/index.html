@@ -69,14 +69,7 @@
          
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
          
-         var languageSelectorConfig = {
-            uiComponentProvider:       function() { return $('#shop > #menu > #languageSelector'); },
-            languageDependentTextId:   'currentLanguage',
-            defaultLanguage:           shop.Language.DE, 
-            alternativeLanguage:       shop.Language.EN
-         };
-         
-         new shop.ui.LanguageSelector(languageSelectorConfig);
+         new shop.ui.LanguageSelector(function() { return $('#shop > #menu > #languageSelector'); });
          
          var visibleTabPublisher = new shop.ui.VisibleTabPublisher();
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);
@@ -97,7 +90,6 @@
 
 <body>
 <div id="shop">
-
    <div id="header">header</div>
 
    <div id="menu">
