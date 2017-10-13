@@ -25,6 +25,7 @@ var capturedHtmlContent;
 var publications;
 var capturedSubscriptionCallbacks;
 var capturedVisiblityChanges;
+var productTable;
 
 var MockedAbstractTab = function MockedAbstractTab() {
    this.initialize = function initialize() {};
@@ -49,6 +50,15 @@ var mockedBus = {
       if (callback !== undefined) {
          callback(data);
       }
+   }
+};
+
+var mockedProductTableGenerator = {
+   generateTable: function generateTable(config) {
+      //var content = '<table>';
+      /*config.products.forEach(function(plant) { content = content + '<tr><td>' + plant.name + '</td><td>' + plant.price + ' EUR</td></tr>'; });  
+      content = content + '</table>';*/
+      return productTable;
    }
 };
 
@@ -77,23 +87,23 @@ var givenPublishedLanguageIsEnglish = function givenPublishedLanguageIsEnglish()
 var givenTabWithMockedPrototype = function givenTabWithMockedPrototype(tabId) {
    var config = getDefaultConfig();
    config.tabId = tabId;
-   instance = new shop.ui.Tab(config, setHtmlContent, mockedBus);
+   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
 };
 
 var givenDefaultTab = function givenDefaultTab() {
-   instance = new shop.ui.Tab(getDefaultConfig(), setHtmlContent, mockedBus);
+   instance = new shop.ui.Tab(getDefaultConfig(), setHtmlContent, mockedProductTableGenerator, mockedBus);
 };
 
 var givenTabWithUndefinedContentTemplateTopic = function givenTabWithUndefinedContentTemplateTopic() {
    var config = getDefaultConfig();
    config.contentTemplateName = undefined;
-   instance = new shop.ui.Tab(config, setHtmlContent, mockedBus);
+   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
 };
 
 var givenTabWithUndefinedConfigTopic = function givenTabWithUndefinedConfigTopic() {
    var config = getDefaultConfig();
    config.configName = undefined;
-   instance = new shop.ui.Tab(config, setHtmlContent, mockedBus);
+   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
 };
 
 var givenConfigPublication = function givenConfigPublication(name, language, data) {
@@ -108,6 +118,10 @@ var givenConfigPublication = function givenConfigPublication(name, language, dat
 
 var givenTemplatePublication = function givenConfigPublication(name, language, data) {
    publications['/htmlContent/' + language + '/' + name] = data;
+};
+
+var givenTheProductTableGeneratorReturns = function givenTheProductTableGeneratorReturns(text) {
+   productTable = text;
 };
 
 var whenConfigPublicationGetsUpdated = function whenConfigPublicationGetsUpdated(name, language, data) {
@@ -158,6 +172,7 @@ var setup = function setup() {
    publications = {};
    capturedSubscriptionCallbacks = {};
    capturedHtmlContent = undefined;
+   productTable = undefined;
    templatePrefix = '<h1>Hello World</h1>';
    placeholder = '<!--DYNAMIC_CONTENT-->';
    suffix = '<p>after configured content</p>';
@@ -185,20 +200,24 @@ describe('Tab', function() {
    
    it('the Tab publishes a table with the configured plants', function() {
       
+      var table = '<table></table>';
+      givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
       givenDefaultTab();
       givenPublishedLanguageIsGerman();
-      expect(capturedHtmlContent).to.be.eql('<h1>Hello World</h1><table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr><tr><td>Cattleya walkeriana</td><td>8 EUR</td></tr></table><p>after configured content</p>');
+      expect(capturedHtmlContent).to.be.eql(templatePrefix + table + suffix);
    });
    
    it('the Tab publishes a table with the configured plants when contentTemplateName is undefined', function() {
       
+      var table = '<table id="bla"></table>';
+      givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'somePrefix' + placeholder + 'someSuffix');
       givenTabWithUndefinedContentTemplateTopic();
       givenPublishedLanguageIsGerman();
-      expect(capturedHtmlContent).to.be.eql('<table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr><tr><td>Cattleya walkeriana</td><td>8 EUR</td></tr></table>');
+      expect(capturedHtmlContent).to.be.eql(table);
    });
    
    it('the Tab publishes an error when the config is not available yet', function() {
@@ -212,6 +231,8 @@ describe('Tab', function() {
    
    it('the Tab publishes an error when the template is not available yet', function() {
       
+      var table = '<table id="anyTable"></table>';
+      givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
       givenDefaultTab();
@@ -221,6 +242,8 @@ describe('Tab', function() {
    
    it('the Tab publishes an error when the template cannot be loaded', function() {
       
+      var table = '<table id="anyTable"></table>';
+      givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, new Error('failed to load ' + DEFAULT_TEMPLATE_NAME));
       givenDefaultTab();
@@ -230,6 +253,8 @@ describe('Tab', function() {
    
    it('the Tab publishes an error when the template does not contain a placeholder', function() {
       
+      var table = '<table id="anyTable"></table>';
+      givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + suffix);
       givenDefaultTab();
@@ -275,22 +300,26 @@ describe('Tab', function() {
    
    it('the Tab updates the content when a new config is received', function() {
       
+      var table = '<table id="id1"></table>';
+      givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN, templatePrefix + placeholder + suffix);
       givenDefaultTab();
       givenPublishedLanguageIsEnglish();
       whenConfigPublicationGetsUpdated(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Sophronitis coccinea", "price":  15}]}');
-      expect(capturedHtmlContent).to.be.eql('<h1>Hello World</h1><table><tr><td>Sophronitis coccinea</td><td>15 EUR</td></tr></table><p>after configured content</p>');
+      expect(capturedHtmlContent).to.be.eql(templatePrefix + table + suffix);
    });
    
    it('the Tab updates the content when a new template content is received', function() {
       
+      var table = '<table id="id1"></table>';
+      givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
       givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN, templatePrefix + placeholder + suffix);
       givenDefaultTab();
       givenPublishedLanguageIsEnglish();
       whenTemplatePublicationGetsUpdated(DEFAULT_TEMPLATE_NAME, shop.Language.EN, '<p>new prefix</p>' + placeholder + '<p>new suffix</p>');
-      expect(capturedHtmlContent).to.be.eql('<p>new prefix</p><table><tr><td>Aerangis ellisii</td><td>10 EUR</td></tr></table><p>new suffix</p>');
+      expect(capturedHtmlContent).to.be.eql('<p>new prefix</p>' + table + '<p>new suffix</p>');
    });
    
    it('the Tab gets shown when the published visible tab matches', function() {

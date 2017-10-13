@@ -5,14 +5,16 @@ require('../Context.js');
 require('../bus/Bus.js');
 require('../Promise.js');
 require('./AbstractTab.js');
+require('./ProductTableGenerator.js');
 
 assertNamespace('shop.ui');
 
 /**
  * If no template is required, then contentTemplateName should be set to undefined.
  */
-shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalBus) {
+shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableGenerator, optionalBus) {
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
+   var productTableGenerator = (optionalProductTableGenerator === undefined) ? new shop.ui.ProductTableGenerator() : optionalProductTableGenerator;
    
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
@@ -47,11 +49,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalBus) {
                   if (data === undefined) {
                      fulfill(formatErrorMessage('configuration ' + config.configName + ' is not available in language ' + activeLanguage + '!'));
                   } else {
-                     // TODO extract config compiler
-                     var content = '<table>';
-                     data.products.forEach(function(plant) { content = content + '<tr><td>' + plant.name + '</td><td>' + plant.price + ' EUR</td></tr>'; });  
-                     content = content + '</table>';
-                     fulfill(content);
+                     fulfill(productTableGenerator.generateTable(data));
                   }
                }
             }

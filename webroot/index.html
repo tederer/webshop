@@ -25,6 +25,7 @@
    <script type="text/javascript" src="javascripts/ui/VisibleTabPublisher.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/VisibleTabSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageSelector.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/ProductTableGenerator.js" charset="UTF-8"></script>
    <script>
       var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
@@ -34,8 +35,8 @@
       shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
       shop.Context.defaultVisibleTab = 'start';
 
-      htmlContentLoader.load(['pflanzen_template', 'start_template']);
-      configContentLoader.load(['pflanzen', 'accessories']);
+      htmlContentLoader.load(['plants_template', 'start_template']);
+      configContentLoader.load(['plants', 'accessories']);
       languageDependentTexts.load();
       
       $(document).ready(function() {
@@ -52,8 +53,8 @@
          var plantTabConfig = {
             tabId: 'plants',
             selector: '#shop > #content > #plants',
-            configName: 'pflanzen',
-            contentTemplateName: 'pflanzen_template',
+            configName: 'plants',
+            contentTemplateName: 'plants_template',
             languages: supportedLanguages
          };
          
