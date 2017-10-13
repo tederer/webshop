@@ -86,6 +86,17 @@ body {
    visibility : hidden;
 }
 
+#shop > #content > #picture {
+   position : absolute;
+   top : 0;
+   left : 0;
+   bottom : 2em;
+   width : 100%;
+   border-radius : 0 0 0 0;
+   background-color : transparent;
+   visibility : hidden;
+}
+
 #shop > #footer {
    position : absolute;
    left : 0;

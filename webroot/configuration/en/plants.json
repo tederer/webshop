@@ -3,7 +3,8 @@
       { 
          "name": "Aerangis ellisii",
          "price": 10,
-         "description": "white flowers, small plant"
+         "description": "white flowers, small plant",
+         "url": "http://some.webpage.com"
       },
       {
          "name": "Cattleya walkeriana alba",
@@ -16,7 +17,7 @@
          "price": 8,
          "description": "Cymb. from asia",
          "imageSmall": "cymbidium_small.jpg",
-         "imageBig": "cymbidim_big.jpg"
+         "imageBig": "cymbidium_big.jpg"
       }
    ]
 }

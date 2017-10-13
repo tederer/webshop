@@ -8,7 +8,7 @@ assertNamespace('shop.ui');
 /**
  * The VisibleTabPublisher process a received state object and publishes the visible tab if its state changed.
  */
-shop.ui.VisibleTabPublisher = function VisibleTabPublisher(optionalBus, optionalStateConsumer) {
+shop.ui.VisibleTabPublisher = function VisibleTabPublisher(optionalBus) {
 
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    var currentState;

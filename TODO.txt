@@ -1,1 +1,2 @@
-* Produktlistengenerator bauen
+* VisibleTabPublisher erweitern damit auch bilder angezeigt werden
+* PictureTab bauen

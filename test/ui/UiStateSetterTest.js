@@ -35,8 +35,20 @@ var givenDefaultUiStateSetter = function givenDefaultUiStateSetter() {
    instance = new shop.ui.UiStateSetter(mockedStateConsumer, mockedBus);
 };
 
-var whenSetVisibleTabCommandWasSentFor =  function whenSetVisibleTabCommandWasSentFor(tabName) {
+var givenShowPictureCommandWasSentFor = function givenShowPictureCommandWasSentFor(filename) {
+   mockedBus.sendCommand(shop.topics.SHOW_PICTURE, filename);
+};
+
+var whenSetVisibleTabCommandWasSentFor = function whenSetVisibleTabCommandWasSentFor(tabName) {
    mockedBus.sendCommand(shop.topics.SET_VISIBLE_TAB, tabName);
+};
+
+var whenShowPictureCommandWasSentFor = function whenShowPictureCommandWasSentFor(filename) {
+   givenShowPictureCommandWasSentFor(filename);
+};
+
+var whenHidePictureCommandWasSent = function whenHidePictureCommandWasSent() {
+   mockedBus.sendCommand(shop.topics.HIDE_PICTURE, '');
 };
 
 var setup = function setup() {
@@ -69,5 +81,34 @@ describe('UiStateSetter', function() {
       whenSetVisibleTabCommandWasSentFor('tabB');
       whenSetVisibleTabCommandWasSentFor('tabB');
       expect(stateConsumerInvocations).to.be.eql(1);
+   });
+   
+   it('ShowPicture command updated the state A', function() {
+      whenShowPictureCommandWasSentFor('aerangis.jpg');
+      expect(capturedState.shownPicture).to.be.eql('aerangis.jpg');
+   });
+   
+   it('ShowPicture command updated the state B', function() {
+      whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
+      expect(capturedState.shownPicture).to.be.eql('phalaenopsis.jpg');
+   });
+   
+   it('ShowPicture command does not updated the state when the picture is the same in the next command', function() {
+      whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
+      whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
+      expect(stateConsumerInvocations).to.be.eql(1);
+   });
+   
+   it('hidePicture command updated the state A', function() {
+      givenShowPictureCommandWasSentFor('phalaenopsis.jpg');
+      whenHidePictureCommandWasSent();
+      expect(capturedState.shownPicture).to.be.eql(undefined);
+   });
+   
+   it('hidePicture command sent twice updates the state only once', function() {
+      givenShowPictureCommandWasSentFor('phalaenopsis.jpg');
+      whenHidePictureCommandWasSent();
+      whenHidePictureCommandWasSent();
+      expect(stateConsumerInvocations).to.be.eql(2);
    });
 });  

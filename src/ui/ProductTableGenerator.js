@@ -1,6 +1,8 @@
 /* global shop, common, assertNamespace */
 
 require('../NamespaceUtils.js');
+require('../Topics.js');
+require('../bus/Bus.js');
 
 assertNamespace('shop.ui');
 
@@ -14,6 +16,8 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    var intentationAsString = '   ';
    var intentations;
    var content;
+   var linkText = { de: 'im Internet', en: 'on the internet' };
+   var currentLanguage;
    
    var append = function(text) {
       var line = '';
@@ -23,32 +27,41 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       content += line + text + CRLF;
    };
    
-   var addColumn = function addColumn(value) {
+   var addText = function addText(text) {
       intentations++;
-      append('<td>' + ((value === undefined) ? '&nbsp;' : value) + '</td>');
+      append('<td>' + ((text === undefined) ? '&nbsp;' : text) + '</td>');
       intentations--;
    };
    
    var addPrice = function addPrice(price) {
       intentations++;
-      // TODO format price
-      append('<td>' + price + ' EUR</td>');
+      append('<td>' + price.toFixed(2) + ' EUR</td>');
       intentations--;
    };
    
-   var addImage = function addImage(imageSmall, imageBig) { // TODO insert link to big image if available
+   var addImage = function addImage(imageSmall, imageBig, url) { // TODO insert link to big image if available
       intentations++;
-      var imageTag = (imageSmall !== undefined) ? '<img src="' + imageSmall + '"/>' : '&nbsp;';
-      append('<td>' + imageTag + '</td>');
+      var content = '';
+      if (imageSmall !== undefined) {
+         content = '<img src="' + imageSmall + '">';
+         if (imageBig !== undefined) {
+            content = '<a href="javascript:shop.ui.BigPicture.show(\'' + imageBig + '\');">' + content + '</a>';
+         }
+      } else {
+         if (url !== undefined) {
+            content = '<a href="' + url + '">' + linkText[currentLanguage]+ '</a>';
+         }
+      }
+      append('<td>' + content + '</td>');
       intentations--;
    };
    
    var addRow = function addRow(plant) {
       intentations++;
       append('<tr>');
-      addImage(plant.imageSmall, plant.imageBig);
-      addColumn(plant.name);
-      addColumn(plant.description);
+      addImage(plant.imageSmall, plant.imageBig, plant.url);
+      addText(plant.name);
+      addText(plant.description);
       addPrice(plant.price);
       append('</tr>');
       intentations--;
@@ -63,8 +76,9 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
          addRow(plant);
       });  
       append('</table>');
-      console.log(content);
       return content;
    };
+   
+   shop.Context.bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, function(language) { currentLanguage = language; });
 };
 

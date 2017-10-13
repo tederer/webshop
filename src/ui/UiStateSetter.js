@@ -1,6 +1,8 @@
 /* global shop, common, assertNamespace */
 
 require('../NamespaceUtils.js');
+require('../Context.js');
+require('../Topics.js');
 
 assertNamespace('shop.ui');
 
@@ -10,15 +12,41 @@ assertNamespace('shop.ui');
 shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
 
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var lastVisibleTab;
+   var visibleTab;
+   var shownPicture;
+   
+   var notifyStateConsumer = function notifyStateConsumer() {
+      var state = {};
+      state.visibleTab = visibleTab;
+      if (shownPicture !== undefined) {
+         state.shownPicture = shownPicture;
+      }
+      stateConsumer(state);
+   };
    
    var onSetVisibleTab = function onSetVisibleTab(tabName) {
-      if (lastVisibleTab === undefined || lastVisibleTab !== tabName) {
-         lastVisibleTab = tabName;
-         stateConsumer({visibleTab:tabName});
+      if (visibleTab === undefined || visibleTab !== tabName) {
+         visibleTab = tabName;
+         notifyStateConsumer();
+      }
+   };
+   
+   var onShowPicture = function onShowPicture(filename) {
+      if (shownPicture === undefined || shownPicture !== filename) {
+         shownPicture = filename;
+         notifyStateConsumer();
+      }
+   };
+   
+   var onHidePicture = function onHidePicture() {
+      if (shownPicture !== undefined) {
+         shownPicture = undefined;
+         notifyStateConsumer();
       }
    };
    
    bus.subscribeToCommand(shop.topics.SET_VISIBLE_TAB, onSetVisibleTab);
+   bus.subscribeToCommand(shop.topics.SHOW_PICTURE, onShowPicture);
+   bus.subscribeToCommand(shop.topics.HIDE_PICTURE, onHidePicture);
 };
 
