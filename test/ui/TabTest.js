@@ -27,7 +27,7 @@ var capturedSubscriptionCallbacks;
 var capturedVisiblityChanges;
 var productTable;
 
-var MockedAbstractTab = function MockedAbstractTab() {
+var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHideableLanguageDependentComponent() {
    this.initialize = function initialize() {};
    
    this.show = function show() {
@@ -55,9 +55,6 @@ var mockedBus = {
 
 var mockedProductTableGenerator = {
    generateTable: function generateTable(config) {
-      //var content = '<table>';
-      /*config.products.forEach(function(plant) { content = content + '<tr><td>' + plant.name + '</td><td>' + plant.price + ' EUR</td></tr>'; });  
-      content = content + '</table>';*/
       return productTable;
    }
 };
@@ -116,7 +113,7 @@ var givenConfigPublication = function givenConfigPublication(name, language, dat
    publications['/jsonContent/' + language + '/' + name] = dataToUse;
 };
 
-var givenTemplatePublication = function givenConfigPublication(name, language, data) {
+var givenTemplatePublication = function givenTemplatePublication(name, language, data) {
    publications['/htmlContent/' + language + '/' + name] = data;
 };
 
@@ -178,7 +175,7 @@ var setup = function setup() {
    suffix = '<p>after configured content</p>';
    shop.Context.log = function log(message) {};
    capturedVisiblityChanges = [];
-   shop.ui.Tab.prototype = new MockedAbstractTab();
+   shop.ui.Tab.prototype = new MockedAbstractHideableLanguageDependentComponent();
 };
 
 describe('Tab', function() {

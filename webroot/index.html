@@ -19,14 +19,15 @@
    <script type="text/javascript" src="javascripts/HtmlContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/LanguageDependentTexts.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractLanguageDependentComponent.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/AbstractTab.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/AbstractHideableLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/Tab.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/UiStateSetter.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/VisibleTabPublisher.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/UiStatePublisher.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/VisibleTabSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageSelector.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/ProductTableGenerator.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/BigPicture.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/PictureOverlay.js" charset="UTF-8"></script>
    <script>
       var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
@@ -36,7 +37,7 @@
       shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
       shop.Context.defaultVisibleTab = 'start';
 
-      htmlContentLoader.load(['plants_template', 'start_template']);
+      htmlContentLoader.load(['plants_template', 'start_template', 'pictureOverlay_template']);
       configContentLoader.load(['plants', 'accessories']);
       languageDependentTexts.load();
       
@@ -71,9 +72,17 @@
          
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
          
+         var pictureOverlayConfig = {
+            selector: '#shop > #content > #picture',
+            contentTemplateName: 'pictureOverlay_template',
+            languages: supportedLanguages
+         };
+         
+         new shop.ui.PictureOverlay(pictureOverlayConfig);
+         
          new shop.ui.LanguageSelector(function() { return $('#shop > #menu > #languageSelector'); });
          
-         var visibleTabPublisher = new shop.ui.VisibleTabPublisher();
+         var uiStatePublisher = new shop.ui.UiStatePublisher();
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);
          new shop.ui.VisibleTabSetter('#shop > #menu > #start',         'start');
          new shop.ui.VisibleTabSetter('#shop > #menu > #plants',        'plants');
@@ -82,7 +91,7 @@
          
          var onHashChange = function onHashChange() {
             var map = $.uriAnchor.makeAnchorMap();
-            visibleTabPublisher.setNewState(map);
+            uiStatePublisher.setNewState(map);
          };
          
          $(window).bind( 'hashchange', onHashChange ).trigger( 'hashchange' );

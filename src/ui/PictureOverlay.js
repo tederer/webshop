@@ -1,0 +1,76 @@
+/* global shop, common, assertNamespace */
+
+require('../NamespaceUtils.js');
+require('../Context.js');
+require('./AbstractHideableLanguageDependentComponent.js');
+
+assertNamespace('shop.ui');
+
+/**
+ * A picture overlay shows a picture as an overlay of the whole shop.
+ */
+shop.ui.PictureOverlay = function PictureOverlay(config, optionalSetHtmlContent, optionalBus) {
+   
+   var TEMPLATE_NAME = 'pictureOverlay';
+   var PLACEHOLDER = '<!--image-->';
+   var BASE_FOLDER = '/shop/';
+   
+   var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
+   
+   var defaultSetHtmlContent = function defaultSetHtmlContent(content) {
+      $(config.selector).html(content);
+   };
+   
+   var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultSetHtmlContent : optionalSetHtmlContent.bind(this, config.selector);
+   var templateContents = {};
+   var activeLanguage;
+   var relativePicturePath;
+   var isVisible;
+   
+   var updateHtmlContent = function updateHtmlContent() {
+      if (activeLanguage !== undefined && templateContents[activeLanguage] !== undefined) {
+         if (relativePicturePath !== undefined) {
+            var replacement = '<img src="' + BASE_FOLDER + relativePicturePath + '">';
+            setHtmlContent(templateContents[activeLanguage].replace(PLACEHOLDER, replacement));
+            shop.ui.PictureOverlay.prototype.show.call(this);
+            isVisible = true;
+         } else {
+            if (isVisible) {
+               shop.ui.PictureOverlay.prototype.hide.call(this);
+               isVisible = false;
+            }
+         }
+      }
+   };
+   
+   var setTemplateContent = function setTemplateContent(language, data) {
+      templateContents[language] = data;
+      updateHtmlContent.call(this);
+   };
+   
+   var onShownPicture = function onShownPicture(newRelativePicturePath) {
+      relativePicturePath = newRelativePicturePath;
+      updateHtmlContent.call(this);
+   };
+   
+   this.getSelector = function getSelector() {
+      return config.selector;
+   };
+   
+   this.onLanguageChanged = function onLanguageChanged(newLanguage) {
+      activeLanguage = newLanguage;
+      updateHtmlContent.call(this);
+   };
+   
+   if (config.contentTemplateName !== undefined) {
+      for (var index = 0; index < config.languages.length; index++) {
+         var language = config.languages[index];
+         bus.subscribeToPublication('/htmlContent/' + language + '/' + config.contentTemplateName, setTemplateContent.bind(this, language));
+      }
+   }
+   
+   bus.subscribeToPublication(shop.topics.SHOWN_PICTURE, onShownPicture.bind(this));
+   this.initialize();
+};
+
+shop.ui.PictureOverlay.prototype = new shop.ui.AbstractHideableLanguageDependentComponent();

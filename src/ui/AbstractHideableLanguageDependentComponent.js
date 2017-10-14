@@ -12,10 +12,10 @@ assertNamespace('shop.ui');
  *    *) override onLanguageChanged (defined in AbstractLanguageDependentComponent)
  *    *) call the initialize (defined in AbstractLanguageDependentComponent)
  */
-shop.ui.AbstractTab = function AbstractTab() {
+shop.ui.AbstractHideableLanguageDependentComponent = function AbstractHideableLanguageDependentComponent() {
    
    this.getSelector = function getSelector() {
-      shop.Context.log('Subclass does not override getSelector() in AbstractTab!');
+      shop.Context.log('Subclass does not override getSelector() in AbstractHideableLanguageDependentComponent!');
    };
    
    this.show = function show() {
@@ -27,4 +27,4 @@ shop.ui.AbstractTab = function AbstractTab() {
    };
 };
    
-shop.ui.AbstractTab.prototype = new shop.ui.AbstractLanguageDependentComponent();
+shop.ui.AbstractHideableLanguageDependentComponent.prototype = new shop.ui.AbstractLanguageDependentComponent();

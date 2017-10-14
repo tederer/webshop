@@ -2,6 +2,8 @@
 set BASEDIR=%~dp0
 if %BASEDIR:~-1,1% NEQ \ set BASEDIR=%BASEDIR%\
 
+title webserver
+
 set WEBROOTFOLDER=%BASEDIR%webroot
 
 if not exist %WEBROOTFOLDER% md %WEBROOTFOLDER%

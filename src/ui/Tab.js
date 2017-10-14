@@ -4,7 +4,7 @@ require('../NamespaceUtils.js');
 require('../Context.js');
 require('../bus/Bus.js');
 require('../Promise.js');
-require('./AbstractTab.js');
+require('./AbstractHideableLanguageDependentComponent.js');
 require('./ProductTableGenerator.js');
 
 assertNamespace('shop.ui');
@@ -106,7 +106,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    
       activeLanguage = newLanguage;
       updateHtmlContent();
-    };
+   };
    
    var onVisibleTabPublication = function onVisibleTabPublication(publishedTabId) {
       var newVisible = config.tabId === publishedTabId;
@@ -143,4 +143,4 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    this.initialize();
 };
 
-shop.ui.Tab.prototype = new shop.ui.AbstractTab();
+shop.ui.Tab.prototype = new shop.ui.AbstractHideableLanguageDependentComponent();

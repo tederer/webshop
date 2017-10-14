@@ -1,2 +1,1 @@
-* VisibleTabPublisher erweitern damit auch bilder angezeigt werden
-* PictureTab bauen
+* herausfinden warum in PictureOverlay .call benötigt wird!!!
