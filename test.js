@@ -1,28 +1,16 @@
-var Parent = function Parent() {
-   this.init = function init() {
-      console.log('init of parent');
-   };
-      
-   this.id = "parent";
-};
-
-var Son = function Son() {
-   this.init = function init() {
-      console.log('init of son');
-      Son.prototype.init.call(this);
+var Plant = function Plant() {
+   
+   var setVisible = function setVisible() {
+      console.log('setVisible');
+      console.log(this);
    };
    
-   this.id = "son";
+   this.show = function show() {
+      console.log('show');
+      console.log(this);
+      setVisible();
+   }
 };
 
-Son.prototype = new Parent();
-
-var son = new Son();
-console.log(Son.prototype);
-
-son.init();
-
-var a = { x:1 };
-var b = { x:1 };
-
-console.log(a === b);
+var plant = new Plant();
+plant.show();

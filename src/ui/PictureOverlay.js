@@ -11,6 +11,7 @@ assertNamespace('shop.ui');
  */
 shop.ui.PictureOverlay = function PictureOverlay(config, optionalSetHtmlContent, optionalBus) {
    
+   var thisInstance = this;
    var TEMPLATE_NAME = 'pictureOverlay';
    var PLACEHOLDER = '<!--image-->';
    var BASE_FOLDER = '/shop/';
@@ -32,11 +33,11 @@ shop.ui.PictureOverlay = function PictureOverlay(config, optionalSetHtmlContent,
          if (relativePicturePath !== undefined) {
             var replacement = '<img src="' + BASE_FOLDER + relativePicturePath + '">';
             setHtmlContent(templateContents[activeLanguage].replace(PLACEHOLDER, replacement));
-            shop.ui.PictureOverlay.prototype.show.call(this);
+            shop.ui.PictureOverlay.prototype.show.call(thisInstance);
             isVisible = true;
          } else {
             if (isVisible) {
-               shop.ui.PictureOverlay.prototype.hide.call(this);
+               shop.ui.PictureOverlay.prototype.hide.call(thisInstance);
                isVisible = false;
             }
          }
@@ -45,12 +46,12 @@ shop.ui.PictureOverlay = function PictureOverlay(config, optionalSetHtmlContent,
    
    var setTemplateContent = function setTemplateContent(language, data) {
       templateContents[language] = data;
-      updateHtmlContent.call(this);
+      updateHtmlContent();
    };
    
    var onShownPicture = function onShownPicture(newRelativePicturePath) {
       relativePicturePath = newRelativePicturePath;
-      updateHtmlContent.call(this);
+      updateHtmlContent();
    };
    
    this.getSelector = function getSelector() {
@@ -59,7 +60,7 @@ shop.ui.PictureOverlay = function PictureOverlay(config, optionalSetHtmlContent,
    
    this.onLanguageChanged = function onLanguageChanged(newLanguage) {
       activeLanguage = newLanguage;
-      updateHtmlContent.call(this);
+      updateHtmlContent();
    };
    
    if (config.contentTemplateName !== undefined) {
