@@ -24,6 +24,10 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
       stateConsumer(state);
    };
    
+   var onVisibleTab = function onVisibleTab(tabName) {
+      visibleTab = tabName;
+   };
+   
    var onSetVisibleTab = function onSetVisibleTab(tabName) {
       if (visibleTab === undefined || visibleTab !== tabName) {
          visibleTab = tabName;
@@ -38,12 +42,19 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
       }
    };
    
+   var onShownPicture = function onShownPicture(relativeFilePath) {
+      shownPicture = relativeFilePath;
+   };
+   
    var onHidePicture = function onHidePicture() {
       if (shownPicture !== undefined) {
          shownPicture = undefined;
          notifyStateConsumer();
       }
    };
+   
+   bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTab);
+   bus.subscribeToPublication(shop.topics.SHOWN_PICTURE, onShownPicture);
    
    bus.subscribeToCommand(shop.topics.SET_VISIBLE_TAB, onSetVisibleTab);
    bus.subscribeToCommand(shop.topics.SHOW_PICTURE, onShowPicture);

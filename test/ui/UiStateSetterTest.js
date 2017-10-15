@@ -4,7 +4,8 @@ require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/UiStateSetter.js');
 
 var instance;
-var callbacks;
+var commandCallbacks;
+var publicationCallbacks;
 var stateConsumerInvocations;
 var capturedState;
 
@@ -20,11 +21,22 @@ var mockedStateConsumer = function mockedStateConsumer(state) {
 
 var mockedBus = {
    subscribeToCommand: function subscribeToCommand(topic, callback) {
-      callbacks[topic] = callback;
+      commandCallbacks[topic] = callback;
+   },
+   
+   subscribeToPublication: function subscribeToPublication(topic, callback) {
+      publicationCallbacks[topic] = callback;
    },
    
    sendCommand: function sendCommand(topic, data) {
-      var callback = callbacks[topic];
+      var callback = commandCallbacks[topic];
+      if (callback !== undefined) {
+         callback(data);
+      }
+   },
+   
+   publish: function publish(topic, data) {
+      var callback = publicationCallbacks[topic];
       if (callback !== undefined) {
          callback(data);
       }
@@ -43,6 +55,14 @@ var whenSetVisibleTabCommandWasSentFor = function whenSetVisibleTabCommandWasSen
    mockedBus.sendCommand(shop.topics.SET_VISIBLE_TAB, tabName);
 };
 
+var givenPublishedVisibleTabIs = function givenPublishedVisibleTabIs(tabName) {
+   mockedBus.publish(shop.topics.VISIBLE_TAB, tabName);
+};
+
+var givenPublishedShownPictureIs = function givenPublishedShownPictureIs(relativeFilePath) {
+   mockedBus.publish(shop.topics.SHOWN_PICTURE, relativeFilePath);
+};
+
 var whenShowPictureCommandWasSentFor = function whenShowPictureCommandWasSentFor(filename) {
    givenShowPictureCommandWasSentFor(filename);
 };
@@ -52,7 +72,8 @@ var whenHidePictureCommandWasSent = function whenHidePictureCommandWasSent() {
 };
 
 var setup = function setup() {
-   callbacks = {};
+   commandCallbacks = {};
+   publicationCallbacks = {};
    capturedState = undefined;
    stateConsumerInvocations = 0;
    givenDefaultUiStateSetter();
@@ -110,5 +131,21 @@ describe('UiStateSetter', function() {
       whenHidePictureCommandWasSent();
       whenHidePictureCommandWasSent();
       expect(stateConsumerInvocations).to.be.eql(2);
+   });
+   
+   it('the published visible tab is part of the state', function() {
+      givenPublishedVisibleTabIs('tabX');
+      whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
+      expect(stateConsumerInvocations).to.be.eql(1);
+      expect(capturedState.shownPicture).to.be.eql('phalaenopsis.jpg');
+      expect(capturedState.visibleTab).to.be.eql('tabX');
+   });
+   
+   it('the published shown picture is part of the state', function() {
+      givenPublishedShownPictureIs('aerangis.jpg');
+      whenSetVisibleTabCommandWasSentFor('tabX');
+      expect(stateConsumerInvocations).to.be.eql(1);
+      expect(capturedState.shownPicture).to.be.eql('aerangis.jpg');
+      expect(capturedState.visibleTab).to.be.eql('tabX');
    });
 });  
