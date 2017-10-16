@@ -5,9 +5,9 @@ require('../Context.js');
 
 assertNamespace('shop.ui');
 
-shop.ui.BigPicture = {
+shop.ui.Actions = {
 
-   show: function show(filename) {
+   showPicture: function showPicture(filename) {
       shop.Context.bus.sendCommand(shop.topics.SHOW_PICTURE, filename);
    }
 };

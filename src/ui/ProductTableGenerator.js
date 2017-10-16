@@ -3,6 +3,7 @@
 require('../NamespaceUtils.js');
 require('../Topics.js');
 require('../bus/Bus.js');
+require('../ui/Actions.js');
 
 assertNamespace('shop.ui');
 
@@ -17,6 +18,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    var intentations;
    var content;
    var linkText = { de: 'im Internet', en: 'on the internet' };
+   var shoppingCartButtonText = { de: 'in den Warenkorb', en: 'add to shopping cart' };
    var currentLanguage;
    
    var append = function(text) {
@@ -39,13 +41,19 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       intentations--;
    };
    
+   var addShoppingCartAdder = function addShoppingCartAdder(product) {
+      intentations++;
+      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;<button type="button">' + shoppingCartButtonText[currentLanguage] + '</button></td>');
+      intentations--;
+   };
+   
    var addImage = function addImage(imageSmall, imageBig, url) { // TODO insert link to big image if available
       intentations++;
       var content = '';
       if (imageSmall !== undefined) {
          content = '<img src="' + imageSmall + '">';
          if (imageBig !== undefined) {
-            content = '<a href="javascript:shop.ui.BigPicture.show(\'' + imageBig + '\');">' + content + '</a>';
+            content = '<a href="javascript:shop.ui.Actions.showPicture(\'' + imageBig + '\');">' + content + '</a>';
          }
       } else {
          if (url !== undefined) {
@@ -56,13 +64,14 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       intentations--;
    };
    
-   var addRow = function addRow(plant) {
+   var addRow = function addRow(product) {
       intentations++;
       append('<tr>');
-      addImage(plant.imageSmall, plant.imageBig, plant.url);
-      addText(plant.name);
-      addText(plant.description);
-      addPrice(plant.price);
+      addImage(product.imageSmall, product.imageBig, product.url);
+      addText(product.name);
+      addText(product.description);
+      addPrice(product.price);
+      addShoppingCartAdder(product);
       append('</tr>');
       intentations--;
    };
@@ -72,8 +81,8 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       content = '';
       
       append('<table>');
-      config.products.forEach(function(plant) { 
-         addRow(plant);
+      config.products.forEach(function(product) { 
+         addRow(product);
       });  
       append('</table>');
       return content;
