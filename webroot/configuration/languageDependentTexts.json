@@ -1,5 +1,9 @@
 {
-  "button1": { "de": "Anleitungen", "en": "tutorials" }, 
-  "button2": { "de": "Kontakt", "en": "contact" } ,
-  "currentLanguage": { "de": "Deutsch", "en": "English" }
+  "currentLanguage":       { "de": "Deutsch",            "en": "English" },
+  "startButton":           { "de": "Startseite",         "en": "start page" },
+  "plantsButton":          { "de": "Jungpflanzen",       "en": "seedlings" },
+  "accessoriesButton":     { "de": "Zubehör",            "en": "accessories" },
+  "shoppingCartButton":    { "de": "Einkaufswagen",      "en": "shopping cart" },
+  "shippingButton":        { "de": "Versandbedingungen", "en": "shipping details" },
+  "companyDetailsButton":  { "de": "Impressum",          "en": "company details" }
 }

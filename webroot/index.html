@@ -28,6 +28,7 @@
    <script type="text/javascript" src="javascripts/ui/ProductTableGenerator.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/Actions.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/PictureOverlay.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/LanguageDependentComponent.js" charset="UTF-8"></script>
    <script>
       var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
@@ -42,6 +43,19 @@
       languageDependentTexts.load();
       
       $(document).ready(function() {
+      
+         new shop.ui.LanguageDependentComponent('#shop > #menu > #start',           'startButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #menu > #plants',          'plantsButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #menu > #accessories',     'accessoriesButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #menu > #shipping',        'shippingButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #menu > #companyDetails',  'companyDetailsButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #menu > #shoppingCart',    'shoppingCartButton' );
+         
+         new shop.ui.VisibleTabSetter('#shop > #menu > #start',         'start');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #plants',        'plants');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #accessories',   'accessories');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #shipping',      'shipping');
+         
          var startTabConfig = {
             tabId: 'start',
             selector: '#shop > #content > #start',
@@ -84,10 +98,6 @@
          
          var uiStatePublisher = new shop.ui.UiStatePublisher();
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);
-         new shop.ui.VisibleTabSetter('#shop > #menu > #start',         'start');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #plants',        'plants');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #accessories',   'accessories');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #shipping',      'shipping');
          
          var onHashChange = function onHashChange() {
             var map = $.uriAnchor.makeAnchorMap();
@@ -104,11 +114,13 @@
    <div id="header">header</div>
 
    <div id="menu">
-      <button id="start">Start</button> 
-      <button id="plants">Pflanzen</button> 
-      <button id="accessories">Zubehör</button> 
-      <button id="shipping">Versandbedingungen</button> 
+      <button id="start"></button> 
+      <button id="plants"></button> 
+      <button id="accessories"></button> 
+      <button id="shipping"></button> 
+      <button id="companyDetails"></button> 
       <button id="languageSelector"></button> 
+      <button id="shoppingCart"></button> 
    </div>
 
    <div id="content">
