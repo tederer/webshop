@@ -1,1 +1,1 @@
-* addShoppingCartAdder in ProductTableGenerator erweitern damit die Warenkorbknöpfe was tun
+* table generator so umbauen, dass languageDependentTexte verwendet werden
