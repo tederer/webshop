@@ -17,9 +17,6 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    var intentationAsString = '   ';
    var intentations;
    var content;
-   var linkText = { de: 'im Internet', en: 'on the internet' };
-   var shoppingCartButtonText = { de: 'in den Warenkorb', en: 'add to shopping cart' };
-   var currentLanguage;
    
    var append = function(text) {
       var line = '';
@@ -43,7 +40,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
       intentations++;
-      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;<button type="button">' + shoppingCartButtonText[currentLanguage] + '</button></td>');
+      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;<button type="button"></button></td>'); // TODO
       intentations--;
    };
    
@@ -57,7 +54,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
          }
       } else {
          if (url !== undefined) {
-            content = '<a href="' + url + '">' + linkText[currentLanguage]+ '</a>';
+            content = '<a href="' + url + '"></a>'; // TODO
          }
       }
       append('<td>' + content + '</td>');
@@ -87,7 +84,4 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       append('</table>');
       return content;
    };
-   
-   shop.Context.bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, function(language) { currentLanguage = language; });
 };
-

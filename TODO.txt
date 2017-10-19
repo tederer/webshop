@@ -1,1 +1,2 @@
-* table generator so umbauen, dass languageDependentTexte verwendet werden
+* componente bauen, die sich beim tab registriert und die sprachabhängigen texte bei updates ändert
+* sprache sollte teil des UI States sein

@@ -10,7 +10,20 @@ require('./ProductTableGenerator.js');
 assertNamespace('shop.ui');
 
 /**
- * If no template is required, then contentTemplateName should be set to undefined.
+ * A Tab is responsible to insert HTML code into a <div> that can be selected by config.selector.
+ * 
+ * configuration object description:
+ *
+ * {
+ *    tabId:                  this ID is required to show/hide the tab based on the shop.topics.VISIBLE_TAB publication
+ *    selector:               the selector identifies the <div> that should receive the content.
+ *    configName:             the name of the configuration to use to genenerate the product table. No table gets added when it's undefined.
+ *    contentTemplateName:    the name of the HTML template to use. If a product table is configured, the template also requires the PLACEHOLDER in its content.
+ *    languages:              an array of supported languages defined in shop.Language
+ * }
+ *
+ * onTabContentChanged(callback) adds a callback to the tab that gets called every time when the tab content gets updated.
+ * The callback does not get anything from the caller (argument count = 0).
  */
 shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableGenerator, optionalBus) {
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
@@ -20,6 +33,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    
    var configs = {};
    var templateContents = {};
+   var tabContentChangedCallbacks = [];
    var activeLanguage;
    var visible = false;
    
@@ -92,10 +106,15 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
       return content;
    };
    
+   var notifyTableChangeListeners = function notifyTableChangeListeners() {
+      tabContentChangedCallbacks.forEach(function(callback) { callback();});
+   };
+   
    var updateHtmlContent = function updateHtmlContent() {
       createDynamicHtmlContent()
          .then(insertContentIntoTemplate)
-         .then(setHtmlContent, shop.Context.log);
+         .then(setHtmlContent)
+         .then(notifyTableChangeListeners, shop.Context.log);
    };
    
    this.getSelector = function getSelector() {
@@ -106,6 +125,10 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    
       activeLanguage = newLanguage;
       updateHtmlContent();
+   };
+   
+   this.onTabContentChanged = function onTabContentChanged(callback) {
+      tabContentChangedCallbacks[tabContentChangedCallbacks.length] = callback;
    };
    
    var onVisibleTabPublication = function onVisibleTabPublication(publishedTabId) {

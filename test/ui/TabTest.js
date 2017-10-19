@@ -121,6 +121,10 @@ var givenTheProductTableGeneratorReturns = function givenTheProductTableGenerato
    productTable = text;
 };
 
+var givenRegisteredTableChangeListener = function givenRegisteredTableChangeListener(callback) {
+   instance.onTabContentChanged(callback);
+};
+   
 var whenConfigPublicationGetsUpdated = function whenConfigPublicationGetsUpdated(name, language, data) {
    var callback = capturedSubscriptionCallbacks['/jsonContent/' + language + '/' + name];
    if (callback !== undefined) {
@@ -352,5 +356,31 @@ describe('Tab', function() {
       whenPublishedVisibleTabIs('tabId-A');
       expect(capturedVisiblityChanges.length).to.be.eql(2);
       expect(capturedVisiblityChanges[1]).to.be.eql('hide');
+   });
+   
+   it('the Tab notifies the registered TabContentChangedCallbacks when tab content gets set to an error message', function() {
+
+      var callbackAInvocations = 0;
+      var callbackA = function callbackA() { callbackAInvocations++; };
+      givenTabWithUndefinedConfigTopic();
+      givenRegisteredTableChangeListener(callbackA);
+      givenPublishedLanguageIsEnglish();
+      expect(callbackAInvocations).to.be.eql(1);
+   });
+   
+   it('the Tab notifies the registered TabContentChangedCallbacks when the table content changes', function() {
+
+      var callbackAInvocations = 0;
+      var callbackBInvocations = 0;
+      var callbackA = function callbackA() { callbackAInvocations++; };
+      var callbackB = function callbackB() { callbackBInvocations++; };
+      
+      givenTabWithUndefinedConfigTopic();
+      givenRegisteredTableChangeListener(callbackA);
+      givenRegisteredTableChangeListener(callbackB);
+      givenPublishedLanguageIsEnglish();
+      whenTemplatePublicationGetsUpdated(DEFAULT_TEMPLATE_NAME, shop.Language.EN, 'some webpage content');
+      expect(callbackAInvocations).to.be.eql(2);
+      expect(callbackBInvocations).to.be.eql(2);
    });
 });  
