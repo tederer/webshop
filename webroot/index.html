@@ -29,6 +29,7 @@
    <script type="text/javascript" src="javascripts/ui/Actions.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/PictureOverlay.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentComponent.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
    <script>
       var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
       var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
@@ -75,6 +76,9 @@
          };
          
          var plantTab = new shop.ui.Tab(plantTabConfig);
+         
+         var setter = new shop.ui.LanguageDependentTextInProductTableSetter();
+         plantTab.onTabContentChanged(setter.onTabContentChangedCallback);
          
          var accessoriesTabConfig = {
             tabId: 'accessories',

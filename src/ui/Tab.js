@@ -107,7 +107,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    };
    
    var notifyTableChangeListeners = function notifyTableChangeListeners() {
-      tabContentChangedCallbacks.forEach(function(callback) { callback();});
+      tabContentChangedCallbacks.forEach(function(callback) { callback(config.selector);});
    };
    
    var updateHtmlContent = function updateHtmlContent() {

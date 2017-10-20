@@ -1,18 +1,21 @@
 {
    "products": [
       { 
+         "id": "AerangisEllisii",
          "name": "Aerangis ellisii",
          "price": 10,
          "description": "weiße Blüte, kleine Pflanze",
          "url": "http://some.webpage.com"
       },
       {
+         "id": "CattleyaWalkerianaAlba",
          "name": "Cattleya walkeriana alba",
          "price": 12,
          "description": "Miniatur aus Brasilien",
          "imageSmall": "cattleya_small.jpg"
       },
       {
+         "id": "CymbidiumDevonianum",
          "name": "Cymbidium devonianum",
          "price": 8,
          "description": "Cymb. aus Asien",

@@ -9,7 +9,28 @@ assertNamespace('shop.ui');
 
 /**
  * The ProductTableGenerator takes an object containing the products configuration and transform it
- * into a HTML table.
+ * into a HTML table. 
+ *
+ * example configuration:
+ *
+ *   {
+ *      "products": [
+ *         { 
+ *            "id": "AerangisEllisii",
+ *            "name": "Aerangis ellisii",
+ *            "price": 10,
+ *            "description": "weiße Blüte, kleine Pflanze",
+ *            "url": "http://some.webpage.com"
+ *         },
+ *         {
+ *            "id": "CattleyaWalkerianaAlba",
+ *            "name": "Cattleya walkeriana alba",
+ *            "price": 12,
+ *            "description": "Miniatur aus Brasilien",
+ *            "imageSmall": "cattleya_small.jpg"
+ *         }
+ *      ]
+ *   }
  */
 shop.ui.ProductTableGenerator = function ProductTableGenerator() {
 
@@ -40,7 +61,8 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
       intentations++;
-      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;<button type="button"></button></td>'); // TODO
+      var button = (product.id !== undefined) ? '<button type="button" id="' + product.id + '"></button>' : '';
+      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;' + button + '</td>'); // TODO
       intentations--;
    };
    

@@ -372,8 +372,10 @@ describe('Tab', function() {
 
       var callbackAInvocations = 0;
       var callbackBInvocations = 0;
-      var callbackA = function callbackA() { callbackAInvocations++; };
-      var callbackB = function callbackB() { callbackBInvocations++; };
+      var capturedSelectorA;
+      var capturedSelectorB;
+      var callbackA = function callbackA(selector) { capturedSelectorA = selector; callbackAInvocations++; };
+      var callbackB = function callbackB(selector) { capturedSelectorB = selector; callbackBInvocations++; };
       
       givenTabWithUndefinedConfigTopic();
       givenRegisteredTableChangeListener(callbackA);
@@ -382,5 +384,7 @@ describe('Tab', function() {
       whenTemplatePublicationGetsUpdated(DEFAULT_TEMPLATE_NAME, shop.Language.EN, 'some webpage content');
       expect(callbackAInvocations).to.be.eql(2);
       expect(callbackBInvocations).to.be.eql(2);
+      expect(capturedSelectorA).to.be.eql(DEFAULT_SELECTOR);
+      expect(capturedSelectorB).to.be.eql(DEFAULT_SELECTOR);
    });
 });  
