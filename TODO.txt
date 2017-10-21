@@ -1,2 +1,2 @@
-* componente bauen, die sich beim tab registriert und die sprachabhängigen texte bei updates ändert
+﻿* LanguageDependentTextInProductTableSetter erweitern damit auch die Links gesetzt werden
 * sprache sollte teil des UI States sein

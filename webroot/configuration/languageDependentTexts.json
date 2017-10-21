@@ -1,9 +1,10 @@
 {
-  "currentLanguage":       { "de": "Deutsch",            "en": "English" },
-  "startButton":           { "de": "Startseite",         "en": "start page" },
-  "plantsButton":          { "de": "Jungpflanzen",       "en": "seedlings" },
-  "accessoriesButton":     { "de": "Zubehör",            "en": "accessories" },
-  "shoppingCartButton":    { "de": "Einkaufswagen",      "en": "shopping cart" },
-  "shippingButton":        { "de": "Versandbedingungen", "en": "shipping details" },
-  "companyDetailsButton":  { "de": "Impressum",          "en": "company details" }
+  "currentLanguage":          { "de": "Deutsch",            "en": "English" },
+  "startButton":              { "de": "Startseite",         "en": "start page" },
+  "plantsButton":             { "de": "Jungpflanzen",       "en": "seedlings" },
+  "accessoriesButton":        { "de": "Zubehör",            "en": "accessories" },
+  "shoppingCartButton":       { "de": "Einkaufswagen",      "en": "shopping cart" },
+  "shippingButton":           { "de": "Versandbedingungen", "en": "shipping details" },
+  "companyDetailsButton":     { "de": "Impressum",          "en": "company details" },
+  "addToShoppingCartButton":  { "de": "in den Warenkorb",   "en": "add to shopping cart" }
 }
