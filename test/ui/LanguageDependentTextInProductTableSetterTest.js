@@ -66,11 +66,11 @@ var givenDefaultLanguageDependentTextInProductTableSetter = function givenDefaul
 };
 
 var givenAddToShoppingCartButtonTextIs = function givenAddToShoppingCartButtonTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'addToShoppingCartButton', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.addToShoppingCartButton', text);
 };
 
 var givenProductDetailsLinkTextIs = function givenProductDetailsLinkTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productDetailsLinkText', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.productDetailsLinkText', text);
 };
 
 var givenTabContentChanges = function givenTabContentChanges() {

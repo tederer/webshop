@@ -57,7 +57,7 @@ shop.ui.LanguageDependentTextInProductTableSetter = function LanguageDependentTe
       updateAnchors();
    };
    
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'addToShoppingCartButton', onAddToShoppingCartButtonText);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productDetailsLinkText', onProductDetailsLinkText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.addToShoppingCartButton', onAddToShoppingCartButtonText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.productDetailsLinkText', onProductDetailsLinkText);
 };
 
