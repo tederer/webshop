@@ -13,7 +13,8 @@ assertNamespace('shop.ui');
 shop.ui.LanguageDependentTextInProductTableSetter = function LanguageDependentTextInProductTableSetter(optionalUiComponentProvider, optionalBus) {
    
    var addToShoppingCartButtonText;
-   var productDetailsLinkText;
+   var onTheInternetAnchorText;
+   var bigPictureAnchorText;
    var selectors = [];
    
    var defaultUiComponentProvider = function defaultUiComponentProvider(selector) {
@@ -32,9 +33,14 @@ shop.ui.LanguageDependentTextInProductTableSetter = function LanguageDependentTe
    };
    
    var updateAnchors = function updateAnchors() {
-      if (productDetailsLinkText !== undefined) {
+      if (onTheInternetAnchorText !== undefined) {
          selectors.forEach(function(selector) {
-            uiComponentProvider(selector + ' a').text(productDetailsLinkText);
+            uiComponentProvider(selector + ' .onTheInternetAnchor').text(onTheInternetAnchorText);
+         });
+      }
+      if (bigPictureAnchorText !== undefined) {
+         selectors.forEach(function(selector) {
+            uiComponentProvider(selector + ' .bigPictureAnchor').text(bigPictureAnchorText);
          });
       }
    };
@@ -44,8 +50,13 @@ shop.ui.LanguageDependentTextInProductTableSetter = function LanguageDependentTe
       updateButtons();
    };
    
-   var onProductDetailsLinkText = function onProductDetailsLinkText(text) {
-      productDetailsLinkText = (text !== undefined) ? text : '';
+   var onOnTheInternetAnchorText = function onOnTheInternetAnchorText(text) {
+      onTheInternetAnchorText = (text !== undefined) ? text : '';
+      updateAnchors();
+   };
+   
+   var onBigPictureAnchorText = function onBigPictureAnchorText(text) {
+      bigPictureAnchorText = (text !== undefined) ? text : '';
       updateAnchors();
    };
    
@@ -58,6 +69,7 @@ shop.ui.LanguageDependentTextInProductTableSetter = function LanguageDependentTe
    };
    
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.addToShoppingCartButton', onAddToShoppingCartButtonText);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.productDetailsLinkText', onProductDetailsLinkText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.onTheInternetAnchor', onOnTheInternetAnchorText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.bigPictureAnchor', onBigPictureAnchorText);
 };
 

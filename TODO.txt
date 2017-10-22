@@ -1,2 +1,1 @@
-﻿* LanguageDependentTextInProductTableSetter erweitern damit nur die Links korrekt gesetzt werden
-* sprache sollte teil des UI States sein
+﻿* sprache sollte teil des UI States sein

@@ -62,21 +62,21 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
       intentations++;
       var button = (product.id !== undefined) ? '<button type="button" id="' + product.id + '"></button>' : '';
-      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;' + button + '</td>'); // TODO
+      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;' + button + '</td>');
       intentations--;
    };
    
-   var addImage = function addImage(imageSmall, imageBig, url) { // TODO insert link to big image if available
+   var addImage = function addImage(imageSmall, imageBig, url) {
       intentations++;
       var content = '';
       if (imageSmall !== undefined) {
          content = '<img src="' + imageSmall + '">';
          if (imageBig !== undefined) {
-            content = '<a href="javascript:shop.ui.Actions.showPicture(\'' + imageBig + '\');">' + content + '</a>';
+            content = content + '<a class="bigPictureAnchor" href="javascript:shop.ui.Actions.showPicture(\'' + imageBig + '\');"></a>';
          }
       } else {
          if (url !== undefined) {
-            content = '<a href="' + url + '"></a>'; // TODO
+            content = '<a class="onTheInternetAnchor" href="' + url + '"></a>';
          }
       }
       append('<td>' + content + '</td>');

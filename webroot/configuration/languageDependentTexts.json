@@ -6,5 +6,6 @@
   "menu.shippingButton":                  { "de": "Versandbedingungen", "en": "shipping details" },
   "menu.companyDetailsButton":            { "de": "Impressum",          "en": "company details" },
   "productTable.addToShoppingCartButton": { "de": "in den Warenkorb",   "en": "add to shopping cart" },
-  "productTable.productDetailsLinkText":  { "de": "im Internet",        "en": "on the internet" }
+  "productTable.onTheInternetAnchor":     { "de": "im Internet",        "en": "on the internet" },
+  "productTable.bigPictureAnchor":        { "de": "großes Bild",        "en": "big picture" }
 }

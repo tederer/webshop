@@ -69,8 +69,12 @@ var givenAddToShoppingCartButtonTextIs = function givenAddToShoppingCartButtonTe
    mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.addToShoppingCartButton', text);
 };
 
-var givenProductDetailsLinkTextIs = function givenProductDetailsLinkTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.productDetailsLinkText', text);
+var givenOnTheInternetAnchorTextIs = function givenOnTheInternetAnchorTextIs(text) {
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.onTheInternetAnchor', text);
+};
+
+var givenBigPictureAnchorTextIs = function givenBigPictureAnchorTextIs(text) {
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.bigPictureAnchor', text);
 };
 
 var givenTabContentChanges = function givenTabContentChanges() {
@@ -90,8 +94,12 @@ var whenAddToShoppingCartButtonTextIs = function whenAddToShoppingCartButtonText
    givenAddToShoppingCartButtonTextIs(text);
 };
 
-var whenProductDetailsLinkTextIs = function whenProductDetailsLinkTextIs(text) {
-   givenProductDetailsLinkTextIs(text);
+var whenOnTheInternetAnchorTextIs = function whenOnTheInternetAnchorTextIs(text) {
+   givenOnTheInternetAnchorTextIs(text);
+};
+
+var whenBigPictureAnchorTextIs = function whenBigPictureAnchorTextIs(text) {
+   givenBigPictureAnchorTextIs(text);
 };
 
 var whenTabContentChanges = function whenTabContentChanges() {
@@ -115,8 +123,12 @@ var lastCapturedButtonTextIs = function lastCapturedButtonTextIs(expectedText, s
    return lastCapturedTextIs(expectedText, selector, 'button');
 };
 
-var lastCapturedAnchorTextIs = function lastCapturedAnchorTextIs(expectedText, selector) {
-   return lastCapturedTextIs(expectedText, selector, 'a');
+var lastCapturedOnTheInternetAnchorTextIs = function lastCapturedOnTheInternetAnchorTextIs(expectedText, selector) {
+   return lastCapturedTextIs(expectedText, selector, '.onTheInternetAnchor');
+};
+
+var lastCapturedBigPictureAnchorTextIs = function lastCapturedBigPictureAnchorTextIs(expectedText, selector) {
+   return lastCapturedTextIs(expectedText, selector, '.bigPictureAnchor');
 };
 
 var capturedSelectorsContains = function capturedSelectorsContains(expectedSelector) {
@@ -143,13 +155,14 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
-   it('when the tab content changes the Setter searches for buttons and anchors', function() {
+   it('when the tab content changes the Setter searches for buttons, "onTheInternetAnchor"s and "bigPictureAnchor"s', function() {
       
       givenDefaultLanguageDependentTextInProductTableSetter();
       whenTabContentChanges();
-      expect(capturedSelectors.length).to.be.eql(2);
+      expect(capturedSelectors.length).to.be.eql(3);
       expect(capturedSelectorsContains(DEFAULT_TAB_SELECTOR + ' button')).to.be.eql(true);
-      expect(capturedSelectorsContains(DEFAULT_TAB_SELECTOR + ' a')).to.be.eql(true);
+      expect(capturedSelectorsContains(DEFAULT_TAB_SELECTOR + ' .onTheInternetAnchor')).to.be.eql(true);
+      expect(capturedSelectorsContains(DEFAULT_TAB_SELECTOR + ' .bigPictureAnchor')).to.be.eql(true);
    });
    
    it('when the tab content changes the buttons get updated', function() {
@@ -160,12 +173,20 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(lastCapturedButtonTextIs('in den Warenkorb')).to.be.eql(true);
    });
    
-   it('when the tab content changes the anchors get updated', function() {
+   it('when the tab content changes the "onTheInternetAnchor"s get updated', function() {
       
-      givenProductDetailsLinkTextIs('im www');
+      givenOnTheInternetAnchorTextIs('im www');
       givenDefaultLanguageDependentTextInProductTableSetter();
       whenTabContentChanges();
-      expect(lastCapturedAnchorTextIs('im www')).to.be.eql(true);
+      expect(lastCapturedOnTheInternetAnchorTextIs('im www')).to.be.eql(true);
+   });
+   
+   it('when the tab content changes the "bigPictureAnchor"s get updated', function() {
+      
+      givenBigPictureAnchorTextIs('groaßes buedl');
+      givenDefaultLanguageDependentTextInProductTableSetter();
+      whenTabContentChanges();
+      expect(lastCapturedBigPictureAnchorTextIs('groaßes buedl')).to.be.eql(true);
    });
    
    it('when the tab content changes and the button text is undefined, then the buttons get updated with an empty text', function() {
@@ -175,11 +196,18 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(lastCapturedButtonTextIs('')).to.be.eql(true);
    });
       
-   it('when the tab content changes and the anchor text is undefined, then the anchor get updated with an empty text', function() {
+   it('when the tab content changes and the anchor text is undefined, then the "onTheInternetAnchor"s get updated with an empty text', function() {
       
       givenDefaultLanguageDependentTextInProductTableSetter();
       whenTabContentChanges();
-      expect(lastCapturedAnchorTextIs('')).to.be.eql(true);
+      expect(lastCapturedOnTheInternetAnchorTextIs('')).to.be.eql(true);
+   });
+      
+   it('when the tab content changes and the anchor text is undefined, then the "bigPictureAnchor"s get updated with an empty text', function() {
+      
+      givenDefaultLanguageDependentTextInProductTableSetter();
+      whenTabContentChanges();
+      expect(lastCapturedBigPictureAnchorTextIs('')).to.be.eql(true);
    });
       
    it('when the language dependent text changes the buttons get updated', function() {
@@ -190,12 +218,20 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(lastCapturedButtonTextIs('new button text')).to.be.eql(true);
    });
       
-   it('when the language dependent text changes the anchors get updated', function() {
+   it('when the language dependent text changes the "onTheInternetAnchor"s get updated', function() {
       
       givenDefaultLanguageDependentTextInProductTableSetter();
       givenTabContentChanges();
-      whenProductDetailsLinkTextIs('new anchor text');
-      expect(lastCapturedAnchorTextIs('new anchor text')).to.be.eql(true);
+      whenOnTheInternetAnchorTextIs('new anchor text');
+      expect(lastCapturedOnTheInternetAnchorTextIs('new anchor text')).to.be.eql(true);
+   });
+      
+   it('when the language dependent text changes the "bigPictureAnchor"s get updated', function() {
+      
+      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenTabContentChanges();
+      whenBigPictureAnchorTextIs('biggest picture text');
+      expect(lastCapturedBigPictureAnchorTextIs('biggest picture text')).to.be.eql(true);
    });
       
    it('when the language dependent text changes the buttons of previously changes tabs get updated', function() {
@@ -208,13 +244,23 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(lastCapturedButtonTextIs('some text', DEFAULT_TAB2_SELECTOR)).to.be.eql(true);
    });
       
-   it('when the language dependent text changes the anchors of previously changes tabs get updated', function() {
+   it('when the language dependent text changes the "onTheInternetAnchor"s of previously changes tabs get updated', function() {
       
       givenDefaultLanguageDependentTextInProductTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
-      whenProductDetailsLinkTextIs('some secret info');
-      expect(lastCapturedAnchorTextIs('some secret info', DEFAULT_TAB_SELECTOR)).to.be.eql(true);
-      expect(lastCapturedAnchorTextIs('some secret info', DEFAULT_TAB2_SELECTOR)).to.be.eql(true);
+      whenOnTheInternetAnchorTextIs('some secret info');
+      expect(lastCapturedOnTheInternetAnchorTextIs('some secret info', DEFAULT_TAB_SELECTOR)).to.be.eql(true);
+      expect(lastCapturedOnTheInternetAnchorTextIs('some secret info', DEFAULT_TAB2_SELECTOR)).to.be.eql(true);
+   });
+      
+   it('when the language dependent text changes the "bigPictureAnchor"s of previously changes tabs get updated', function() {
+      
+      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenAnotherTabGetsObservedByTheSetter();
+      givenContentOfBothTabsChanges();
+      whenBigPictureAnchorTextIs('some secret pic');
+      expect(lastCapturedBigPictureAnchorTextIs('some secret pic', DEFAULT_TAB_SELECTOR)).to.be.eql(true);
+      expect(lastCapturedBigPictureAnchorTextIs('some secret pic', DEFAULT_TAB2_SELECTOR)).to.be.eql(true);
    });
 });  
