@@ -7,8 +7,20 @@ require('../Topics.js');
 assertNamespace('shop.ui');
 
 /**
- * This instance is responsible to set the text of buttons that are in the <div> determined by
- * the selector provided in the onTabContentChangedCallback() function.
+ * Every call of onTabContentChangedCallback() or a change of the associated language dependent texts
+ * updates the following sub elements of the <div> determined by the selector provided in onTabContentChangedCallback().
+ * 
+ * Sub elements that get updates:
+ *
+ *    <button>
+ *    <a class="onTheInternetAnchor">
+ *    <a class="bigPictureAnchor">
+ *
+ * Associated language dependent texts:
+ *
+ *    'productTable.addToShoppingCartButton'
+ *    'productTable.onTheInternetAnchor'
+ *    'productTable.bigPictureAnchor'
  */
 shop.ui.LanguageDependentTextInProductTableSetter = function LanguageDependentTextInProductTableSetter(optionalUiComponentProvider, optionalBus) {
    
