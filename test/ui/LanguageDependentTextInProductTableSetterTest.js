@@ -17,14 +17,14 @@ var instance;
 var publications;
 var capturedSubscriptionCallbacks;
 var capturedSelectors;
-var capturedButtonTexts;
+var capturedTexts;
 var uiComponents;
 
 var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
    capturedSelectors[capturedSelectors.length] = selector;
    return {
       text: function text(content) {
-         capturedButtonTexts[capturedButtonTexts.length] = {selector: selector, text: content};
+         capturedTexts[capturedTexts.length] = {selector: selector, text: content};
       }
    };
 };
@@ -69,6 +69,10 @@ var givenAddToShoppingCartButtonTextIs = function givenAddToShoppingCartButtonTe
    mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'addToShoppingCartButton', text);
 };
 
+var givenProductDetailsLinkTextIs = function givenProductDetailsLinkTextIs(text) {
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productDetailsLinkText', text);
+};
+
 var givenTabContentChanges = function givenTabContentChanges() {
    mockedTab.simulateChangeOfTabContent();
 };
@@ -86,27 +90,44 @@ var whenAddToShoppingCartButtonTextIs = function whenAddToShoppingCartButtonText
    givenAddToShoppingCartButtonTextIs(text);
 };
 
+var whenProductDetailsLinkTextIs = function whenProductDetailsLinkTextIs(text) {
+   givenProductDetailsLinkTextIs(text);
+};
+
 var whenTabContentChanges = function whenTabContentChanges() {
    givenTabContentChanges();
 };
 
-var lastCapturedButtonTextIs = function lastCapturedButtonTextIs(expectedText, selector) {
+var lastCapturedTextIs = function lastCapturedTextIs(expectedText, selector, componentType) {
    var found = false;
+   var expectedSelector = (selector === undefined) ? DEFAULT_TAB_SELECTOR : selector;
    
-   for (var index = 0; index < capturedButtonTexts.length; index++) {
-      if (selector === undefined || capturedButtonTexts[index].selector === (selector + ' button')) {
-         found = capturedButtonTexts[index].text === expectedText;
+   for (var index = 0; index < capturedTexts.length; index++) {
+      if (capturedTexts[index].selector === (expectedSelector + ' ' + componentType)) {
+         found = capturedTexts[index].text === expectedText;
       }
    }
    
    return found;
 };
 
+var lastCapturedButtonTextIs = function lastCapturedButtonTextIs(expectedText, selector) {
+   return lastCapturedTextIs(expectedText, selector, 'button');
+};
+
+var lastCapturedAnchorTextIs = function lastCapturedAnchorTextIs(expectedText, selector) {
+   return lastCapturedTextIs(expectedText, selector, 'a');
+};
+
+var capturedSelectorsContains = function capturedSelectorsContains(expectedSelector) {
+   return capturedSelectors.indexOf(expectedSelector) > -1;
+};
+
 var setup = function setup() {
    publications = {};
    capturedSubscriptionCallbacks = {};
    capturedSelectors = [];
-   capturedButtonTexts = [];
+   capturedTexts = [];
    uiComponents = undefined;
    mockedTab = new MockedTab();
    mockedTab2 = new MockedTab(DEFAULT_TAB2_SELECTOR);
@@ -122,15 +143,16 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
-   it('when the tab content changes the Setter searches for buttons', function() {
+   it('when the tab content changes the Setter searches for buttons and anchors', function() {
       
       givenDefaultLanguageDependentTextInProductTableSetter();
       whenTabContentChanges();
-      expect(capturedSelectors.length).to.be.eql(1);
-      expect(capturedSelectors[0]).to.be.eql(DEFAULT_TAB_SELECTOR + ' button');
+      expect(capturedSelectors.length).to.be.eql(2);
+      expect(capturedSelectorsContains(DEFAULT_TAB_SELECTOR + ' button')).to.be.eql(true);
+      expect(capturedSelectorsContains(DEFAULT_TAB_SELECTOR + ' a')).to.be.eql(true);
    });
    
-   it('when the tab content changes the buttons get updated A', function() {
+   it('when the tab content changes the buttons get updated', function() {
       
       givenAddToShoppingCartButtonTextIs('in den Warenkorb');
       givenDefaultLanguageDependentTextInProductTableSetter();
@@ -138,12 +160,12 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(lastCapturedButtonTextIs('in den Warenkorb')).to.be.eql(true);
    });
    
-   it('when the tab content changes the buttons get updated B', function() {
+   it('when the tab content changes the anchors get updated', function() {
       
-      givenAddToShoppingCartButtonTextIs('a button text');
+      givenProductDetailsLinkTextIs('im www');
       givenDefaultLanguageDependentTextInProductTableSetter();
       whenTabContentChanges();
-      expect(lastCapturedButtonTextIs('a button text')).to.be.eql(true);
+      expect(lastCapturedAnchorTextIs('im www')).to.be.eql(true);
    });
    
    it('when the tab content changes and the button text is undefined, then the buttons get updated with an empty text', function() {
@@ -151,6 +173,13 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       givenDefaultLanguageDependentTextInProductTableSetter();
       whenTabContentChanges();
       expect(lastCapturedButtonTextIs('')).to.be.eql(true);
+   });
+      
+   it('when the tab content changes and the anchor text is undefined, then the anchor get updated with an empty text', function() {
+      
+      givenDefaultLanguageDependentTextInProductTableSetter();
+      whenTabContentChanges();
+      expect(lastCapturedAnchorTextIs('')).to.be.eql(true);
    });
       
    it('when the language dependent text changes the buttons get updated', function() {
@@ -161,6 +190,14 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       expect(lastCapturedButtonTextIs('new button text')).to.be.eql(true);
    });
       
+   it('when the language dependent text changes the anchors get updated', function() {
+      
+      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenTabContentChanges();
+      whenProductDetailsLinkTextIs('new anchor text');
+      expect(lastCapturedAnchorTextIs('new anchor text')).to.be.eql(true);
+   });
+      
    it('when the language dependent text changes the buttons of previously changes tabs get updated', function() {
       
       givenDefaultLanguageDependentTextInProductTableSetter();
@@ -169,5 +206,15 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       whenAddToShoppingCartButtonTextIs('some text');
       expect(lastCapturedButtonTextIs('some text', DEFAULT_TAB_SELECTOR)).to.be.eql(true);
       expect(lastCapturedButtonTextIs('some text', DEFAULT_TAB2_SELECTOR)).to.be.eql(true);
+   });
+      
+   it('when the language dependent text changes the anchors of previously changes tabs get updated', function() {
+      
+      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenAnotherTabGetsObservedByTheSetter();
+      givenContentOfBothTabsChanges();
+      whenProductDetailsLinkTextIs('some secret info');
+      expect(lastCapturedAnchorTextIs('some secret info', DEFAULT_TAB_SELECTOR)).to.be.eql(true);
+      expect(lastCapturedAnchorTextIs('some secret info', DEFAULT_TAB2_SELECTOR)).to.be.eql(true);
    });
 });  

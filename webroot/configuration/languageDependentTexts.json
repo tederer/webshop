@@ -6,5 +6,6 @@
   "shoppingCartButton":       { "de": "Einkaufswagen",      "en": "shopping cart" },
   "shippingButton":           { "de": "Versandbedingungen", "en": "shipping details" },
   "companyDetailsButton":     { "de": "Impressum",          "en": "company details" },
-  "addToShoppingCartButton":  { "de": "in den Warenkorb",   "en": "add to shopping cart" }
+  "addToShoppingCartButton":  { "de": "in den Warenkorb",   "en": "add to shopping cart" },
+  "productDetailsLinkText":   { "de": "im Internet",        "en": "on the internet" }
 }
