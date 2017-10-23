@@ -2,6 +2,7 @@
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/UiStateSetter.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
 
 var instance;
 var commandCallbacks;
@@ -53,6 +54,10 @@ var givenShowPictureCommandWasSentFor = function givenShowPictureCommandWasSentF
 
 var whenSetVisibleTabCommandWasSentFor = function whenSetVisibleTabCommandWasSentFor(tabName) {
    mockedBus.sendCommand(shop.topics.SET_VISIBLE_TAB, tabName);
+};
+
+var whenTheCurrentLanguageIs = function whenTheCurrentLanguageIs(language) {
+   mockedBus.publish(shop.topics.CURRENT_LANGUAGE, language);
 };
 
 var givenPublishedVisibleTabIs = function givenPublishedVisibleTabIs(tabName) {
@@ -147,5 +152,21 @@ describe('UiStateSetter', function() {
       expect(stateConsumerInvocations).to.be.eql(1);
       expect(capturedState.shownPicture).to.be.eql('aerangis.jpg');
       expect(capturedState.visibleTab).to.be.eql('tabX');
+   });
+   
+   it('a published language updates the state A', function() {
+      whenTheCurrentLanguageIs(shop.Language.DE);
+      expect(capturedState.language).to.be.eql(shop.Language.DE);
+   });
+   
+   it('a published language updates the state B', function() {
+      whenTheCurrentLanguageIs(shop.Language.EN);
+      expect(capturedState.language).to.be.eql(shop.Language.EN);
+   });
+   
+   it('a published language does not updated the state when the language is the same in the next publication', function() {
+      whenTheCurrentLanguageIs(shop.Language.EN);
+      whenTheCurrentLanguageIs(shop.Language.EN);
+      expect(stateConsumerInvocations).to.be.eql(1);
    });
 });  

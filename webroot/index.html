@@ -11,8 +11,8 @@
    <script type="text/javascript" src="javascripts/Promise.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/Topics.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/bus/Bus.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/Context.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/Language.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/Context.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ResourceProvider.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/AbstractContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/JsonContentLoader.js" charset="UTF-8"></script>
@@ -31,20 +31,18 @@
    <script type="text/javascript" src="javascripts/ui/LanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
    <script>
-      var supportedLanguages  = [shop.Language.DE, shop.Language.EN];
-      var configContentLoader = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
-      var htmlContentLoader   = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
+      var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
+      var configContentLoader    = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
+      var htmlContentLoader      = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
       var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
       
       shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
-      shop.Context.defaultVisibleTab = 'start';
-
+      
       htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'pictureOverlay']);
       configContentLoader.load(['pflanzen', 'zubehoer']);
       languageDependentTexts.load();
       
       $(document).ready(function() {
-      
          new shop.ui.LanguageDependentComponent('#shop > #menu > #start',           'menu.startButton' );
          new shop.ui.LanguageDependentComponent('#shop > #menu > #plants',          'menu.plantsButton' );
          new shop.ui.LanguageDependentComponent('#shop > #menu > #accessories',     'menu.accessoriesButton' );

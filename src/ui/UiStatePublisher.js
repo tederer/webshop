@@ -15,7 +15,7 @@ shop.ui.UiStatePublisher = function UiStatePublisher(optionalBus) {
    var currentState;
    
    var stateIsValid = function stateIsValid(state) {
-      return state !== undefined && state.visibleTab !== undefined;
+      return state !== undefined && state.visibleTab !== undefined && state.language !== undefined;
    };
    
    var publishVisibleTab =  function publishVisibleTab(tabName) {
@@ -24,6 +24,10 @@ shop.ui.UiStatePublisher = function UiStatePublisher(optionalBus) {
    
    var publishShownPicture =  function publishShownPicture(filename) {
       bus.publish(shop.topics.SHOWN_PICTURE, filename);
+   };
+   
+   var publishCurrentLanguage =  function publishCurrentLanguage(language) {
+      bus.publish(shop.topics.CURRENT_LANGUAGE, language);
    };
    
    this.setNewState = function setNewState(newState) {
@@ -36,13 +40,20 @@ shop.ui.UiStatePublisher = function UiStatePublisher(optionalBus) {
             currentState.visibleTab = newState.visibleTab;
             publishVisibleTab(currentState.visibleTab);
          }
+         
          if (currentState.shownPicture !== newState.shownPicture) {
             currentState.shownPicture = newState.shownPicture;
             publishShownPicture(newState.shownPicture);
          }
+         
+         if (currentState.language !== newState.language) {
+            currentState.language = newState.language;
+            publishCurrentLanguage(newState.language);
+         }
       } else {
          publishVisibleTab(shop.Context.defaultVisibleTab);
          publishShownPicture(undefined);
+         publishCurrentLanguage(shop.Context.defaultLanguage);
       }
    };
 };

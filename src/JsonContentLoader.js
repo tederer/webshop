@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
 require('./NamespaceUtils.js');
+require('./Context.js');
 
 assertNamespace('shop.configuration');
 
@@ -14,7 +15,6 @@ assertNamespace('shop.configuration');
  * example: The german content of "food" will get published on the topic "/jsonContent/de/food".
  */
 shop.configuration.JsonContentLoader = function JsonContentLoader(downloadBaseUrl, languages, optionalBus) {
-   
    var FILE_EXTENSION = '.json';
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;

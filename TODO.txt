@@ -1,1 +1,1 @@
-﻿* sprache sollte teil des UI States sein
+﻿* testen, ob sprache als state funktioniert

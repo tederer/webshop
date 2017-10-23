@@ -14,6 +14,7 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    var visibleTab;
    var shownPicture;
+   var currentLanguage;
    
    var notifyStateConsumer = function notifyStateConsumer() {
       var state = {};
@@ -21,6 +22,7 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
       if (shownPicture !== undefined) {
          state.shownPicture = shownPicture;
       }
+      state.language = currentLanguage;
       stateConsumer(state);
    };
    
@@ -53,8 +55,16 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
       }
    };
    
+   var onCurrentLanguage = function onCurrentLanguage(language) {
+      if (currentLanguage === undefined || currentLanguage !== language) {
+         currentLanguage = language;
+         notifyStateConsumer();
+      }
+   };
+   
    bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTab);
    bus.subscribeToPublication(shop.topics.SHOWN_PICTURE, onShownPicture);
+   bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);
    
    bus.subscribeToCommand(shop.topics.SET_VISIBLE_TAB, onSetVisibleTab);
    bus.subscribeToCommand(shop.topics.SHOW_PICTURE, onShowPicture);
