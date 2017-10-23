@@ -39,8 +39,8 @@
       shop.Context.bus.publish(shop.topics.CURRENT_LANGUAGE, shop.Language.DE);
       shop.Context.defaultVisibleTab = 'start';
 
-      htmlContentLoader.load(['plants_template', 'start_template', 'pictureOverlay_template']);
-      configContentLoader.load(['plants', 'accessories']);
+      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'pictureOverlay']);
+      configContentLoader.load(['pflanzen', 'zubehoer']);
       languageDependentTexts.load();
       
       $(document).ready(function() {
@@ -61,7 +61,7 @@
             tabId: 'start',
             selector: '#shop > #content > #start',
             configName: undefined,
-            contentTemplateName: 'start_template',
+            contentTemplateName: 'start',
             languages: supportedLanguages
          };
          
@@ -70,29 +70,30 @@
          var plantTabConfig = {
             tabId: 'plants',
             selector: '#shop > #content > #plants',
-            configName: 'plants',
-            contentTemplateName: 'plants_template',
+            configName: 'pflanzen',
+            contentTemplateName: 'pflanzen',
             languages: supportedLanguages
          };
          
          var plantTab = new shop.ui.Tab(plantTabConfig);
          
-         var setter = new shop.ui.LanguageDependentTextInProductTableSetter();
-         plantTab.onTabContentChanged(setter.onTabContentChangedCallback);
-         
          var accessoriesTabConfig = {
             tabId: 'accessories',
             selector: '#shop > #content > #accessories',
-            configName: 'accessories',
-            contentTemplateName: undefined,
+            configName: 'zubehoer',
+            contentTemplateName: 'zubehoer',
             languages: supportedLanguages
          };
          
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
          
+         var setter = new shop.ui.LanguageDependentTextInProductTableSetter();
+         plantTab.onTabContentChanged(setter.onTabContentChangedCallback);
+         accessoriesTab.onTabContentChanged(setter.onTabContentChangedCallback);
+         
          var pictureOverlayConfig = {
             selector: '#shop > #content > #picture',
-            contentTemplateName: 'pictureOverlay_template',
+            contentTemplateName: 'pictureOverlay',
             languages: supportedLanguages
          };
          
