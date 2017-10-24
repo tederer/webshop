@@ -8,8 +8,5 @@ assertNamespace('shop');
 
 shop.Context = {
    bus: new common.infrastructure.bus.Bus(),
-   log: function(message) { console.log(message); },
-   defaultVisibleTab: 'start',
-   defaultLanguage: shop.Language.DE,
-   supportedLanguages: []
+   log: function(message) { console.log(message); }
 };

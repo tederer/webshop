@@ -1,1 +1,1 @@
-﻿* UiStatePublisher so ändern, dass nur zulässige Werte publiziert werden
+﻿* UiStateSetter soll state setzen wenn publication sich ändert

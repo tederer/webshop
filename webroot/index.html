@@ -31,10 +31,11 @@
    <script type="text/javascript" src="javascripts/ui/LanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
    <script>
-      shop.Context.supportedLanguages  = [shop.Language.DE, shop.Language.EN];
-      var configContentLoader          = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', shop.Context.supportedLanguages);
-      var htmlContentLoader            = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', shop.Context.supportedLanguages);
-      var languageDependentTexts       = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
+      var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
+      var defaultLanguage        = shop.Language.DE;
+      var configContentLoader    = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
+      var htmlContentLoader      = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
+      var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
       
       htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'pictureOverlay']);
       configContentLoader.load(['pflanzen', 'zubehoer']);
@@ -58,7 +59,7 @@
             selector: '#shop > #content > #start',
             configName: undefined,
             contentTemplateName: 'start',
-            languages: shop.Context.supportedLanguages
+            languages: supportedLanguages
          };
          
          var startTab = new shop.ui.Tab(startTabConfig);
@@ -68,7 +69,7 @@
             selector: '#shop > #content > #plants',
             configName: 'pflanzen',
             contentTemplateName: 'pflanzen',
-            languages: shop.Context.supportedLanguages
+            languages: supportedLanguages
          };
          
          var plantTab = new shop.ui.Tab(plantTabConfig);
@@ -78,7 +79,7 @@
             selector: '#shop > #content > #accessories',
             configName: 'zubehoer',
             contentTemplateName: 'zubehoer',
-            languages: shop.Context.supportedLanguages
+            languages: supportedLanguages
          };
          
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
@@ -90,14 +91,20 @@
          var pictureOverlayConfig = {
             selector: '#shop > #content > #picture',
             contentTemplateName: 'pictureOverlay',
-            languages: shop.Context.supportedLanguages
+            languages: supportedLanguages
          };
          
          new shop.ui.PictureOverlay(pictureOverlayConfig);
          
          new shop.ui.LanguageSelector(function() { return $('#shop > #menu > #languageSelector'); });
          
-         var uiStatePublisher = new shop.ui.UiStatePublisher();
+         var uiStatePublisherConfig = {
+            supportedTabs:       ['start', 'plants', 'accessories'],
+            supportedLanguages:  supportedLanguages,
+            defaultTab:          'start',
+            defaultLanguage:     defaultLanguage
+         };
+         var uiStatePublisher = new shop.ui.UiStatePublisher(uiStatePublisherConfig);
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);
          
          var onHashChange = function onHashChange() {

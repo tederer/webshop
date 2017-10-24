@@ -5,13 +5,9 @@ require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/UiStatePublisher.js');
 
-assertNamespace('shop.Context');
-
 var instance;
 var publications;
-
-shop.Context.defaultVisibleTab = 'defaultTab';
-shop.Context.defaultLanguage = shop.Language.DE;
+var config;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -25,11 +21,27 @@ var mockedBus = {
 };
 
 var givenDefaultUiStatePublisher = function givenDefaultUiStatePublisher() {
-   instance = new shop.ui.UiStatePublisher(mockedBus);
+   instance = new shop.ui.UiStatePublisher(config, mockedBus);
 };
 
 var givenNewStateIs = function givenNewStateIs(newState) {
    instance.setNewState(newState);
+};
+
+var givenSupportedTabsAre = function givenSupportedLanguagesAre(tabs) {
+   config.supportedTabs = tabs;
+};
+
+var givenSupportedLanguagesAre = function givenSupportedLanguagesAre(languages) {
+   config.supportedLanguages = languages;
+};
+
+var givenDefaultLanguageIs = function givenDefaultLanguageIs(language) {
+   config.defaultLanguage = language;
+};
+
+var givenDefaultTabIs = function givenDefaultTabIs(tab) {
+   config.defaultTab = tab;
 };
 
 var whenNewStateIs = function whenNewStateIs(newState) {
@@ -83,6 +95,7 @@ var getCurrentLanguagePublicationCount = function getCurrentLanguagePublicationC
 };
 
 var setup = function setup() {
+   config = {};
    publications = [];
    givenDefaultUiStatePublisher();
 };
@@ -97,21 +110,24 @@ describe('UiStatePublisher', function() {
    });
    
    it('receiving a new state updates the visible tab publication', function() {
-      
+      givenSupportedTabsAre(['tabA']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
       whenNewStateIs({visibleTab: 'tabA', language: shop.Language.DE});
       expect(getVisibleTabPublicationCount()).to.be.eql(1);
       expect(publicationsContainsVisibleTab('tabA')).to.be.eql(true);
    });
    
    it('receiving the same state does not updates the visible tab publication', function() {
-      
+      givenSupportedTabsAre(['tabA']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
       whenNewStateIs({visibleTab: 'tabA', language: shop.Language.DE});
       whenNewStateIs({visibleTab: 'tabA', language: shop.Language.DE});
       expect(getVisibleTabPublicationCount()).to.be.eql(1);
    });
    
    it('receiving another state updates the visible tab publication', function() {
-      
+      givenSupportedTabsAre(['tabA', 'tabB']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
       whenNewStateIs({visibleTab: 'tabA', language: shop.Language.DE});
       whenNewStateIs({visibleTab: 'tabB', language: shop.Language.DE});
       expect(getVisibleTabPublicationCount()).to.be.eql(2);
@@ -120,14 +136,16 @@ describe('UiStatePublisher', function() {
    });
    
    it('receiving a new state with a shown picture updates the shown picture publication', function() {
-      
+      givenSupportedTabsAre(['anyTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
       whenNewStateIs({visibleTab: 'anyTab', shownPicture: 'pic.jpg', language: shop.Language.DE});
       expect(getShownPicturePublicationCount()).to.be.eql(1);
       expect(publicationsContainsShownPicture('pic.jpg')).to.be.eql(true);
    });
    
    it('receiving a new state with the same shown picture does not update the shown picture publication', function() {
-      
+      givenSupportedTabsAre(['anyTab', 'anotherTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
       givenNewStateIs({visibleTab: 'anyTab', shownPicture: 'samePicture.jpg', language: shop.Language.DE});
       whenNewStateIs({visibleTab: 'anotherTab', shownPicture: 'samePicture.jpg', language: shop.Language.DE});
       expect(getShownPicturePublicationCount()).to.be.eql(1);
@@ -135,37 +153,63 @@ describe('UiStatePublisher', function() {
    });
    
    it('receiving a new state with a language updates the current language publication', function() {
-      
+      givenSupportedTabsAre(['anyTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
       whenNewStateIs({visibleTab: 'anyTab', language: shop.Language.DE});
       expect(getCurrentLanguagePublicationCount()).to.be.eql(1);
       expect(publicationsContainsCurrentLanguage(shop.Language.DE)).to.be.eql(true);
    });
    
    it('receiving a new state with the same language does not update the current language publication', function() {
-      
-      givenNewStateIs({visibleTab: 'anyTab', language: shop.Language.EN});
+      givenSupportedTabsAre(['anyTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
+     givenNewStateIs({visibleTab: 'anyTab', language: shop.Language.EN});
       whenNewStateIs({visibleTab: 'anyTab', language: shop.Language.EN});
       expect(getCurrentLanguagePublicationCount()).to.be.eql(1);
       expect(publicationsContainsCurrentLanguage(shop.Language.EN)).to.be.eql(true);
    });
        
-   it('receiving an invalid state publishes the default visible tab from the context', function() {
-      
+   it('receiving an invalid state publishes the configured default tab', function() {
+      givenSupportedTabsAre(['anyTab', 'secondTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
+      givenDefaultTabIs('secondTab');
       whenNewStateIs({someKey: 'tabA'});
       expect(getVisibleTabPublicationCount()).to.be.eql(1);
-      expect(publicationsContainsVisibleTab('defaultTab')).to.be.eql(true);
+      expect(publicationsContainsVisibleTab('secondTab')).to.be.eql(true);
    });
       
    it('receiving an invalid state publishes undefined as shown picture', function() {
-      
+      givenSupportedTabsAre(['anyTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
       whenNewStateIs({someKey: 'tabA'});
       expect(getShownPicturePublicationCount()).to.be.eql(1);
       expect(publicationsContainsShownPicture(undefined)).to.be.eql(true);
    });
       
-   it('receiving an invalid state publishes the default language from the context', function() {
+   it('receiving an invalid state publishes the configured default language', function() {
+      givenSupportedTabsAre(['anyTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
+      givenDefaultLanguageIs(shop.Language.EN);
       whenNewStateIs({someKey: 'tabA'});
       expect(getShownPicturePublicationCount()).to.be.eql(1);
+      expect(publicationsContainsCurrentLanguage(shop.Language.EN)).to.be.eql(true);
+   });
+   
+   it('receiving an unsupported language publishes the configured default language', function() {
+      givenSupportedTabsAre(['anyTab']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
+      givenDefaultLanguageIs(shop.Language.DE);
+      whenNewStateIs({visibleTab: 'anyTab', language: ''});
+      expect(getCurrentLanguagePublicationCount()).to.be.eql(1);
       expect(publicationsContainsCurrentLanguage(shop.Language.DE)).to.be.eql(true);
+   });
+   
+   it('receiving an unsupported tab publishes the configured default tab', function() {
+      givenSupportedTabsAre(['plants', 'accessories']);
+      givenSupportedLanguagesAre([shop.Language.DE, shop.Language.EN]);
+      givenDefaultTabIs('accessories');
+      whenNewStateIs({visibleTab: 'anyTab', language: shop.Language.EN});
+      expect(getCurrentLanguagePublicationCount()).to.be.eql(1);
+      expect(publicationsContainsVisibleTab('accessories')).to.be.eql(true);
    });
 });  
