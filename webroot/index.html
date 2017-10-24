@@ -32,7 +32,6 @@
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
    <script>
       var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
-      var defaultLanguage        = shop.Language.DE;
       var configContentLoader    = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
       var htmlContentLoader      = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
       var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
@@ -102,14 +101,13 @@
             supportedTabs:       ['start', 'plants', 'accessories'],
             supportedLanguages:  supportedLanguages,
             defaultTab:          'start',
-            defaultLanguage:     defaultLanguage
+            defaultLanguage:     shop.Language.DE
          };
          var uiStatePublisher = new shop.ui.UiStatePublisher(uiStatePublisherConfig);
          new shop.ui.UiStateSetter($.uriAnchor.setAnchor);
          
          var onHashChange = function onHashChange() {
             var map = $.uriAnchor.makeAnchorMap();
-            console.log('map: ' + JSON.stringify(map));
             uiStatePublisher.setNewState(map);
          };
          

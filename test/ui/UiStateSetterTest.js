@@ -7,8 +7,7 @@ require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
 var instance;
 var commandCallbacks;
 var publicationCallbacks;
-var stateConsumerInvocations;
-var capturedState;
+var capturedStates;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -16,8 +15,7 @@ function valueIsAnObject(val) {
 }
 
 var mockedStateConsumer = function mockedStateConsumer(state) {
-   stateConsumerInvocations++;
-   capturedState = state;
+   capturedStates[capturedStates.length] = state;
 };
 
 var mockedBus = {
@@ -76,11 +74,14 @@ var whenHidePictureCommandWasSent = function whenHidePictureCommandWasSent() {
    mockedBus.sendCommand(shop.topics.HIDE_PICTURE, '');
 };
 
+var lastCapturedState = function lastCapturedState() {
+   return (capturedStates.length > 0 ) ? capturedStates[capturedStates.length - 1] : undefined;
+};
+
 var setup = function setup() {
    commandCallbacks = {};
    publicationCallbacks = {};
-   capturedState = undefined;
-   stateConsumerInvocations = 0;
+   capturedStates = [];
    givenDefaultUiStateSetter();
 };
 
@@ -95,78 +96,66 @@ describe('UiStateSetter', function() {
    
    it('SetVisibleTab command updated the state A', function() {
       whenSetVisibleTabCommandWasSentFor('tab1');
-      expect(capturedState.visibleTab).to.be.eql('tab1');
+      expect(lastCapturedState().visibleTab).to.be.eql('tab1');
    });
    
    it('SetVisibleTab command updated the state B', function() {
       whenSetVisibleTabCommandWasSentFor('anotherTab');
-      expect(capturedState.visibleTab).to.be.eql('anotherTab');
+      expect(lastCapturedState().visibleTab).to.be.eql('anotherTab');
    });
    
    it('SetVisibleTab command does not updated the state when the visible tab is the same in the next command', function() {
       whenSetVisibleTabCommandWasSentFor('tabB');
       whenSetVisibleTabCommandWasSentFor('tabB');
-      expect(stateConsumerInvocations).to.be.eql(1);
+      expect(capturedStates.length).to.be.eql(1);
    });
    
    it('ShowPicture command updated the state A', function() {
       whenShowPictureCommandWasSentFor('aerangis.jpg');
-      expect(capturedState.shownPicture).to.be.eql('aerangis.jpg');
+      expect(lastCapturedState().shownPicture).to.be.eql('aerangis.jpg');
    });
    
    it('ShowPicture command updated the state B', function() {
       whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
-      expect(capturedState.shownPicture).to.be.eql('phalaenopsis.jpg');
+      expect(lastCapturedState().shownPicture).to.be.eql('phalaenopsis.jpg');
    });
    
    it('ShowPicture command does not updated the state when the picture is the same in the next command', function() {
       whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
       whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
-      expect(stateConsumerInvocations).to.be.eql(1);
+      expect(capturedStates.length).to.be.eql(1);
    });
    
-   it('hidePicture command updated the state A', function() {
+   it('HidePicture command updated the state A', function() {
       givenShowPictureCommandWasSentFor('phalaenopsis.jpg');
       whenHidePictureCommandWasSent();
-      expect(capturedState.shownPicture).to.be.eql(undefined);
+      expect(lastCapturedState().shownPicture).to.be.eql(undefined);
    });
    
-   it('hidePicture command sent twice updates the state only once', function() {
+   it('HidePicture command sent twice updates the state only once', function() {
       givenShowPictureCommandWasSentFor('phalaenopsis.jpg');
       whenHidePictureCommandWasSent();
       whenHidePictureCommandWasSent();
-      expect(stateConsumerInvocations).to.be.eql(2);
+      expect(capturedStates.length).to.be.eql(2);
    });
    
    it('the published visible tab is part of the state', function() {
       givenPublishedVisibleTabIs('tabX');
-      whenShowPictureCommandWasSentFor('phalaenopsis.jpg');
-      expect(stateConsumerInvocations).to.be.eql(1);
-      expect(capturedState.shownPicture).to.be.eql('phalaenopsis.jpg');
-      expect(capturedState.visibleTab).to.be.eql('tabX');
+      expect(lastCapturedState().visibleTab).to.be.eql('tabX');
    });
    
    it('the published shown picture is part of the state', function() {
       givenPublishedShownPictureIs('aerangis.jpg');
-      whenSetVisibleTabCommandWasSentFor('tabX');
-      expect(stateConsumerInvocations).to.be.eql(1);
-      expect(capturedState.shownPicture).to.be.eql('aerangis.jpg');
-      expect(capturedState.visibleTab).to.be.eql('tabX');
+      expect(lastCapturedState().shownPicture).to.be.eql('aerangis.jpg');
    });
    
    it('a published language updates the state A', function() {
       whenTheCurrentLanguageIs(shop.Language.DE);
-      expect(capturedState.language).to.be.eql(shop.Language.DE);
+      expect(lastCapturedState().language).to.be.eql(shop.Language.DE);
    });
    
    it('a published language updates the state B', function() {
       whenTheCurrentLanguageIs(shop.Language.EN);
-      expect(capturedState.language).to.be.eql(shop.Language.EN);
-   });
-   
-   it('a published language does not updated the state when the language is the same in the next publication', function() {
-      whenTheCurrentLanguageIs(shop.Language.EN);
-      whenTheCurrentLanguageIs(shop.Language.EN);
-      expect(stateConsumerInvocations).to.be.eql(1);
+      expect(lastCapturedState().language).to.be.eql(shop.Language.EN);
    });
 });  

@@ -26,48 +26,48 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
       stateConsumer(state);
    };
    
-   var onVisibleTab = function onVisibleTab(tabName) {
-      visibleTab = tabName;
-   };
-   
-   var onSetVisibleTab = function onSetVisibleTab(tabName) {
+   var onSetVisibleTabCommand = function onSetVisibleTabCommand(tabName) {
       if (visibleTab === undefined || visibleTab !== tabName) {
          visibleTab = tabName;
          notifyStateConsumer();
       }
    };
    
-   var onShowPicture = function onShowPicture(filename) {
+   var onShowPictureCommand = function onShowPictureCommand(filename) {
       if (shownPicture === undefined || shownPicture !== filename) {
          shownPicture = filename;
          notifyStateConsumer();
       }
    };
    
-   var onShownPicture = function onShownPicture(relativeFilePath) {
-      shownPicture = relativeFilePath;
-   };
-   
-   var onHidePicture = function onHidePicture() {
+   var onHidePictureCommand = function onHidePictureCommand() {
       if (shownPicture !== undefined) {
          shownPicture = undefined;
          notifyStateConsumer();
       }
    };
    
-   var onCurrentLanguage = function onCurrentLanguage(language) {
-      if (currentLanguage === undefined || currentLanguage !== language) {
-         currentLanguage = language;
-         notifyStateConsumer();
-      }
+   var onVisibleTabPublication = function onVisibleTabPublication(tabName) {
+      visibleTab = tabName;
+      notifyStateConsumer();
    };
    
-   bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTab);
-   bus.subscribeToPublication(shop.topics.SHOWN_PICTURE, onShownPicture);
-   bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);
+   var onShownPicturePublication = function onShownPicturePublication(relativeFilePath) {
+      shownPicture = relativeFilePath;
+      notifyStateConsumer();
+   };
    
-   bus.subscribeToCommand(shop.topics.SET_VISIBLE_TAB, onSetVisibleTab);
-   bus.subscribeToCommand(shop.topics.SHOW_PICTURE, onShowPicture);
-   bus.subscribeToCommand(shop.topics.HIDE_PICTURE, onHidePicture);
+   var onCurrentLanguagePublication = function onCurrentLanguagePublication(language) {
+      currentLanguage = language;
+      notifyStateConsumer();
+   };
+   
+   bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTabPublication);
+   bus.subscribeToPublication(shop.topics.SHOWN_PICTURE, onShownPicturePublication);
+   bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguagePublication);
+   
+   bus.subscribeToCommand(shop.topics.SET_VISIBLE_TAB, onSetVisibleTabCommand);
+   bus.subscribeToCommand(shop.topics.SHOW_PICTURE, onShowPictureCommand);
+   bus.subscribeToCommand(shop.topics.HIDE_PICTURE, onHidePictureCommand);
 };
 

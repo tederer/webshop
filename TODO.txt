@@ -1,1 +1,2 @@
 ﻿* UiStateSetter soll state setzen wenn publication sich ändert
+* sprachauswahlknopf bekommt sprache aus state nicht mit
