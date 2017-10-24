@@ -1,1 +1,1 @@
-﻿* testen, ob sprache als state funktioniert
+﻿* UiStatePublisher so ändern, dass nur zulässige Werte publiziert werden
