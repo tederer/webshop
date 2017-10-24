@@ -11,10 +11,11 @@ var DEFAULT_LANGUAGE_DEPENDENT_TEXT_ID = 'defaultTextId';
 
 var instance;
 var publications;
+var capturedCommands;
 var capturedEventType;
 var capturedCallback;
 var capturedTexts;
-var subscriptions;
+var capturedCallbacks;
 
 var mockedUiComponentProvider = function() {
    return {
@@ -35,15 +36,17 @@ function valueIsAnObject(val) {
 
 var mockedBus = {
    subscribeToPublication: function subscribeToPublication(topic, callback) {
-      subscriptions[topic] = callback;
+      capturedCallbacks[topic] = callback;
+      callback(publications[topic]);
    },
    
-   publish: function publish(topic, data) {
-      publications[publications.length] = {topic: topic, data: data};
+   sendCommand: function sendCommand(topic, data) {
+      capturedCommands[capturedCommands.length] = {topic: topic, data: data};
    },
    
    simulatePublication: function simulatePublication(topic, data) {
-      var callback = subscriptions[topic];
+      publications[topic] = data;
+      var callback = capturedCallbacks[topic];
       if (callback !== undefined) {
          callback(data);
       }
@@ -58,16 +61,35 @@ var givenDefaultLanguageSelector = function givenDefaultLanguageSelector() {
    instance = new shop.ui.LanguageSelector(mockedUiComponentProvider, mockedBus);
 };
 
+var givenCurrentLanguageIs = function givenCurrentLanguageIs(language) {
+   mockedBus.simulatePublication(shop.topics.CURRENT_LANGUAGE, language);
+};
+
+var givenLanguageSelectorTextIs = function givenLanguageSelectorTextIs(text) {
+   mockedBus.simulatePublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'menu.languageSelectorButton', text);
+};
+
 var whenTheComponentGetsClicked = function whenTheComponentGetsClicked() {
    capturedCallback();
 };
 
+var lastSetLanguage = function lastSetLanguage() {
+   var result;
+   capturedCommands.forEach(function(command) {
+      if (command.topic === shop.topics.SET_CURRENT_LANGUAGE) {
+         result = command.data;
+      }
+   });
+   return result;
+};
+
 var setup = function setup() {
-   publications = [];
+   publications = {};
+   capturedCommands = [];
    capturedEventType = undefined;
    capturedCallback = undefined;
    capturedTexts = [];
-   subscriptions = {};
+   capturedCallbacks = {};
 };
 
 describe('LanguageSelector', function() {
@@ -80,51 +102,37 @@ describe('LanguageSelector', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
-   it('a new instance publishes german as current language A', function() {
-      
-      givenDefaultLanguageSelector();
-      expect(publications.length).to.be.eql(1);
-      expect(publications[0].topic).to.be.eql(shop.topics.CURRENT_LANGUAGE);
-      expect(publications[0].data).to.be.eql(shop.Language.DE);
-   });
-   
    it('a new instance registers callback for click events', function() {
       
       givenDefaultLanguageSelector();
       expect(capturedEventType).to.be.eql('click');
    });
    
-   it('english gets published when the component gets clicked once', function() {
-      
-      givenDefaultLanguageSelector();
-      whenTheComponentGetsClicked();
-      expect(publications.length).to.be.eql(2);
-      expect(publications[1].topic).to.be.eql(shop.topics.CURRENT_LANGUAGE);
-      expect(publications[1].data).to.be.eql(shop.Language.EN);
-   });   
-   
-   it('german gets published when the component gets clicked twice', function() {
-      
-      givenDefaultLanguageSelector();
-      whenTheComponentGetsClicked();
-      whenTheComponentGetsClicked();
-      expect(publications.length).to.be.eql(3);
-      expect(publications[2].topic).to.be.eql(shop.topics.CURRENT_LANGUAGE);
-      expect(publications[2].data).to.be.eql(shop.Language.DE);
-   });
-   
-   it('a new instance sets the component text to "English"', function() {
-      
+   it('a new instance sets the component text to the published language dependent text A', function() {
+      givenLanguageSelectorTextIs('donald');
       givenDefaultLanguageSelector();
       expect(capturedTexts.length).to.be.eql(1);
-      expect(capturedTexts[0]).to.be.eql('English');
+      expect(capturedTexts[0]).to.be.eql('donald');
    });
       
-   it('the component text gets set to "Deutsch" when component gets clicked once', function() {
-      
+   it('a new instance sets the component text to the published language dependent text B', function() {
+      givenLanguageSelectorTextIs('daisy');
+      givenDefaultLanguageSelector();
+      expect(capturedTexts.length).to.be.eql(1);
+      expect(capturedTexts[0]).to.be.eql('daisy');
+   });
+    
+   it('english gets activated when the component gets clicked once and german was active before', function() {
+      givenCurrentLanguageIs(shop.Language.DE);
       givenDefaultLanguageSelector();
       whenTheComponentGetsClicked();
-      expect(capturedTexts.length).to.be.eql(2);
-      expect(capturedTexts[1]).to.be.eql('Deutsch');
-   });
+      expect(lastSetLanguage()).to.be.eql(shop.Language.EN);
+   });   
+    
+   it('german gets activated when the component gets clicked once and english was active before', function() {
+      givenCurrentLanguageIs(shop.Language.EN);
+      givenDefaultLanguageSelector();
+      whenTheComponentGetsClicked();
+      expect(lastSetLanguage()).to.be.eql(shop.Language.DE);
+   });   
 });  

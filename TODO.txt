@@ -1,2 +1,1 @@
-﻿* UiStateSetter soll state setzen wenn publication sich ändert
-* sprachauswahlknopf bekommt sprache aus state nicht mit
+﻿* man könnte JsonContentLoader & HtmlContentLoader umstellen damit sie nicht für jede Sprache ein Topic verwenden

@@ -5,6 +5,7 @@
   "menu.shoppingCartButton":              { "de": "Einkaufswagen",      "en": "shopping cart" },
   "menu.shippingButton":                  { "de": "Versandbedingungen", "en": "shipping details" },
   "menu.companyDetailsButton":            { "de": "Impressum",          "en": "company details" },
+  "menu.languageSelectorButton":          { "de": "English",            "en": "Deutsch" },
   "productTable.addToShoppingCartButton": { "de": "in den Warenkorb",   "en": "add to shopping cart" },
   "productTable.onTheInternetAnchor":     { "de": "im Internet",        "en": "on the internet" },
   "productTable.bigPictureAnchor":        { "de": "großes Bild",        "en": "big picture" }

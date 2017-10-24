@@ -66,6 +66,14 @@ var givenPublishedShownPictureIs = function givenPublishedShownPictureIs(relativ
    mockedBus.publish(shop.topics.SHOWN_PICTURE, relativeFilePath);
 };
 
+var givenSetCurrentLanguageCommandWasSentFor = function givenSetCurrentLanguageCommandWasSentFor(language) {
+   mockedBus.sendCommand(shop.topics.SET_CURRENT_LANGUAGE, language);
+};
+
+var whenSetCurrentLanguageCommandWasSentFor = function whenSetCurrentLanguageCommandWasSentFor(language) {
+   givenSetCurrentLanguageCommandWasSentFor(language);
+};
+
 var whenShowPictureCommandWasSentFor = function whenShowPictureCommandWasSentFor(filename) {
    givenShowPictureCommandWasSentFor(filename);
 };
@@ -139,6 +147,17 @@ describe('UiStateSetter', function() {
       expect(capturedStates.length).to.be.eql(2);
    });
    
+   it('SetCurrentLanguage command updated the state', function() {
+      givenSetCurrentLanguageCommandWasSentFor('anyLanguage');
+      expect(lastCapturedState().language).to.be.eql('anyLanguage');
+   });
+   
+   it('SetCurrentLanguage command sent twice updates the state only once', function() {
+      givenSetCurrentLanguageCommandWasSentFor('anyLanguage');
+      whenSetCurrentLanguageCommandWasSentFor('anyLanguage');
+      expect(capturedStates.length).to.be.eql(1);
+   });
+
    it('the published visible tab is part of the state', function() {
       givenPublishedVisibleTabIs('tabX');
       expect(lastCapturedState().visibleTab).to.be.eql('tabX');

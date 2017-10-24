@@ -89,6 +89,42 @@ body {
    z-index: 1;
 }
 
+#shop > #content > #shipping {
+   position : absolute;
+   top : 0;
+   left : 0;
+   bottom : 2em;
+   width : 100%;
+   border-radius : 0 0 0 0;
+   background-color : transparent;
+   visibility : hidden;
+   z-index: 1;
+}
+
+#shop > #content > #companyDetails {
+   position : absolute;
+   top : 0;
+   left : 0;
+   bottom : 2em;
+   width : 100%;
+   border-radius : 0 0 0 0;
+   background-color : transparent;
+   visibility : hidden;
+   z-index: 1;
+}
+
+#shop > #content > #shoppingCart {
+   position : absolute;
+   top : 0;
+   left : 0;
+   bottom : 2em;
+   width : 100%;
+   border-radius : 0 0 0 0;
+   background-color : transparent;
+   visibility : hidden;
+   z-index: 1;
+}
+
 #shop > #content > #picture {
    position : absolute;
    top : 0;

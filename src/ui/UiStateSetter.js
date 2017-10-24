@@ -33,6 +33,13 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
       }
    };
    
+   var onSetCurrentLanguageCommand = function onSetCurrentLanguageCommand(language) {
+      if (currentLanguage !== language) {
+         currentLanguage = language;
+         notifyStateConsumer();
+      }
+   };
+   
    var onShowPictureCommand = function onShowPictureCommand(filename) {
       if (shownPicture === undefined || shownPicture !== filename) {
          shownPicture = filename;
@@ -66,6 +73,7 @@ shop.ui.UiStateSetter = function UiStateSetter(stateConsumer, optionalBus ) {
    bus.subscribeToPublication(shop.topics.SHOWN_PICTURE, onShownPicturePublication);
    bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguagePublication);
    
+   bus.subscribeToCommand(shop.topics.SET_CURRENT_LANGUAGE, onSetCurrentLanguageCommand);
    bus.subscribeToCommand(shop.topics.SET_VISIBLE_TAB, onSetVisibleTabCommand);
    bus.subscribeToCommand(shop.topics.SHOW_PICTURE, onShowPictureCommand);
    bus.subscribeToCommand(shop.topics.HIDE_PICTURE, onHidePictureCommand);

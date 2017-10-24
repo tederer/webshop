@@ -36,7 +36,7 @@
       var htmlContentLoader      = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
       var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
       
-      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'pictureOverlay']);
+      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'versandbedingungen', 'impressum', 'einkaufswagen', 'pictureOverlay']);
       configContentLoader.load(['pflanzen', 'zubehoer']);
       languageDependentTexts.load();
       
@@ -48,10 +48,12 @@
          new shop.ui.LanguageDependentComponent('#shop > #menu > #companyDetails',  'menu.companyDetailsButton' );
          new shop.ui.LanguageDependentComponent('#shop > #menu > #shoppingCart',    'menu.shoppingCartButton' );
          
-         new shop.ui.VisibleTabSetter('#shop > #menu > #start',         'start');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #plants',        'plants');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #accessories',   'accessories');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #shipping',      'shipping');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #start',            'start');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #plants',           'plants');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #accessories',      'accessories');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #shipping',         'shipping');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #companyDetails',   'companyDetails');
+         new shop.ui.VisibleTabSetter('#shop > #menu > #shoppingCart',     'shoppingCart');
          
          var startTabConfig = {
             tabId: 'start',
@@ -83,6 +85,36 @@
          
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
          
+         var shippingTabConfig = {
+            tabId: 'shipping',
+            selector: '#shop > #content > #shipping',
+            configName: undefined,
+            contentTemplateName: 'versandbedingungen',
+            languages: supportedLanguages
+         };
+         
+         var shippingTab = new shop.ui.Tab(shippingTabConfig);
+         
+         var companyDetailsTabConfig = {
+            tabId: 'companyDetails',
+            selector: '#shop > #content > #companyDetails',
+            configName: undefined,
+            contentTemplateName: 'impressum',
+            languages: supportedLanguages
+         };
+         
+         var companyDetailsTab = new shop.ui.Tab(companyDetailsTabConfig);
+         
+         var shoppingCartTabConfig = {
+            tabId: 'shoppingCart',
+            selector: '#shop > #content > #shoppingCart',
+            configName: undefined,
+            contentTemplateName: 'einkaufswagen',
+            languages: supportedLanguages
+         };
+         
+         var shoppingCartTab = new shop.ui.Tab(shoppingCartTabConfig);
+         
          var setter = new shop.ui.LanguageDependentTextInProductTableSetter();
          plantTab.onTabContentChanged(setter.onTabContentChangedCallback);
          accessoriesTab.onTabContentChanged(setter.onTabContentChangedCallback);
@@ -98,7 +130,7 @@
          new shop.ui.LanguageSelector(function() { return $('#shop > #menu > #languageSelector'); });
          
          var uiStatePublisherConfig = {
-            supportedTabs:       ['start', 'plants', 'accessories'],
+            supportedTabs:       ['start', 'plants', 'accessories', 'shipping', 'companyDetails', 'shoppingCart'],
             supportedLanguages:  supportedLanguages,
             defaultTab:          'start',
             defaultLanguage:     shop.Language.DE
@@ -126,14 +158,17 @@
       <button id="accessories"></button> 
       <button id="shipping"></button> 
       <button id="companyDetails"></button> 
-      <button id="languageSelector"></button> 
       <button id="shoppingCart"></button> 
+      <button id="languageSelector"></button> 
    </div>
 
    <div id="content">
       <div id="start"></div>
       <div id="plants"></div>
       <div id="accessories"></div>
+      <div id="shipping"></div>
+      <div id="companyDetails"></div>
+      <div id="shoppingCart"></div>
       <div id="picture"></div>
    </div>
    

@@ -10,28 +10,23 @@ assertNamespace('shop.ui');
 shop.ui.LanguageSelector = function LanguageSelector(uiComponentProvider, optionalBus ) {
 
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var defaultLanguage = shop.Language.DE;
-   var alternativeLanguage = shop.Language.EN;
-   var currentLanguage = defaultLanguage;
-   var text = {};
-   text[shop.Language.DE] = 'Deutsch';
-   text[shop.Language.EN] = 'English';
-   
-   var getInactiveLanguage = function getInactiveLanguage(language) {
-      return (currentLanguage === defaultLanguage) ? alternativeLanguage : defaultLanguage;
-   };
-   
-   var publishLanguage = function publishCurrentLanguage() {
-      bus.publish(shop.topics.CURRENT_LANGUAGE, currentLanguage);
-      uiComponentProvider().text(text[getInactiveLanguage()]);
-   };
+   var currentLanguage;
    
    var onClicked = function onClicked() {
-      currentLanguage = getInactiveLanguage();
-      publishLanguage();
+      var language = (currentLanguage === shop.Language.EN) ? shop.Language.DE : shop.Language.EN;
+      bus.sendCommand(shop.topics.SET_CURRENT_LANGUAGE, language);
    };
    
-   publishLanguage(defaultLanguage);
+   var onCurrentLanguage = function onCurrentLanguage(newLanguage) {
+      currentLanguage = newLanguage;
+   };
+   
+   var onTextChanged = function onTextChanged(text) {
+      uiComponentProvider().text(text);
+   };
+   
+   bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'menu.languageSelectorButton', onTextChanged);
    
    uiComponentProvider().on('click', onClicked);
 };
