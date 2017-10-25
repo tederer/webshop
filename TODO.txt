@@ -1,1 +1,2 @@
 ﻿* man könnte JsonContentLoader & HtmlContentLoader umstellen damit sie nicht für jede Sprache ein Topic verwenden
+* Warenkorb implementieren

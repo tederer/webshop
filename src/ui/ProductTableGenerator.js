@@ -61,8 +61,9 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
       intentations++;
-      var button = (product.id !== undefined) ? '<button type="button" id="' + product.id + '"></button>' : '';
-      append('<td><input type="text" id="quantity" value="1" size="2">&nbsp;' + button + '</td>');
+      var button = (product.id !== undefined) ? '<button type="button" id="' + product.id + '_button" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\');"></button>' : '';
+      var input = '<input type="text" id="' + product.id + '_textfield" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + product.id + '\');">';
+      append('<td>' + input + '&nbsp;' + button + '</td>');
       intentations--;
    };
    

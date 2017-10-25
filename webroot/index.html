@@ -31,12 +31,13 @@
    <script type="text/javascript" src="javascripts/ui/LanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
    <script>
+      var baseAddress            = window.location.protocol + '//' + window.location.host + '/';
       var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
-      var configContentLoader    = new shop.configuration.JsonContentLoader('http://localhost:8080/configuration', supportedLanguages);
-      var htmlContentLoader      = new shop.configuration.HtmlContentLoader('http://localhost:8080/templates', supportedLanguages);
-      var languageDependentTexts = new shop.LanguageDependentTexts('http://localhost:8080/configuration');
+      var configContentLoader    = new shop.configuration.JsonContentLoader(baseAddress + 'configuration', supportedLanguages);
+      var htmlContentLoader      = new shop.configuration.HtmlContentLoader(baseAddress + 'templates', supportedLanguages);
+      var languageDependentTexts = new shop.LanguageDependentTexts(baseAddress + 'configuration');
       
-      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'versandbedingungen', 'impressum', 'einkaufswagen', 'pictureOverlay']);
+      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'versandbedingungen', 'impressum', 'warenkorb', 'pictureOverlay']);
       configContentLoader.load(['pflanzen', 'zubehoer']);
       languageDependentTexts.load();
       
@@ -109,7 +110,7 @@
             tabId: 'shoppingCart',
             selector: '#shop > #content > #shoppingCart',
             configName: undefined,
-            contentTemplateName: 'einkaufswagen',
+            contentTemplateName: 'warenkorb',
             languages: supportedLanguages
          };
          
