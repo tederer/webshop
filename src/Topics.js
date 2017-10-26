@@ -16,6 +16,8 @@ shop.topics.SHOWN_PICTURE = '/shownPicture';
 
 shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX = '/languageDependentText/';
 
+// data: an array of { productId: <String>, amount: <Integer> }
+shop.topics.SHOPPING_CART_CONTENT = '/shoppingCartContent';
 
 //                COMMANDS
 

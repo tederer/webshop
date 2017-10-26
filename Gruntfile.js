@@ -6,6 +6,7 @@ var fileSystem = require('fs');
 
 global.PROJECT_ROOT_PATH = path.resolve('.');
 global.PROJECT_SOURCE_ROOT_PATH = global.PROJECT_ROOT_PATH + '/src';
+global.PROJECT_TEST_ROOT_PATH   = global.PROJECT_ROOT_PATH + '/test';
 
 // Grunt is a JavaScript task runner, similar to Ant. 
 // See http://gruntjs.com/ for details
