@@ -86,4 +86,12 @@ describe('ShoppingCart', function() {
       expect(allProductsInShoppingCart().length).to.be.eql(1);
       expect(productAmountInShoppingCart('productB')).to.be.eql(1);
    });
+   
+   it('a product gets removed from the cart when the amount gets negative', function() {
+      givenTheProductGetsAddedToTheShoppingCart('productA', 1);
+      givenTheProductGetsAddedToTheShoppingCart('productX', 1);
+      whenTheProductGetsAddedToTheShoppingCart('productX', -4);
+      expect(allProductsInShoppingCart().length).to.be.eql(1);
+      expect(productAmountInShoppingCart('productA')).to.be.eql(1);
+   });
 });

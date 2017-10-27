@@ -33,7 +33,7 @@ shop.ShoppingCart = function ShoppingCart(optionalBus) {
       } else {
          products[productIndex].amount += amount;
       }
-      if (products[productIndex].amount === 0) {
+      if (products[productIndex].amount < 1) {
          removeProduct(productId);
       }
    };
