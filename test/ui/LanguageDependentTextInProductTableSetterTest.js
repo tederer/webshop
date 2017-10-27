@@ -1,7 +1,9 @@
-/* global global, shop, common, Map, assertNamespace */
+/* global global, shop, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/LanguageDependentTextInProductTableSetter.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 assertNamespace('shop.Context');
 
@@ -14,11 +16,10 @@ var DEFAULT_TAB_SELECTOR = 'defaultTabSelector';
 var DEFAULT_TAB2_SELECTOR = 'defaultTab2Selector';
 
 var instance;
-var publications;
-var capturedSubscriptionCallbacks;
 var capturedSelectors;
 var capturedTexts;
 var uiComponents;
+var mockedBus;
 
 var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
    capturedSelectors[capturedSelectors.length] = selector;
@@ -27,21 +28,6 @@ var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
          capturedTexts[capturedTexts.length] = {selector: selector, text: content};
       }
    };
-};
-
-var mockedBus = {
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      capturedSubscriptionCallbacks[topic] = callback;
-      callback(publications[topic]);
-   },
-   
-   publish: function publish(topic, data) {
-      var callback =  capturedSubscriptionCallbacks[topic];
-      if (callback !== undefined) {
-         callback(data);
-      }
-      publications[topic] = data;
-   }
 };
 
 var MockedTab = function MockedTab(optionalSelector) {
@@ -136,8 +122,7 @@ var capturedSelectorsContains = function capturedSelectorsContains(expectedSelec
 };
 
 var setup = function setup() {
-   publications = {};
-   capturedSubscriptionCallbacks = {};
+   mockedBus = new testing.MockedBus();
    capturedSelectors = [];
    capturedTexts = [];
    uiComponents = undefined;
@@ -157,6 +142,9 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    
    it('when the tab content changes the Setter searches for buttons, "onTheInternetAnchor"s and "bigPictureAnchor"s', function() {
       
+      givenAddToShoppingCartButtonTextIs('in den Warenkorb');
+      givenOnTheInternetAnchorTextIs('im www');
+      givenBigPictureAnchorTextIs('groaßes buedl');
       givenDefaultLanguageDependentTextInProductTableSetter();
       whenTabContentChanges();
       expect(capturedSelectors.length).to.be.eql(3);

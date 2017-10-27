@@ -1,13 +1,14 @@
-/* global global, shop, common, Map, assertNamespace */
+/* global global, shop, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/UiStateSetter.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
 
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
+
 var instance;
-var commandCallbacks;
-var publicationCallbacks;
 var capturedStates;
+var mockedBus;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -16,30 +17,6 @@ function valueIsAnObject(val) {
 
 var mockedStateConsumer = function mockedStateConsumer(state) {
    capturedStates[capturedStates.length] = state;
-};
-
-var mockedBus = {
-   subscribeToCommand: function subscribeToCommand(topic, callback) {
-      commandCallbacks[topic] = callback;
-   },
-   
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      publicationCallbacks[topic] = callback;
-   },
-   
-   sendCommand: function sendCommand(topic, data) {
-      var callback = commandCallbacks[topic];
-      if (callback !== undefined) {
-         callback(data);
-      }
-   },
-   
-   publish: function publish(topic, data) {
-      var callback = publicationCallbacks[topic];
-      if (callback !== undefined) {
-         callback(data);
-      }
-   }
 };
 
 var givenDefaultUiStateSetter = function givenDefaultUiStateSetter() {
@@ -87,8 +64,7 @@ var lastCapturedState = function lastCapturedState() {
 };
 
 var setup = function setup() {
-   commandCallbacks = {};
-   publicationCallbacks = {};
+   mockedBus = new testing.MockedBus();
    capturedStates = [];
    givenDefaultUiStateSetter();
 };

@@ -37,38 +37,36 @@ shop.ui.LanguageDependentTextInProductTableSetter = function LanguageDependentTe
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    
    var updateButtons = function updateButtons() {
-      if (addToShoppingCartButtonText !== undefined) {
-         selectors.forEach(function(selector) {
-            uiComponentProvider(selector + ' button').text(addToShoppingCartButtonText);
-         });
-      }
+      var textToSet = (addToShoppingCartButtonText !== undefined) ? addToShoppingCartButtonText : '';
+      selectors.forEach(function(selector) {
+         uiComponentProvider(selector + ' button').text(textToSet);
+      });
    };
    
    var updateAnchors = function updateAnchors() {
-      if (onTheInternetAnchorText !== undefined) {
-         selectors.forEach(function(selector) {
-            uiComponentProvider(selector + ' .onTheInternetAnchor').text(onTheInternetAnchorText);
-         });
-      }
-      if (bigPictureAnchorText !== undefined) {
-         selectors.forEach(function(selector) {
-            uiComponentProvider(selector + ' .bigPictureAnchor').text(bigPictureAnchorText);
-         });
-      }
+      var updateTextToSet = (onTheInternetAnchorText !== undefined) ? onTheInternetAnchorText : '';
+      selectors.forEach(function(selector) {
+         uiComponentProvider(selector + ' .onTheInternetAnchor').text(updateTextToSet);
+      });
+      
+      var bigPictureTextToSet = (bigPictureAnchorText !== undefined) ? bigPictureAnchorText : '';
+      selectors.forEach(function(selector) {
+         uiComponentProvider(selector + ' .bigPictureAnchor').text(bigPictureTextToSet);
+      });
    };
    
    var onAddToShoppingCartButtonText = function onAddToShoppingCartButtonText(text) {
-      addToShoppingCartButtonText = (text !== undefined) ? text : '';
+      addToShoppingCartButtonText = text;
       updateButtons();
    };
    
    var onOnTheInternetAnchorText = function onOnTheInternetAnchorText(text) {
-      onTheInternetAnchorText = (text !== undefined) ? text : '';
+      onTheInternetAnchorText = text;
       updateAnchors();
    };
    
    var onBigPictureAnchorText = function onBigPictureAnchorText(text) {
-      bigPictureAnchorText = (text !== undefined) ? text : '';
+      bigPictureAnchorText = text;
       updateAnchors();
    };
    

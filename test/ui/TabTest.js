@@ -1,7 +1,9 @@
-/* global global, shop, common, Map, assertNamespace */
+/* global global, shop, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/Tab.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 assertNamespace('shop.Context');
 
@@ -22,10 +24,9 @@ var placeholder;
 var suffix;
 
 var capturedHtmlContent;
-var publications;
-var capturedSubscriptionCallbacks;
 var capturedVisiblityChanges;
 var productTable;
+var mockedBus;
 
 var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHideableLanguageDependentComponent() {
    this.initialize = function initialize() {};
@@ -37,20 +38,6 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
    this.hide = function hide() {
       capturedVisiblityChanges[capturedVisiblityChanges.length] = 'hide';
    };
-};
-
-var mockedBus = {
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      capturedSubscriptionCallbacks[topic] = callback;
-      callback(publications[topic]);
-   },
-   
-   publish: function publish(topic, data) {
-      var callback =  capturedSubscriptionCallbacks[topic];
-      if (callback !== undefined) {
-         callback(data);
-      }
-   }
 };
 
 var mockedProductTableGenerator = {
@@ -110,11 +97,11 @@ var givenConfigPublication = function givenConfigPublication(name, language, dat
       dataToUse = JSON.parse(data);
    }
    
-   publications['/jsonContent/' + language + '/' + name] = dataToUse;
+   mockedBus.publish('/jsonContent/' + language + '/' + name, dataToUse);
 };
 
 var givenTemplatePublication = function givenTemplatePublication(name, language, data) {
-   publications['/htmlContent/' + language + '/' + name] = data;
+   mockedBus.publish('/htmlContent/' + language + '/' + name, data);
 };
 
 var givenTheProductTableGeneratorReturns = function givenTheProductTableGeneratorReturns(text) {
@@ -126,17 +113,11 @@ var givenRegisteredTableChangeListener = function givenRegisteredTableChangeList
 };
    
 var whenConfigPublicationGetsUpdated = function whenConfigPublicationGetsUpdated(name, language, data) {
-   var callback = capturedSubscriptionCallbacks['/jsonContent/' + language + '/' + name];
-   if (callback !== undefined) {
-      callback(JSON.parse(data));
-   }
+   mockedBus.publish('/jsonContent/' + language + '/' + name, JSON.parse(data));
 };
 
 var whenTemplatePublicationGetsUpdated = function whenTemplatePublicationGetsUpdated(name, language, data) {
-   var callback = capturedSubscriptionCallbacks['/htmlContent/' + language + '/' + name];
-   if (callback !== undefined) {
-      callback(data);
-   }
+   mockedBus.publish('/htmlContent/' + language + '/' + name, data);
 };
 
 var whenPublishedVisibleTabIs = function whenPublishedVisibleTabIs(tabId) {
@@ -170,8 +151,7 @@ var expectContentContainesTemplateWithErrorMessage = function expectContentConta
 };
 
 var setup = function setup() {
-   publications = {};
-   capturedSubscriptionCallbacks = {};
+   mockedBus = new testing.MockedBus();
    capturedHtmlContent = undefined;
    productTable = undefined;
    templatePrefix = '<h1>Hello World</h1>';

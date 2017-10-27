@@ -1,25 +1,15 @@
-/* global global, common, shop, Map, setTimeout */
+/* global global, shop, testing */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Context.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/AbstractLanguageDependentComponent.js');
 
-var capturedSubscriptions = [];
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
+
 var capturedLanguage;
 
-var mockedBus = {
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      capturedSubscriptions[capturedSubscriptions.length] = { topic: topic, callback: callback };
-   },
-   publish: function publish(topic, data) {
-      capturedSubscriptions.forEach(function(subscription) {
-         if (subscription.topic === topic) {
-            subscription.callback(data);
-         }
-      });
-   }
-};
+var mockedBus = new testing.MockedBus();
 
 shop.Context = { bus: mockedBus };
 
@@ -31,7 +21,7 @@ var DerivedObject = function DerivedObject() {
    };
 };
 
-DerivedObject.prototype = new shop.ui.AbstractLanguageDependentComponent();
+DerivedObject.prototype = new shop.ui.AbstractLanguageDependentComponent(mockedBus);
 
 var givenDerivedObject = function givenDerivedObject() {
    instance = new DerivedObject();
@@ -43,7 +33,7 @@ var whenCurrentLanguageIs = function whenCurrentLanguageIs(currentLanguage) {
 };
 
 var setup = function setup() {
-   capturedSubscriptions = [];
+   mockedBus.reset();
    capturedLanguage = undefined;
 };
 
@@ -55,8 +45,9 @@ describe('AbstractLanguageDependentComponent', function() {
    it('a new instance subscribes to the current language publication topic', function() {
       
       givenDerivedObject();
+      var capturedSubscriptions = mockedBus.getPublicationSubscriptions();
       expect(capturedSubscriptions.length).to.be.eql(1);
-      expect(capturedSubscriptions[0].topic).to.be.eql(shop.topics.CURRENT_LANGUAGE);
+      expect(capturedSubscriptions[0]).to.be.eql(shop.topics.CURRENT_LANGUAGE);
    });
    
    it('a new language (english) gets provided to a derived object', function() {

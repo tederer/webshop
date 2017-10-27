@@ -1,7 +1,9 @@
-/* global global, shop, common, Map, assertNamespace */
+/* global global, shop, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/LanguageSelector.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 assertNamespace('shop.Context');
 
@@ -10,12 +12,10 @@ var DEFAULT_ALTERNATIVE_LANGUAGE = shop.Language.EN;
 var DEFAULT_LANGUAGE_DEPENDENT_TEXT_ID = 'defaultTextId';
 
 var instance;
-var publications;
-var capturedCommands;
 var capturedEventType;
 var capturedCallback;
 var capturedTexts;
-var capturedCallbacks;
+var mockedBus;
 
 var mockedUiComponentProvider = function() {
    return {
@@ -34,27 +34,8 @@ function valueIsAnObject(val) {
    return ( (typeof val === 'function') || (typeof val === 'object') );
 }
 
-var mockedBus = {
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      capturedCallbacks[topic] = callback;
-      callback(publications[topic]);
-   },
-   
-   sendCommand: function sendCommand(topic, data) {
-      capturedCommands[capturedCommands.length] = {topic: topic, data: data};
-   },
-   
-   simulatePublication: function simulatePublication(topic, data) {
-      publications[topic] = data;
-      var callback = capturedCallbacks[topic];
-      if (callback !== undefined) {
-         callback(data);
-      }
-   }
-};
-
 var givenLanguageDependentTextPublication = function givenLanguageDependentTextPublication(textId, text) {
-   mockedBus.simulatePublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textId, text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textId, text);
 };
 
 var givenDefaultLanguageSelector = function givenDefaultLanguageSelector() {
@@ -62,11 +43,11 @@ var givenDefaultLanguageSelector = function givenDefaultLanguageSelector() {
 };
 
 var givenCurrentLanguageIs = function givenCurrentLanguageIs(language) {
-   mockedBus.simulatePublication(shop.topics.CURRENT_LANGUAGE, language);
+   mockedBus.publish(shop.topics.CURRENT_LANGUAGE, language);
 };
 
 var givenLanguageSelectorTextIs = function givenLanguageSelectorTextIs(text) {
-   mockedBus.simulatePublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'menu.languageSelectorButton', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'menu.languageSelectorButton', text);
 };
 
 var whenTheComponentGetsClicked = function whenTheComponentGetsClicked() {
@@ -74,22 +55,14 @@ var whenTheComponentGetsClicked = function whenTheComponentGetsClicked() {
 };
 
 var lastSetLanguage = function lastSetLanguage() {
-   var result;
-   capturedCommands.forEach(function(command) {
-      if (command.topic === shop.topics.SET_CURRENT_LANGUAGE) {
-         result = command.data;
-      }
-   });
-   return result;
+   return mockedBus.getLastCommand(shop.topics.SET_CURRENT_LANGUAGE);
 };
 
 var setup = function setup() {
-   publications = {};
-   capturedCommands = [];
+   mockedBus = new testing.MockedBus();
    capturedEventType = undefined;
    capturedCallback = undefined;
    capturedTexts = [];
-   capturedCallbacks = {};
 };
 
 describe('LanguageSelector', function() {

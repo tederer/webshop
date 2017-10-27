@@ -18,7 +18,10 @@ testing.MockedBus = function MockedBus() {
    
    this.subscribeToPublication = function subscribeToPublication(topic, callback) {
       publicationCallbacks[topic] = callback;
-      callback(lastPublications[topic]);
+      var data = (lastPublications[topic] === undefined) ? undefined : lastPublications[topic].data;
+      if (data) {
+         callback(data);
+      }
    };
    
    this.sendCommand = function sendCommand(topic, data) {
@@ -31,7 +34,11 @@ testing.MockedBus = function MockedBus() {
    
    this.publish = function publish(topic, data) {
       capturedPublications[capturedPublications.length] = {topic: topic, data: data};
-      lastPublications[topic] = data;
+      if (lastPublications[topic] === undefined) {
+         lastPublications[topic] = {data: data, count: 1};
+      } else {
+         lastPublications[topic] = {data: data, count: lastPublications[topic].count + 1};
+      }
       var callback = publicationCallbacks[topic];
       if (callback !== undefined) {
          callback(data);
@@ -39,6 +46,32 @@ testing.MockedBus = function MockedBus() {
    };
    
    this.getLastPublication = function getLastPublication(topic) {
-      return lastPublications[topic];
+      return lastPublications[topic].data;
+   };
+   
+   this.getPublicationCount = function getPublicationCount(topic) {
+      return lastPublications[topic].count;
+   };
+   
+   this.getLastCommand = function getLastCommand(topic) {
+      var data;
+      for (var index = 0; data === undefined && index < capturedCommands.length; index++) {
+         if (capturedCommands[index].topic === topic) {
+            data = capturedCommands[index].data;
+         }
+      }
+      return data;
+   };
+   
+   this.getPublicationSubscriptions = function getPublicationSubscriptions() {
+      return Object.keys(publicationCallbacks);
+   };
+   
+   this.reset = function reset() {
+      commandCallbacks = [];
+      publicationCallbacks = [];
+      lastPublications = {};
+      capturedCommands = [];
+      capturedPublications = [];
    };
 };

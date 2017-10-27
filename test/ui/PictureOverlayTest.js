@@ -1,7 +1,9 @@
-/* global global, shop, common, Map, assertNamespace */
+/* global global, shop, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/PictureOverlay.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 var DEFAULT_SELECTOR = 'selectorA';
 var DEFAULT_LANGUAGES = [shop.Language.DE, shop.Language.EN];
@@ -9,12 +11,11 @@ var DEFAULT_TEMPLATE_NAME = 'pictureOverlay';
 var PLACEHOLDER = '<!--image-->';
 
 var instance;
-var capturedSubscriptionCallbacks;
-var publications;
 var capturedHtmlContent;
 var capturedSelector;
 var capturedVisiblityChanges;
 var initializeInvocationCount;
+var mockedBus;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -35,21 +36,6 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
    };
 };
 
-
-var mockedBus = {
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      capturedSubscriptionCallbacks[topic] = callback;
-      callback(publications[topic]);
-   },
-   
-   publish: function publish(topic, data) {
-      var callback =  capturedSubscriptionCallbacks[topic];
-      if (callback !== undefined) {
-         callback(data);
-      }
-   }
-};
-
 var setHtmlContent = function setHtmlContent(selector, content) {
    capturedSelector = selector;
    capturedHtmlContent = content;
@@ -68,7 +54,7 @@ var givenDefaultPictureOverlay = function givenDefaultPictureOverlay() {
 };
 
 var givenTemplatePublication = function givenTemplatePublication(language, data) {
-   publications['/htmlContent/' + language + '/' + DEFAULT_TEMPLATE_NAME] = data;
+   mockedBus.publish('/htmlContent/' + language + '/' + DEFAULT_TEMPLATE_NAME, data);
 };
 
 var givenPublishedLanguageIs = function givenPublishedLanguageIs(language) {
@@ -84,8 +70,7 @@ var whenShownPicturePublicationIs = function whenShownPicturePublicationIs(relat
 };
 
 var setup = function setup() {
-   publications = {};
-   capturedSubscriptionCallbacks = {};
+   mockedBus = new testing.MockedBus();
    capturedHtmlContent = undefined;
    capturedVisiblityChanges = [];
    capturedSelector = undefined;
