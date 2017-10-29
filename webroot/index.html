@@ -42,19 +42,19 @@
       languageDependentTexts.load();
       
       $(document).ready(function() {
-         new shop.ui.LanguageDependentComponent('#shop > #menu > #start',           'menu.startButton' );
-         new shop.ui.LanguageDependentComponent('#shop > #menu > #plants',          'menu.plantsButton' );
-         new shop.ui.LanguageDependentComponent('#shop > #menu > #accessories',     'menu.accessoriesButton' );
-         new shop.ui.LanguageDependentComponent('#shop > #menu > #shipping',        'menu.shippingButton' );
-         new shop.ui.LanguageDependentComponent('#shop > #menu > #companyDetails',  'menu.companyDetailsButton' );
-         new shop.ui.LanguageDependentComponent('#shop > #menu > #shoppingCart',    'menu.shoppingCartButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #header #start',           'menu.startButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #header #plants',          'menu.plantsButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #header #accessories',     'menu.accessoriesButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #header #shipping',        'menu.shippingButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #header #companyDetails',  'menu.companyDetailsButton' );
+         new shop.ui.LanguageDependentComponent('#shop > #header #shoppingCart',    'menu.shoppingCartButton' );
          
-         new shop.ui.VisibleTabSetter('#shop > #menu > #start',            'start');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #plants',           'plants');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #accessories',      'accessories');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #shipping',         'shipping');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #companyDetails',   'companyDetails');
-         new shop.ui.VisibleTabSetter('#shop > #menu > #shoppingCart',     'shoppingCart');
+         new shop.ui.VisibleTabSetter('#shop > #header #start',            'start');
+         new shop.ui.VisibleTabSetter('#shop > #header #plants',           'plants');
+         new shop.ui.VisibleTabSetter('#shop > #header #accessories',      'accessories');
+         new shop.ui.VisibleTabSetter('#shop > #header #shipping',         'shipping');
+         new shop.ui.VisibleTabSetter('#shop > #header #companyDetails',   'companyDetails');
+         new shop.ui.VisibleTabSetter('#shop > #header #shoppingCart',     'shoppingCart');
          
          var startTabConfig = {
             tabId: 'start',
@@ -128,7 +128,7 @@
          
          new shop.ui.PictureOverlay(pictureOverlayConfig);
          
-         new shop.ui.LanguageSelector(function() { return $('#shop > #menu > #languageSelector'); });
+         new shop.ui.LanguageSelector(function() { return $('#shop > #header #languageSelector'); });
          
          var uiStatePublisherConfig = {
             supportedTabs:       ['start', 'plants', 'accessories', 'shipping', 'companyDetails', 'shoppingCart'],
@@ -151,16 +151,33 @@
 
 <body>
 <div id="shop">
-   <div id="header">header</div>
 
-   <div id="menu">
-      <button id="start"></button> 
-      <button id="plants"></button> 
-      <button id="accessories"></button> 
-      <button id="shipping"></button> 
-      <button id="companyDetails"></button> 
-      <button id="shoppingCart"></button> 
-      <button id="languageSelector"></button> 
+   <div id="header">
+      <table>
+         <tr class="firstRow">
+            <td rowspan="2" class="leftColumn">
+               <img src="/images/logo.svg">
+            </td>
+            <td class="centerColumn">
+               <h1>Orchideenvermehrung Ederer Webshop</h1>
+            </td>
+            <td class="rightColumn">
+               <button id="languageSelector"></button> 
+            </td>
+         </tr>
+         <tr class="secondRow">
+            <td class="centerColumn">
+               <button id="start"></button> 
+               <button id="plants"></button> 
+               <button id="accessories"></button> 
+               <button id="shipping"></button> 
+               <button id="companyDetails"></button> 
+            </td>
+            <td class="rightColumn">
+               <button id="shoppingCart"></button> 
+            </td>
+         </tr>
+      </table>
    </div>
 
    <div id="content">

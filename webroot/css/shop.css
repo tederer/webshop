@@ -22,35 +22,21 @@ body {
    top : 0;
    left : 0;
    width : 100%;
-   height : 4em;
+   height : 11em;
    border-radius : 1em 1em 0 0;
-   background-color : #00FF00;
+   background-color : #DDDD00;
    font-size : 1em;
-   line-height: 4em;
-   text-align: center;
-}
-
-#shop > #menu {
-   position : absolute;
-   top : 4em;
-   left : 0;
-   width : 100%;
-   height : 3em;
-   border-radius : 0 0 0 0;
-   background-color : #AAAAAA;
-   font-size : 1em;
-   line-height: 3em;
    text-align: center;
 }
 
 #shop > #content {
    position : absolute;
-   top : 7em;
+   top : 11em;
    left : 0;
    bottom : 2em;
    width : 100%;
    border-radius : 0 0 0 0;
-   background-color : #DDDDDD;
+   background-color : #eee;
 }
 
 #shop > #content > #start {
@@ -159,4 +145,50 @@ body {
 
 .invalidInput {
    background-color : #FF0000;
+}
+
+#shop > #header .leftColumn img {
+   height : 10em;
+   width : 10em;
+} 
+
+#shop > #header table {
+   width : 100%;
+   border: none;
+} 
+
+#shop > #header table td{
+   border: none;
+} 
+
+#shop > #header .centerColumn h1 {
+   text-shadow: 2px 2px 5px #555555;
+} 
+
+#shop > #header .leftColumn {
+   width : 11em;
+} 
+
+#shop > #header .rightColumn {
+   width : 10em;
+} 
+
+#shop > #header button {
+    background-color: #4CAF50; /* Green */
+    border: 1px solid green;
+    color: white;
+    padding: 1em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.5), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+#shop > #header button:not(:last-child) {
+    border-right: none;
+}
+#shop > #header button:hover {
+    background-color: #3e8e41;
 }
