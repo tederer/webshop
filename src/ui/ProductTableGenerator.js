@@ -59,6 +59,12 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       intentations--;
    };
    
+   var addHeader = function addHeader(classId) {
+      intentations++;
+      append('<th class="' + classId + '"></th>');
+      intentations--;
+   };
+   
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
       intentations++;
       var button = (product.id !== undefined) ? '<button type="button" id="' + product.id + '_button" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\');"></button>' : '';
@@ -73,7 +79,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       if (imageSmall !== undefined) {
          content = '<img src="' + imageSmall + '">';
          if (imageBig !== undefined) {
-            content = content + '<a class="bigPictureAnchor" href="javascript:shop.ui.Actions.showPicture(\'' + imageBig + '\');"></a>';
+            content = content + '<br><a class="bigPictureAnchor" href="javascript:shop.ui.Actions.showPicture(\'' + imageBig + '\');"></a>';
          }
       } else {
          if (url !== undefined) {
@@ -96,11 +102,24 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       intentations--;
    };
    
+   var addCaptions = function addCaptions() {
+      intentations++;
+      append('<tr>');
+      addHeader('fotoHeader');
+      addHeader('nameHeader');
+      addHeader('descriptionHeader');
+      addHeader('priceHeader');
+      addHeader('&nbsp;');
+      append('</tr>');
+      intentations--;
+   };
+   
    this.generateTable = function generateTable(config) {
       intentations = 1;
       content = '';
       
-      append('<table>');
+      append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
+      addCaptions();
       config.products.forEach(function(product) { 
          addRow(product);
       });  

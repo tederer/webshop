@@ -8,5 +8,9 @@
   "menu.languageSelectorButton":          { "de": "English",            "en": "Deutsch" },
   "productTable.addToShoppingCartButton": { "de": "in den Warenkorb",   "en": "add to shopping cart" },
   "productTable.onTheInternetAnchor":     { "de": "im Internet",        "en": "on the internet" },
-  "productTable.bigPictureAnchor":        { "de": "großes Bild",        "en": "big picture" }
+  "productTable.bigPictureAnchor":        { "de": "großes Bild",        "en": "big picture" },
+  "productTable.fotoHeader":              { "de": "Foto",               "en": "photo" },
+  "productTable.nameHeader":              { "de": "Name",               "en": "name" },
+  "productTable.descriptionHeader":       { "de": "Beschreibung",       "en": "description" },
+  "productTable.priceHeader":             { "de": "Preis",              "en": "price" }
 }
