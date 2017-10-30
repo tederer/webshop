@@ -1,8 +1,10 @@
-/* global global, shop, common, assertNamespace */
+/* global global, shop, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/LanguageDependentTextSetter.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 assertNamespace('shop.Context');
 
@@ -10,33 +12,13 @@ var DEFAULT_SELECTOR = '#shop > #myComp';
 var DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY = 'myText';
 
 var instance;
-var capturedSubscriptions;
-var publications;
 var capturedSetTexts;
+var mockedBus;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
    return ( (typeof val === 'function') || (typeof val === 'object') );
 }
-
-var mockedBus = {
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      capturedSubscriptions[capturedSubscriptions.length] = { topic: topic, callback: callback };
-      var lastPublishedData = publications[topic];
-      if (lastPublishedData !== undefined) {
-         callback(lastPublishedData);
-      }
-   },
-   
-   publish: function publish(topic, data) {
-      publications[topic] = data;
-      capturedSubscriptions.forEach(function(subscription) {
-         if (subscription.topic === topic) {
-            subscription.callback(data);
-         }
-      });
-   }
-};
 
 var mockedComponentTextSetter = function mockedComponentTextSetter(selector, text) {
    capturedSetTexts[capturedSetTexts.length] = {selector: selector, text: text};
@@ -55,9 +37,8 @@ var whenTheLanguageDependentTextGetsPublished =  function whenTheLanguageDepende
 };
 
 var setup = function setup() {
-   capturedSubscriptions = [];
+   mockedBus = new testing.MockedBus();
    capturedSetTexts = [];
-   publications = {};
    shop.Context.log = function log(message) {};
 };
 

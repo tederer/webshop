@@ -1,9 +1,11 @@
-/* global global, shop, common, assertNamespace */
+/* global global, shop, common, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/LanguageDependentTexts.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Promise.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 assertNamespace('shop.Context');
 
@@ -17,33 +19,9 @@ var ERROR_MESSAGE = 'cannot load resource';
 
 var instance;
 var capturedConfigBaseUrl;
-var capturedPublications;
 var configuredTexts;
-var capturedSubscriptions;
 var capturedResourceName;
-var publications;
-
-var mockedBus = {
-   subscribeToPublication: function subscribeToPublication(topic, callback) {
-      capturedSubscriptions[capturedSubscriptions.length] = { topic: topic, callback: callback };
-      var lastPublishedData = publications[topic];
-      if (lastPublishedData !== undefined) {
-         callback(lastPublishedData);
-      }
-   },
-   publish: function publish(topic, data) {
-      capturedPublications[capturedPublications.length] = {topic: topic, data: data};
-   },
-
-   notifySubscribers: function notifySubscribers(topic, data) {
-      publications[topic] = data;
-      capturedSubscriptions.forEach(function(subscription) {
-         if (subscription.topic === topic) {
-            subscription.callback(data);
-         }
-      });
-   }
-};
+var mockedBus;
 
 var mockedResourceProvider = {
       get: function get(name) {
@@ -65,7 +43,7 @@ var resourceProviderFactoryFunction = function resourceProviderFactoryFunction(c
    return mockedResourceProvider;
 };
 
-var givenDefaultLanguageSelector = function givenDefaultLanguageSelector() {
+var givenDefaultLanguageDependentTexts = function givenDefaultLanguageDependentTexts() {
    instance = new shop.LanguageDependentTexts(DEFAULT_CONFIG_BASE_URL, mockedBus, resourceProviderFactoryFunction);
 };
 
@@ -80,7 +58,7 @@ var givenConfiguredText = function givenConfiguredText(id, language, text) {
 };
 
 var givenCurrentLanguageIs = function givenCurrentLanguageIs(currentLanguage) {
-   mockedBus.notifySubscribers(shop.topics.CURRENT_LANGUAGE, currentLanguage);
+   mockedBus.publish(shop.topics.CURRENT_LANGUAGE, currentLanguage);
 };
 
 var givenTextsAreLoaded = function givenTextsAreLoaded() {
@@ -95,24 +73,11 @@ var whenTextsAreLoaded = function whenTextsAreLoaded() {
    givenTextsAreLoaded();
 };
 
-var capturedPublicationsContains = function capturedPublicationsContains(expectedPublication) {
-   var found = false;
-   for (var index = 0; found !== true && index < capturedPublications.length; index++) {
-      var publication = capturedPublications[index];
-      if (publication.topic === expectedPublication.topic && publication.data === expectedPublication.data) {
-         found = true;
-      }
-   }
-   return found;
-};
-
 var setup = function setup() {
+   mockedBus = new testing.MockedBus();
    capturedConfigBaseUrl = undefined;
-   capturedPublications = [];
    configuredTexts = {};
-   capturedSubscriptions = [];
    capturedResourceName = undefined;
-   publications = {};
    shop.Context.log = function log(message) {};
 };
 
@@ -122,12 +87,12 @@ describe('LanguageDependentTexts', function() {
    beforeEach(setup);
    
    it('creating an instance of a LanguageDependentTexts is an instance/object', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
    it('LanguageDependentTexts provides config base URL to ResourceProvider A', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       whenTextsAreLoaded();
       expect(capturedConfigBaseUrl).to.be.eql(DEFAULT_CONFIG_BASE_URL);
    });
@@ -145,66 +110,55 @@ describe('LanguageDependentTexts', function() {
    });
       
    it('LanguageDependentTexts starts loading the config resource called "languageDependentTexts"', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       whenTextsAreLoaded();
       expect(capturedResourceName).to.be.eql('languageDependentTexts.json');
    });
       
-   it('LanguageDependentTexts subscribes to the current language publication', function() {
-      givenDefaultLanguageSelector();
-      whenTextsAreLoaded();
-      expect(capturedSubscriptions.length).to.be.eql(1);
-      expect(capturedSubscriptions[0].topic).to.be.eql(shop.topics.CURRENT_LANGUAGE);
-   });
-      
    it('LanguageDependentTexts publishes german text', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       givenConfiguredText('buttonA', shop.Language.DE, 'Knopf A');
       givenConfiguredText('buttonA', shop.Language.EN, 'Button A');
       givenTextsAreLoaded();
       whenCurrentLanguageIs(shop.Language.DE);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Knopf A'})).to.be.eql(true);
+      expect(mockedBus.getLastPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA')).to.be.eql('Knopf A');
    });
       
    it('LanguageDependentTexts publishes multiple texts', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       givenConfiguredText('buttonA', shop.Language.DE, 'Knopf A');
       givenConfiguredText('buttonA', shop.Language.EN, 'Button A');
       givenConfiguredText('buttonB', shop.Language.DE, 'Knopf B');
       givenConfiguredText('buttonB', shop.Language.EN, 'Button B');
       givenTextsAreLoaded();
       whenCurrentLanguageIs(shop.Language.EN);
-      expect(capturedPublications.length).to.be.eql(2);
-      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Button A'})).to.be.eql(true);
-      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonB', data: 'Button B'})).to.be.eql(true);
+      expect(mockedBus.getLastPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA')).to.be.eql('Button A');
+      expect(mockedBus.getLastPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonB')).to.be.eql('Button B');
    });
       
    it('LanguageDependentTexts publishes english text', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       givenConfiguredText('buttonA', shop.Language.DE, 'Knopf A');
       givenConfiguredText('buttonA', shop.Language.EN, 'Button A');
       givenTextsAreLoaded();
       whenCurrentLanguageIs(shop.Language.EN);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Button A'})).to.be.eql(true);
+      expect(mockedBus.getLastPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA')).to.be.eql('Button A');
    });
       
    it('LanguageDependentTexts publishes german text independent of the order of current language and config publication', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       givenConfiguredText('buttonA', shop.Language.DE, 'Knopf A');
       givenConfiguredText('buttonA', shop.Language.EN, 'Button A');
       givenCurrentLanguageIs(shop.Language.DE);
       whenTextsAreLoaded();
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublicationsContains({topic: shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA', data: 'Knopf A'})).to.be.eql(true);
+      expect(mockedBus.getLastPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'buttonA')).to.be.eql('Knopf A');
    });
    
    it('LanguageDependentTexts publishes nothing when config can not be parsed', function() {
-      givenDefaultLanguageSelector();
+      givenDefaultLanguageDependentTexts();
       configuredTexts = '{donald={}}';
       givenCurrentLanguageIs(shop.Language.DE);
       whenTextsAreLoaded();
-      expect(capturedPublications.length).to.be.eql(0);
+      expect(mockedBus.getTotalPublicationCount()).to.be.eql(1);
    });
 });  

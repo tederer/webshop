@@ -1,7 +1,9 @@
-/* global global, shop, common, Map, setTimeout */
+/* global global, shop, testing, setTimeout */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/HtmlContentLoader.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 var DEFAULT_CONTENT_BASE_URL = 'http://192.168.1.1/content';
 var DEFAULT_LANGUAGES = [shop.Language.DE, shop.Language.EN];
@@ -10,19 +12,13 @@ var ERROR_MESSAGE = 'failed to load HTML resource';
 var instance;
 var capturedNames;
 var capturedContentBaseUrl;
-var capturedPublications;
 var contents;
+var mockedBus;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
    return ( (typeof val === 'function') || (typeof val === 'object') );
 }
-
-var mockedBus = {
-   publish: function publish(topic, data) {
-      capturedPublications[capturedPublications.length] = {topic: topic, data: data};
-   }
-};
 
 var MockedAbstractContentLoader = function MockedAbstractContentLoader() {
    
@@ -69,20 +65,10 @@ var capturedNamesContains = function capturedNamesContains(expectedName) {
    return found;
 };
 
-var capturedPublicationsContains = function capturedPublicationsContains(expectedPublication) {
-   var found = false;
-   capturedPublications.forEach(function(publication) {
-      if (publication.topic === expectedPublication.topic && publication.data === expectedPublication.data) {
-         found = true;
-      }
-   });
-   return found;
-};
-
 var setup = function setup() {
+   mockedBus = new testing.MockedBus();
    capturedNames = undefined;
    capturedContentBaseUrl = undefined;
-   capturedPublications = [];
    contents = {};
 };
 
@@ -130,8 +116,7 @@ describe('HtmlContentLoader', function() {
       givenHtmlContentLoader('http://127.0.0.1/something', [shop.Language.EN]);
       givenContentOf('en/trees.html', 'there are some trees');
       whenContentGetsLoaded(['trees']);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublicationsContains({topic: '/htmlContent/' + shop.Language.EN + '/trees', data: 'there are some trees'})).to.be.eql(true);
+      expect(mockedBus.getLastPublication('/htmlContent/' + shop.Language.EN + '/trees')).to.be.eql('there are some trees');
    });   
    
    it('HtmlContentLoader publishes content B', function() {
@@ -141,18 +126,15 @@ describe('HtmlContentLoader', function() {
       givenContentOf('de/fruits.html', 'Fruchtsalat');
       givenContentOf('en/fruits.html', 'fruit salad');
       whenContentGetsLoaded(['trees', 'fruits']);
-      expect(capturedPublications.length).to.be.eql(4);
-      expect(capturedPublicationsContains({topic: '/htmlContent/' + shop.Language.EN + '/trees', data: 'there are some trees'})).to.be.eql(true);
-      expect(capturedPublicationsContains({topic: '/htmlContent/' + shop.Language.EN + '/fruits', data: 'fruit salad'})).to.be.eql(true);
-      expect(capturedPublicationsContains({topic: '/htmlContent/' + shop.Language.DE + '/trees', data: 'Hier steht ein Wald!'})).to.be.eql(true);
-      expect(capturedPublicationsContains({topic: '/htmlContent/' + shop.Language.DE + '/fruits', data: 'Fruchtsalat'})).to.be.eql(true);
+      expect(mockedBus.getLastPublication('/htmlContent/' + shop.Language.EN + '/trees')).to.be.eql('there are some trees');
+      expect(mockedBus.getLastPublication('/htmlContent/' + shop.Language.EN + '/fruits')).to.be.eql('fruit salad');
+      expect(mockedBus.getLastPublication('/htmlContent/' + shop.Language.DE + '/trees')).to.be.eql('Hier steht ein Wald!');
+      expect(mockedBus.getLastPublication('/htmlContent/' + shop.Language.DE + '/fruits')).to.be.eql('Fruchtsalat');
    });
    
    it('HtmlContentLoader publishes an Error when it was not possible to load the content', function() {
       givenHtmlContentLoader('http://127.0.0.1/test', [shop.Language.DE]);
       whenContentGetsLoaded(['buildings']);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublications[0].topic).to.be.eql('/htmlContent/' + shop.Language.DE + '/buildings');
-      expect(capturedPublications[0].data instanceof Error).to.be.eql(true);
+      expect(mockedBus.getLastPublication('/htmlContent/' + shop.Language.DE + '/buildings') instanceof Error).to.be.eql(true);
    });
 });

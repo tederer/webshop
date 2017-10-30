@@ -1,7 +1,9 @@
-/* global global, shop, common, Map, setTimeout */
+/* global global, shop, testing, setTimeout */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/JsonContentLoader.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
+
+require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
 var DEFAULT_CONTENT_BASE_URL = 'http://192.168.1.1/content';
 var DEFAULT_LANGUAGES = [shop.Language.DE, shop.Language.EN];
@@ -10,19 +12,13 @@ var ERROR_MESSAGE = 'failed to load JSON resource';
 var instance;
 var capturedNames;
 var capturedContentBaseUrl;
-var capturedPublications;
 var contents;
+var mockedBus;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
    return ( (typeof val === 'function') || (typeof val === 'object') );
 }
-
-var mockedBus = {
-   publish: function publish(topic, data) {
-      capturedPublications[capturedPublications.length] = {topic: topic, data: data};
-   }
-};
 
 var MockedAbstractContentLoader = function MockedAbstractContentLoader() {
    
@@ -69,20 +65,10 @@ var capturedNamesContains = function capturedNamesContains(expectedName) {
    return found;
 };
 
-var capturedPublicationsContains = function capturedPublicationsContains(expectedPublication) {
-   var found = false;
-   capturedPublications.forEach(function(publication) {
-      if (publication.topic === expectedPublication.topic && publication.data === expectedPublication.data) {
-         found = true;
-      }
-   });
-   return found;
-};
-
 var setup = function setup() {
+   mockedBus = new testing.MockedBus();
    capturedNames = undefined;
    capturedContentBaseUrl = undefined;
-   capturedPublications = [];
    contents = {};
 };
 
@@ -130,36 +116,28 @@ describe('JsonContentLoader', function() {
       givenJsonContentLoader('http://127.0.0.1/something', [shop.Language.EN]);
       givenContentOf('en/orchid.json', '{"genera": "Cattleya", "species": "skinerii"}');
       whenContentGetsLoaded(['orchid']);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublications[0].topic).to.be.eql('/jsonContent/' + shop.Language.EN + '/orchid');
-      expect(capturedPublications[0].data.genera).to.be.eql('Cattleya');
-      expect(capturedPublications[0].data.species).to.be.eql('skinerii');
+      expect(mockedBus.getLastPublication('/jsonContent/' + shop.Language.EN + '/orchid').genera).to.be.eql('Cattleya');
+      expect(mockedBus.getLastPublication('/jsonContent/' + shop.Language.EN + '/orchid').species).to.be.eql('skinerii');
    });   
    
    it('JsonContentLoader publishes content B', function() {
       givenJsonContentLoader('http://127.0.0.1/data', [shop.Language.DE]);
       givenContentOf('de/car.json', '{"brand": "Toyota", "type": "hybrid"}');
       whenContentGetsLoaded(['car']);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublications[0].topic).to.be.eql('/jsonContent/' + shop.Language.DE + '/car');
-      expect(capturedPublications[0].data.brand).to.be.eql('Toyota');
-      expect(capturedPublications[0].data.type).to.be.eql('hybrid');
+      expect(mockedBus.getLastPublication('/jsonContent/' + shop.Language.DE + '/car').brand).to.be.eql('Toyota');
+      expect(mockedBus.getLastPublication('/jsonContent/' + shop.Language.DE + '/car').type).to.be.eql('hybrid');
    });   
    
    it('JsonContentLoader publishes an Error when it was not possible to load the content', function() {
       givenJsonContentLoader('http://127.0.0.1/test', [shop.Language.DE]);
       whenContentGetsLoaded(['buildings']);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublications[0].topic).to.be.eql('/jsonContent/' + shop.Language.DE + '/buildings');
-      expect(capturedPublications[0].data instanceof Error).to.be.eql(true);
+      expect(mockedBus.getLastPublication('/jsonContent/' + shop.Language.DE + '/buildings') instanceof Error).to.be.eql(true);
    });
    
    it('JsonContentLoader publishes an Error when the content cannot be parsed', function() {
       givenJsonContentLoader('http://127.0.0.1/test', [shop.Language.DE]);
       givenContentOf('de/buildings.json', '{"brand"= "Toyota", "type": "hybrid"}');
       whenContentGetsLoaded(['buildings']);
-      expect(capturedPublications.length).to.be.eql(1);
-      expect(capturedPublications[0].topic).to.be.eql('/jsonContent/' + shop.Language.DE + '/buildings');
-      expect(capturedPublications[0].data instanceof Error).to.be.eql(true);
+      expect(mockedBus.getLastPublication('/jsonContent/' + shop.Language.DE + '/buildings') instanceof Error).to.be.eql(true);
    });
 });

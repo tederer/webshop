@@ -11,6 +11,7 @@ testing.MockedBus = function MockedBus() {
    var lastPublications = {};
    var capturedCommands = [];
    var capturedPublications = [];
+   var totalPublicationCount = 0;
    
    this.subscribeToCommand = function subscribeToCommand(topic, callback) {
       commandCallbacks[topic] = callback;
@@ -34,6 +35,8 @@ testing.MockedBus = function MockedBus() {
    
    this.publish = function publish(topic, data) {
       capturedPublications[capturedPublications.length] = {topic: topic, data: data};
+      totalPublicationCount++;
+      
       if (lastPublications[topic] === undefined) {
          lastPublications[topic] = {data: data, count: 1};
       } else {
@@ -51,6 +54,10 @@ testing.MockedBus = function MockedBus() {
    
    this.getPublicationCount = function getPublicationCount(topic) {
       return lastPublications[topic].count;
+   };
+   
+   this.getTotalPublicationCount = function getTotalPublicationCount() {
+      return totalPublicationCount;
    };
    
    this.getLastCommand = function getLastCommand(topic) {
@@ -73,5 +80,6 @@ testing.MockedBus = function MockedBus() {
       lastPublications = {};
       capturedCommands = [];
       capturedPublications = [];
+      totalPublicationCount = 0;
    };
 };
