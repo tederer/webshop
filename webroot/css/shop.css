@@ -32,8 +32,8 @@ body {
 #shop > #content {
    position : absolute;
    top : 11em;
-   left : 0;
    bottom : 2em;
+   left : 0;
    width : 100%;
    border-radius : 0 0 0 0;
    background-color : #eee;
@@ -42,72 +42,78 @@ body {
 #shop > #content > #start {
    position : absolute;
    top : 0;
-   left : 0;
    bottom : 2em;
-   width : 100%;
+   left : 1em;
+   right : 1em;
    border-radius : 0 0 0 0;
    background-color : transparent;
    visibility : hidden;
+   overflow : auto;
    z-index: 1;
 }
 
 #shop > #content > #plants {
    position : absolute;
    top : 0;
-   left : 0;
    bottom : 2em;
-   width : 100%;
+   left : 1em;
+   right : 1em;
    border-radius : 0 0 0 0;
    background-color : transparent;
    visibility : hidden;
+   overflow : auto;
    z-index: 1;
 }
 
 #shop > #content > #accessories {
    position : absolute;
    top : 0;
-   left : 0;
    bottom : 2em;
-   width : 100%;
+   left : 1em;
+   right : 1em;
    border-radius : 0 0 0 0;
    background-color : transparent;
    visibility : hidden;
+   overflow : auto;
    z-index: 1;
 }
 
 #shop > #content > #shipping {
    position : absolute;
    top : 0;
-   left : 0;
    bottom : 2em;
-   width : 100%;
+   left : 1em;
+   right : 1em;
    border-radius : 0 0 0 0;
    background-color : transparent;
    visibility : hidden;
+   overflow : auto;
    z-index: 1;
 }
 
 #shop > #content > #companyDetails {
    position : absolute;
    top : 0;
-   left : 0;
    bottom : 2em;
-   width : 100%;
+   left : 1em;
+   right : 1em;
    border-radius : 0 0 0 0;
    background-color : transparent;
    visibility : hidden;
+   overflow : auto;
    z-index: 1;
 }
 
 #shop > #content > #shoppingCart {
    position : absolute;
    top : 0;
-   left : 0;
    bottom : 2em;
-   width : 100%;
+   left : 1em;
+   right : 1em;
    border-radius : 0 0 0 0;
    background-color : transparent;
    visibility : hidden;
+   overflow : auto;
    z-index: 1;
 }
 
@@ -205,3 +211,11 @@ body {
 #shop #content table caption { text-align:center; padding:0.5em;}
 #shop #content th { padding:2pt; border: 1px solid #666666; font-weight:normal; background-color:white; text-align:center;}
 #shop #content td { padding:2pt; border: 1px solid #666666; }
+
+#shop #content .ohneRahmen { border: none; }
+#shop #content .ohneRahmen tr td { border: none; }
+#shop #content .ohneRahmen tr:first-child {border-bottom-style: none;}
+#shop #content .transparent { background-color:transparent; }
+#shop #content .ohneUeberschriften tr:first-child {border-bottom-style: none;}
+#shop #content .zentrierterText { text-align:center; }
+#shop #content .figcaption {text-align:center;}
