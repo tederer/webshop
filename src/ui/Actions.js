@@ -33,10 +33,15 @@ shop.ui.Actions = {
    
    addProductToShoppingCart: function addProductToShoppingCart(productId) {
       var textFieldSelector = '#' + productId + '_textfield';
+      var textFieldContent = $(textFieldSelector).val();
+      var quantity = parseInt(textFieldContent);
       
-      var data = { productId: productId, quantity: $(textFieldSelector).val() };
-      console.log('sending command ' + shop.topics.ADD_PRODUCT_TO_SHOPPING_CART + ' with: ' + JSON.stringify(data));
-      shop.Context.bus.sendCommand(shop.topics.ADD_PRODUCT_TO_SHOPPING_CART, data);
+      if (isNaN(quantity)) {
+         shop.Context.log('Failed to convert "' + textFieldContent + '" to integer!');
+      } else {
+         var data = { productId: productId, quantity: quantity };
+         shop.Context.bus.sendCommand(shop.topics.ADD_PRODUCT_TO_SHOPPING_CART, data);
+      }
    }
 };
 

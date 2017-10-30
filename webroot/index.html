@@ -18,6 +18,7 @@
    <script type="text/javascript" src="javascripts/JsonContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/HtmlContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/LanguageDependentTexts.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ShoppingCart.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractHideableLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/Tab.js" charset="UTF-8"></script>
@@ -30,6 +31,8 @@
    <script type="text/javascript" src="javascripts/ui/PictureOverlay.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/ShoppingCartButtonTextSetter.js" charset="UTF-8"></script>
+   
    <script>
       var baseAddress            = window.location.protocol + '//' + window.location.host + '/';
       var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
@@ -42,12 +45,14 @@
       languageDependentTexts.load();
       
       $(document).ready(function() {
+         new shop.ShoppingCart();
+         
          new shop.ui.LanguageDependentTextSetter('#shop > #header #start',           'menu.startButton' );
          new shop.ui.LanguageDependentTextSetter('#shop > #header #plants',          'menu.plantsButton' );
          new shop.ui.LanguageDependentTextSetter('#shop > #header #accessories',     'menu.accessoriesButton' );
          new shop.ui.LanguageDependentTextSetter('#shop > #header #shipping',        'menu.shippingButton' );
          new shop.ui.LanguageDependentTextSetter('#shop > #header #companyDetails',  'menu.companyDetailsButton' );
-         new shop.ui.LanguageDependentTextSetter('#shop > #header #shoppingCart',    'menu.shoppingCartButton' );
+         new shop.ui.ShoppingCartButtonTextSetter('#shop > #header #shoppingCart',    'menu.shoppingCartButton' );
          
          new shop.ui.VisibleTabSetter('#shop > #header #start',            'start');
          new shop.ui.VisibleTabSetter('#shop > #header #plants',           'plants');
