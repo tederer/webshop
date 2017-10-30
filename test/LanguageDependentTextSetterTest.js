@@ -1,7 +1,7 @@
 /* global global, shop, common, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/LanguageDependentComponent.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/LanguageDependentTextSetter.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
 
 assertNamespace('shop.Context');
@@ -42,12 +42,12 @@ var mockedComponentTextSetter = function mockedComponentTextSetter(selector, tex
    capturedSetTexts[capturedSetTexts.length] = {selector: selector, text: text};
 };
 
-var givenDefaultLanguageDependentComponent = function givenDefaultLanguageDependentComponent() {
-   instance = new shop.ui.LanguageDependentComponent(DEFAULT_SELECTOR, DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, mockedComponentTextSetter, mockedBus);
+var givenDefaultLanguageDependentTextSetter = function givenDefaultLanguageDependentTextSetter() {
+   instance = new shop.ui.LanguageDependentTextSetter(DEFAULT_SELECTOR, DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, mockedComponentTextSetter, mockedBus);
 };
 
-var givenLanguageDependentComponent = function givenLanguageDependentComponent(selector, textKey) {
-   instance = new shop.ui.LanguageDependentComponent(selector, textKey, mockedComponentTextSetter, mockedBus);
+var givenLanguageDependentTextSetter = function givenLanguageDependentTextSetter(selector, textKey) {
+   instance = new shop.ui.LanguageDependentTextSetter(selector, textKey, mockedComponentTextSetter, mockedBus);
 };
 
 var whenTheLanguageDependentTextGetsPublished =  function whenTheLanguageDependentTextGetsPublished(textKey, text) {
@@ -61,17 +61,17 @@ var setup = function setup() {
    shop.Context.log = function log(message) {};
 };
 
-describe('LanguageDependentComponent', function() {
+describe('LanguageDependentTextSetter', function() {
 	
    beforeEach(setup);
    
    it('creating an instance is an instance/object', function() {
-      givenDefaultLanguageDependentComponent();
+      givenDefaultLanguageDependentTextSetter();
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
    it('the published language dependent text gets set on the component A', function() {
-      givenDefaultLanguageDependentComponent();
+      givenDefaultLanguageDependentTextSetter();
       whenTheLanguageDependentTextGetsPublished(DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, 'some text');
       expect(capturedSetTexts.length).to.be.eql(1);
       expect(capturedSetTexts[0].selector).to.be.eql(DEFAULT_SELECTOR);
@@ -79,7 +79,7 @@ describe('LanguageDependentComponent', function() {
    });
    
    it('the published language dependent text gets set on the component B', function() {
-      givenLanguageDependentComponent('#spa > #anotherComp', 'anotherCompTextKey');
+      givenLanguageDependentTextSetter('#spa > #anotherComp', 'anotherCompTextKey');
       whenTheLanguageDependentTextGetsPublished('anotherCompTextKey', 'another special text');
       expect(capturedSetTexts.length).to.be.eql(1);
       expect(capturedSetTexts[0].selector).to.be.eql('#spa > #anotherComp');

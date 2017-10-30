@@ -2,14 +2,14 @@
 
 require('../NamespaceUtils.js');
 require('../Context.js');
-require('./AbstractLanguageDependentComponent.js');
 
 assertNamespace('shop.ui');
 
 /**
- * This component changes it's text when the current language gets changed.
+ * This setter updates the text of the HTML element identified by its selector when the corresponding
+ * language dependent text changes.
  */
-shop.ui.LanguageDependentComponent = function LanguageDependentComponent(selector, languageDependentTextKey, optionalComponentTextSetter, optionalBus) {
+shop.ui.LanguageDependentTextSetter = function LanguageDependentTextSetter(selector, languageDependentTextKey, optionalComponentTextSetter, optionalBus) {
    
    var defaultComponentTextSetter = function defaultComponentTextSetter(selector, text) {
       $(selector).text(text);

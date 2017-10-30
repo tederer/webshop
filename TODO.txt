@@ -1,2 +1,4 @@
 ﻿* man könnte JsonContentLoader & HtmlContentLoader umstellen damit sie nicht für jede Sprache ein Topic verwenden
 * Warenkorb implementieren
+* "in warenkorb" knopf soll nur in einer tabelle disabled werden -> unique IDs machen
+* recherchieren wie append von grunt funktioniert
