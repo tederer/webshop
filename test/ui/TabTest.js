@@ -41,7 +41,7 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
 };
 
 var mockedProductTableGenerator = {
-   generateTable: function generateTable(config) {
+   generateTable: function generateTable(configId, config) {
       return productTable;
    }
 };

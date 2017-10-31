@@ -56,14 +56,15 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
             if (activeLanguage === undefined) {
                fulfill('');
             } else {
-               var data = configs[config.configName + '_' + activeLanguage];
+               var configKey = config.configName + '_' + activeLanguage;
+               var data = configs[configKey];
                if (data instanceof Error) {
                   fulfill(formatErrorMessage(data.message));
                } else {
                   if (data === undefined) {
                      fulfill(formatErrorMessage('configuration ' + config.configName + ' is not available in language ' + activeLanguage + '!'));
                   } else {
-                     fulfill(productTableGenerator.generateTable(data));
+                     fulfill(productTableGenerator.generateTable(configKey, data));
                   }
                }
             }

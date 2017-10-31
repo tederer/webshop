@@ -38,6 +38,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    var intentationAsString = '   ';
    var intentations;
    var content;
+   var tableId;
    
    var append = function(text) {
       var line = '';
@@ -67,8 +68,11 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
       intentations++;
-      var button = (product.id !== undefined) ? '<button type="button" id="' + product.id + '_button" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\');"></button>' : '';
-      var input = '<input type="text" id="' + product.id + '_textfield" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + product.id + '\');">';
+      var commonId = tableId + '_' + product.id;
+      var buttonId = commonId + '_button';
+      var textfieldId = commonId + '_textfield';
+      var button = '<button type="button" id="' + buttonId + '" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + commonId + '\');"></button>';
+      var input = '<input type="text" id="' + textfieldId + '" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + commonId + '\');">';
       append('<td>' + input + '&nbsp;' + button + '</td>');
       intentations--;
    };
@@ -114,9 +118,10 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       intentations--;
    };
    
-   this.generateTable = function generateTable(config) {
+   this.generateTable = function generateTable(id, config) {
       intentations = 1;
       content = '';
+      tableId = id;
       
       append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
       addCaptions();
