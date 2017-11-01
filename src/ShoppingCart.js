@@ -43,5 +43,6 @@ shop.ShoppingCart = function ShoppingCart(optionalBus) {
       bus.publish(shop.topics.SHOPPING_CART_CONTENT, products);
    };
    
+   bus.publish(shop.topics.SHOPPING_CART_CONTENT, []);
    bus.subscribeToCommand(shop.topics.ADD_PRODUCT_TO_SHOPPING_CART, onAddProductToShoppingCart);
 };

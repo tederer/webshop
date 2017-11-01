@@ -19,6 +19,10 @@ shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX = '/languageDependentText/';
 // data: an array of { productId: <String>, amount: <Integer> }
 shop.topics.SHOPPING_CART_CONTENT = '/shoppingCartContent';
 
+// data: the code (ISO 3166 Alpha 2) of the country where the order should be shipped to.
+// https://de.wikipedia.org/wiki/ISO-3166-1-Kodierliste
+shop.topics.COUNTRY_OF_DESTINATION = '/countryOfDestination';
+
 //                COMMANDS
 
 // data: the name of the tab that shall be visible

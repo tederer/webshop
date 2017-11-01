@@ -58,6 +58,10 @@ describe('ShoppingCart', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
+   it('a new shopping cart publishes an empty content', function() {
+      expect(allProductsInShoppingCart().length).to.be.eql(0);
+   });
+   
    it('adding a product to an empty shopping cart increases the number of products in the cart', function() {
       whenTheProductGetsAddedToTheShoppingCart('productA', 3);
       expect(allProductsInShoppingCart().length).to.be.eql(1);

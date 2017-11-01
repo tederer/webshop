@@ -32,6 +32,7 @@
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/ShoppingCartButtonTextSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/ShoppingCartContentTableSetter.js" charset="UTF-8"></script>
    
    <script>
       var baseAddress            = window.location.protocol + '//' + window.location.host + '/';
@@ -120,6 +121,9 @@
          };
          
          var shoppingCartTab = new shop.ui.Tab(shoppingCartTabConfig);
+         
+         var shoppignCartContentTableSetter = new shop.ui.ShoppingCartContentTableSetter();
+         shoppingCartTab.onTabContentChanged(shoppignCartContentTableSetter.onTabContentChangedCallback);
          
          var setter = new shop.ui.LanguageDependentTextInProductTableSetter();
          plantTab.onTabContentChanged(setter.onTabContentChangedCallback);
