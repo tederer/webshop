@@ -31,8 +31,8 @@ shop.ui.Actions = {
       }
    },
    
-   addProductToShoppingCart: function addProductToShoppingCart(productId) {
-      var textFieldSelector = '#' + productId + '_textfield';
+   addProductToShoppingCart: function addProductToShoppingCart(productId, textfieldId) {
+      var textFieldSelector = '#' + textfieldId;
       var textFieldContent = $(textFieldSelector).val();
       var quantity = parseInt(textFieldContent);
       
@@ -42,6 +42,12 @@ shop.ui.Actions = {
          var data = { productId: productId, quantity: quantity };
          shop.Context.bus.sendCommand(shop.topics.ADD_PRODUCT_TO_SHOPPING_CART, data);
       }
+   },
+   
+   changeCountryOfDestination: function changeCountryOfDestination() {
+      var selectedValue = $('#shop > #content > #shoppingCart > #countryOfDestination').val();
+      var valueToPublish = (selectedValue === 'nothing') ? undefined : selectedValue;
+      shop.Context.bus.publish(shop.topics.COUNTRY_OF_DESTINATION, valueToPublish);
    }
 };
 

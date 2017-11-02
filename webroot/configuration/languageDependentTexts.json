@@ -15,5 +15,6 @@
    "productTable.priceHeader":                  { "de": "Preis",              "en": "price" },
    "shoppingCartContentTable.quantityHeader":   { "de": "Menge",              "en": "quantity" },
    "shoppingCartContentTable.nameHeader":       { "de": "Name",               "en": "name" },
-   "shoppingCartContentTable.priceHeader":      { "de": "Preis",              "en": "price" }
+   "shoppingCartContentTable.priceHeader":      { "de": "Preis",              "en": "price" },
+   "shoppingCartContentTable.shippingCosts":    { "de": "Versandkosten",      "en": "shipping costs" }
 }

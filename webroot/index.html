@@ -32,17 +32,19 @@
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/ShoppingCartButtonTextSetter.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/ShoppingCartContentTableSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/shoppingCart/CartController.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/shoppingCart/TableGenerator.js" charset="UTF-8"></script>
    
    <script>
       var baseAddress            = window.location.protocol + '//' + window.location.host + '/';
       var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
+      var products               = ['pflanzen', 'zubehoer'];
       var configContentLoader    = new shop.configuration.JsonContentLoader(baseAddress + 'configuration', supportedLanguages);
       var htmlContentLoader      = new shop.configuration.HtmlContentLoader(baseAddress + 'templates', supportedLanguages);
       var languageDependentTexts = new shop.LanguageDependentTexts(baseAddress + 'configuration');
       
       htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'versandbedingungen', 'impressum', 'warenkorb', 'pictureOverlay']);
-      configContentLoader.load(['pflanzen', 'zubehoer']);
+      configContentLoader.load(products);
       languageDependentTexts.load();
       
       $(document).ready(function() {
@@ -122,8 +124,8 @@
          
          var shoppingCartTab = new shop.ui.Tab(shoppingCartTabConfig);
          
-         var shoppignCartContentTableSetter = new shop.ui.ShoppingCartContentTableSetter();
-         shoppingCartTab.onTabContentChanged(shoppignCartContentTableSetter.onTabContentChangedCallback);
+         var cartController = new shop.ui.shoppingCart.CartController(products);
+         shoppingCartTab.onTabContentChanged(cartController.onTabContentChangedCallback);
          
          var setter = new shop.ui.LanguageDependentTextInProductTableSetter();
          plantTab.onTabContentChanged(setter.onTabContentChangedCallback);

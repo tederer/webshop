@@ -18,12 +18,12 @@ shop.ui.ShoppingCartButtonTextSetter = function ShoppingCartButtonTextSetter(sel
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    var componentTextSetter = (optionalComponentTextSetter === undefined) ? defaultComponentTextSetter : optionalComponentTextSetter;
    var text;
-   var amount = 0;
+   var quantity = 0;
    
    var updateText = function updateText() {
       var textToSet = text;
-      if (amount > 0) {
-         textToSet += ' (' + amount + ')';
+      if (quantity > 0) {
+         textToSet += ' (' + quantity + ')';
       }
       componentTextSetter(selector, textToSet);
    };
@@ -37,9 +37,9 @@ shop.ui.ShoppingCartButtonTextSetter = function ShoppingCartButtonTextSetter(sel
       
       var newAmount = 0;
       for (var index = 0; index < content.length; index++) {
-         newAmount += content[index].amount;
+         newAmount += content[index].quantity;
       }
-      amount = newAmount;
+      quantity = newAmount;
       updateText();
    };
    

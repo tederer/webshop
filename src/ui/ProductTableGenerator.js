@@ -71,7 +71,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       var commonId = tableId + '_' + product.id;
       var buttonId = commonId + '_button';
       var textfieldId = commonId + '_textfield';
-      var button = '<button type="button" id="' + buttonId + '" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + commonId + '\');"></button>';
+      var button = '<button type="button" id="' + buttonId + '" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\', \'' + textfieldId + '\');"></button>';
       var input = '<input type="text" id="' + textfieldId + '" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + commonId + '\');">';
       append('<td>' + input + '&nbsp;' + button + '</td>');
       intentations--;

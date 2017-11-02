@@ -16,7 +16,7 @@ shop.topics.SHOWN_PICTURE = '/shownPicture';
 
 shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX = '/languageDependentText/';
 
-// data: an array of { productId: <String>, amount: <Integer> }
+// data: an array of { productId: <String>, quantity: <Integer> }
 shop.topics.SHOPPING_CART_CONTENT = '/shoppingCartContent';
 
 // data: the code (ISO 3166 Alpha 2) of the country where the order should be shipped to.

@@ -25,15 +25,15 @@ shop.ShoppingCart = function ShoppingCart(optionalBus) {
       products.splice(indexToRemove, 1);
    };
    
-   var addProduct = function addProduct(productId, amount) {
+   var addProduct = function addProduct(productId, quantity) {
       var productIndex = getIndexOfProduct(productId);
       if (productIndex === undefined) {
          productIndex = products.length;
-         products[productIndex] = {productId: productId, amount: amount};
+         products[productIndex] = {productId: productId, quantity: quantity};
       } else {
-         products[productIndex].amount += amount;
+         products[productIndex].quantity += quantity;
       }
-      if (products[productIndex].amount < 1) {
+      if (products[productIndex].quantity < 1) {
          removeProduct(productId);
       }
    };

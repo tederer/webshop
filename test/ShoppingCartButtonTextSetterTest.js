@@ -88,14 +88,14 @@ describe('ShoppingCartButtonTextSetter', function() {
    });
    
    it('a change in the language dependent text changes the component text A', function() {
-      givenShoppingCartContains([{ productId: 'productA', amount: 3 }]);
+      givenShoppingCartContains([{ productId: 'productA', quantity: 3 }]);
       givenDefaultShoppingCartButtonTextSetter();
       whenTheLanguageDependentTextGetsPublished(DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, 'button text');
       expect(lastCapturedSetText().text).to.be.eql('button text (3)');
    });
    
    it('a change in the language dependent text changes the component text B', function() {
-      givenShoppingCartContains([{ productId: 'productA', amount: 1 }, { productId: 'productA', amount: 1 }]);
+      givenShoppingCartContains([{ productId: 'productA', quantity: 1 }, { productId: 'productA', quantity: 1 }]);
       givenDefaultShoppingCartButtonTextSetter();
       whenTheLanguageDependentTextGetsPublished(DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, 'button text');
       expect(lastCapturedSetText().text).to.be.eql('button text (2)');
@@ -105,12 +105,12 @@ describe('ShoppingCartButtonTextSetter', function() {
       givenShoppingCartContains([]);
       givenTheLanguageDependentTextGetsPublished(DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, 'buttonA');
       givenDefaultShoppingCartButtonTextSetter();
-      whenShoppingCartContains([{ productId: 'productA', amount: 3 }]);
+      whenShoppingCartContains([{ productId: 'productA', quantity: 3 }]);
       expect(lastCapturedSetText().text).to.be.eql('buttonA (3)');
    });
    
    it('a change of the shopping cart content changes the component text B', function() {
-      givenShoppingCartContains([{ productId: 'productA', amount: 3 }]);
+      givenShoppingCartContains([{ productId: 'productA', quantity: 3 }]);
       givenTheLanguageDependentTextGetsPublished(DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, 'buttonA');
       givenDefaultShoppingCartButtonTextSetter();
       whenShoppingCartContains([]);
@@ -120,8 +120,8 @@ describe('ShoppingCartButtonTextSetter', function() {
    it('a change of the shopping cart content changes the component text C', function() {
       givenTheLanguageDependentTextGetsPublished(DEFAULT_LANGUAGE_DEPENDENT_TEXT_KEY, 'buttonA');
       givenDefaultShoppingCartButtonTextSetter();
-      givenShoppingCartContains([{ productId: 'productA', amount: 3 }]);
-      whenShoppingCartContains([{ productId: 'productA', amount: 3 }, { productId: 'productB', amount: 2 }]);
+      givenShoppingCartContains([{ productId: 'productA', quantity: 3 }]);
+      whenShoppingCartContains([{ productId: 'productA', quantity: 3 }, { productId: 'productB', quantity: 2 }]);
       expect(lastCapturedSetText().text).to.be.eql('buttonA (5)');
    });
 });  

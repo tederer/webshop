@@ -2,9 +2,9 @@
    "products": [
       { 
          "id": "zubehoer_Topf12cm",
-         "name": "Topf 12cm",
+         "name": "pot 12cm",
          "price": 1.2,
-         "description": "transparenter Orchideentopf",
+         "description": "transparent orchid pot",
          "imageSmall": "images/zubehoer/pot12cm.jpg"
        }
    ]
