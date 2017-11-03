@@ -31,6 +31,8 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var currentLanguage;
    var countryOfDestination;
    var shippingCostsText;
+   var totalCostsText;
+   var emptyCartText;
    
    var allTableHeadersAreAvailable = function allTableHeadersAreAvailable() {
       var result = true;
@@ -76,14 +78,21 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
          currentLanguage !== undefined &&
          cartContent !== undefined && 
          tabSelector !== undefined &&
-         shippingCostsText !== undefined;
+         shippingCostsText !== undefined &&
+         totalCostsText !== undefined &&
+         emptyCartText !== undefined;
    };
       
-   var getTableHtmlContent = function getTableHtmlContent(shippingCosts) {
+   var getHtmlTable = function getHtmlTable(shippingCosts, totalCosts) {
       var data = {
          productsInShoppingCart: [],
-         shippingCosts: shippingCosts
+         shippingCosts: shippingCosts,
+         totalCosts: totalCosts,
+         shippingCostsText: shippingCostsText,
+         totalCostsText: totalCostsText,
+         tableHeaders: tableHeaders
       };
+      
       for(var index = 0; index < cartContent.length; index++) {
          var productConfig = getProductConfig(cartContent[index].productId);
          data.productsInShoppingCart[data.productsInShoppingCart.length] = {
@@ -93,7 +102,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
             price: productConfig.price
          };
       }
-      return tableGenerator.generateTable(data, shippingCostsText, tableHeaders);
+      return tableGenerator.generateTable(data);
    };
    
    var getTotalProductCosts = function getTotalProductCosts() {
@@ -107,18 +116,24 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    
    var updateTab = function updateTab() {
       if (allDataAvailable()) {
-         var totalProductCosts = getTotalProductCosts();
-         var shippingCosts;
-         
-         if (countryOfDestination !== undefined) {
-            if (countryOfDestination === 'AT') {
-               shippingCosts = (totalProductCosts >= 50) ? 0 : SHIPPING_COSTS_AUSTRIA;
-            } else {
-               shippingCosts = (totalProductCosts >= 100) ? 0 : SHIPPING_COSTS_NON_AUSTRIA;
+         var htmlCode;
+         if (cartContent.length < 1) {
+            htmlCode = '<p>' + emptyCartText + '</p>';
+         } else {
+            var totalProductCosts = getTotalProductCosts();
+            var shippingCosts;
+            
+            if (countryOfDestination !== undefined) {
+               if (countryOfDestination === 'AT') {
+                  shippingCosts = (totalProductCosts >= 50) ? 0 : SHIPPING_COSTS_AUSTRIA;
+               } else {
+                  shippingCosts = (totalProductCosts >= 100) ? 0 : SHIPPING_COSTS_NON_AUSTRIA;
+               }
             }
+            var totalCosts = (shippingCosts !== undefined) ? totalProductCosts + shippingCosts : undefined;
+            htmlCode = getHtmlTable(shippingCosts, totalCosts);
          }
-         var htmlContent = getTableHtmlContent(shippingCosts);
-         uiComponentProvider(tabSelector + ' > #shoppingCartContent').html(htmlContent);
+         uiComponentProvider(tabSelector + ' > #shoppingCartContent').html(htmlCode);
       }
    };
 
@@ -173,6 +188,16 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       updateTab();
    };
    
+   var onTotalCostsText = function onTotalCostsText(text) {
+      totalCostsText = text;
+      updateTab();
+   };
+   
+   var onEmptyCartText = function onEmptyCartText(text) {
+      emptyCartText = text;
+      updateTab();
+   };
+   
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
       tabSelector = selector;
       updateTab();
@@ -183,6 +208,8 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    subscribeToLanguageDependentTextPublication('priceHeader');
    
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'shippingCosts', onShippingCostsText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'totalCosts', onTotalCostsText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'emptyCart', onEmptyCartText);
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);
    bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);

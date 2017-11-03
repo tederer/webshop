@@ -199,6 +199,14 @@ body {
     background-color: #3e8e41;
 }
 
+#shop > #content > #shoppingCart .removeButton {
+    background-color: transparent;
+    color: white;
+    border: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
 #shop #content .alternierendeZeilenFarbe tr:nth-child(even) {background-color:#EEEEEE;}
 #shop #content .alternierendeZeilenFarbe tr:nth-child(odd) {background-color:#DDDDDD;}
 

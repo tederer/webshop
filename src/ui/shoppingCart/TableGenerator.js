@@ -29,6 +29,12 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
       intentations--;
    };
    
+   var addEmptyHeader = function addEmptyHeader() {
+      intentations++;
+      append('<th>&nbsp;</th>');
+      intentations--;
+   };
+   
    var addText = function addText(text) {
       intentations++;
       append('<td>' + ((text === undefined) ? '&nbsp;' : text) + '</td>');
@@ -41,12 +47,19 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
       intentations--;
    };
    
+   var addDeleteButton = function addDeleteButton(productId) {
+      intentations++;
+      append('<td><button type="button" class="removeButton" onclick="shop.ui.Actions.removeProductFromShoppingCart(\'' + productId + '\');"><img src="/images/warenkorb/kreuz.svg"></button></td>');
+      intentations--;
+   };
+   
    var addCaptions = function addCaptions() {
       intentations++;
       append('<tr>');
       addHeader('quantityHeader');
       addHeader('nameHeader');
       addHeader('priceHeader');
+      addEmptyHeader();
       append('</tr>');
       intentations--;
    };
@@ -57,6 +70,7 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
       addText(product.quantity);
       addText(product.name);
       addPrice(product.price * product.quantity);
+      addDeleteButton(product.productId);
       append('</tr>');
       intentations--;
    };
@@ -70,11 +84,22 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
       append('</tr>');
       intentations--;
    };
+   
+   var addTotalCosts = function addTotalCosts(totalCosts, totalCostsText) {
+      intentations++;
+      append('<tr class="totalCosts">');
+      intentations++;
+      append('<td colspan="2">' + ((totalCostsText === undefined) ? '&nbsp;' : totalCostsText) + '</td>');
+      intentations--;
+      addPrice(totalCosts);
+      append('</tr>');
+      intentations--;
+   };
 
-   this.generateTable = function generateTable(data, shippingCostsText, headers) {
+   this.generateTable = function generateTable(data) {
       intentations = 1;
       htmlContent = '';
-      tableHeaders = headers;
+      tableHeaders = data.tableHeaders;
       
       append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
       addCaptions();
@@ -82,7 +107,10 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
          addRow(product);
       });
       if (data.shippingCosts !== undefined) {
-         addShippingCosts(data.shippingCosts, shippingCostsText);
+         addShippingCosts(data.shippingCosts, data.shippingCostsText);
+      }
+      if (data.totalCosts !== undefined) {
+         addTotalCosts(data.totalCosts, data.totalCostsText);
       }
       append('</table>');
       
