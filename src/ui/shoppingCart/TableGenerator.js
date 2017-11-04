@@ -5,7 +5,7 @@ require('../Topics.js');
 require('../bus/Bus.js');
 require('../ui/Actions.js');
 
-assertNamespace('shop.ui');
+assertNamespace('shop.ui.shoppingCart');
 
 shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
 

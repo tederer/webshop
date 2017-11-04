@@ -1,3 +1,4 @@
 ﻿* man könnte JsonContentLoader & HtmlContentLoader umstellen damit sie nicht für jede Sprache ein Topic verwenden
 * Warenkorb implementieren
 * recherchieren wie append von grunt funktioniert
+* beim impressum eine karten mit der google-maps API einbauen

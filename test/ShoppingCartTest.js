@@ -27,6 +27,10 @@ var whenTheProductGetsAddedToTheShoppingCart = function whenTheProductGetsAddedT
    givenTheProductGetsAddedToTheShoppingCart(productId, quantity);
 };
 
+var whenTheProductGetsRemovedFromTheShoppingCart = function whenTheProductGetsRemovedFromTheShoppingCart(productId) {
+   mockedBus.sendCommand(shop.topics.REMOVE_PRODUCT_FROM_SHOPPING_CART, productId);
+};
+
 var allProductsInShoppingCart = function allProductsInShoppingCart() {
    var lastPublication = mockedBus.getLastPublication(shop.topics.SHOPPING_CART_CONTENT);
    return (lastPublication !== undefined) ? lastPublication : undefined;
@@ -97,5 +101,13 @@ describe('ShoppingCart', function() {
       whenTheProductGetsAddedToTheShoppingCart('productX', -4);
       expect(allProductsInShoppingCart().length).to.be.eql(1);
       expect(productAmountInShoppingCart('productA')).to.be.eql(1);
+   });
+   
+   it('a product gets removed from the cart when REMOVE_PRODUCT_FROM_SHOPPING_CART command received', function() {
+      givenTheProductGetsAddedToTheShoppingCart('productA', 2);
+      givenTheProductGetsAddedToTheShoppingCart('productX', 3);
+      whenTheProductGetsRemovedFromTheShoppingCart('productX');
+      expect(allProductsInShoppingCart().length).to.be.eql(1);
+      expect(productAmountInShoppingCart('productA')).to.be.eql(2);
    });
 });

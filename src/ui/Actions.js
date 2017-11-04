@@ -44,8 +44,12 @@ shop.ui.Actions = {
       }
    },
    
+   removeProductFromShoppingCart: function removeProductFromShoppingCart(productId) {
+      shop.Context.bus.sendCommand(shop.topics.REMOVE_PRODUCT_FROM_SHOPPING_CART, productId);
+   },
+   
    changeCountryOfDestination: function changeCountryOfDestination() {
-      var selectedValue = $('#shop > #content > #shoppingCart > #countryOfDestination').val();
+      var selectedValue = $('#shop > #content > #shoppingCart #countryOfDestination').val();
       var valueToPublish = (selectedValue === 'nothing') ? undefined : selectedValue;
       shop.Context.bus.publish(shop.topics.COUNTRY_OF_DESTINATION, valueToPublish);
    }

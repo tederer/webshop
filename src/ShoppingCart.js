@@ -38,11 +38,21 @@ shop.ShoppingCart = function ShoppingCart(optionalBus) {
       }
    };
    
+   var publishCartContent = function publishCartContent() {
+      bus.publish(shop.topics.SHOPPING_CART_CONTENT, products);
+   };
+   
    var onAddProductToShoppingCart = function onAddProductToShoppingCart(data) {
       addProduct(data.productId, data.quantity);
-      bus.publish(shop.topics.SHOPPING_CART_CONTENT, products);
+      publishCartContent();
+   };
+   
+   var onRemoveProductFromShoppingCart = function onRemoveProductFromShoppingCart(productId) {
+      removeProduct(productId);
+      publishCartContent();
    };
    
    bus.publish(shop.topics.SHOPPING_CART_CONTENT, []);
    bus.subscribeToCommand(shop.topics.ADD_PRODUCT_TO_SHOPPING_CART, onAddProductToShoppingCart);
+   bus.subscribeToCommand(shop.topics.REMOVE_PRODUCT_FROM_SHOPPING_CART, onRemoveProductFromShoppingCart);
 };

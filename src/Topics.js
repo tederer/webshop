@@ -38,3 +38,6 @@ shop.topics.HIDE_PICTURE = '/commands/hidePicture';
 
 // data: an object {productId: <String>, quantity: <integer>}
 shop.topics.ADD_PRODUCT_TO_SHOPPING_CART = '/commands/addProductToShoppingCart';
+
+// data: the product ID of the product to remove
+shop.topics.REMOVE_PRODUCT_FROM_SHOPPING_CART = '/commands/removeProductFromShoppingCart';
