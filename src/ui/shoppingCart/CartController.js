@@ -33,6 +33,9 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var shippingCostsText;
    var totalCostsText;
    var emptyCartText;
+   var firstname;
+   var lastname;
+   var email;
    
    var allTableHeadersAreAvailable = function allTableHeadersAreAvailable() {
       var result = true;
@@ -163,17 +166,33 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       }
    };
    
+   var updateSubmitButton = function updateSubmitButton() {
+         
+      var submitButtonEnabled = countryOfDestination !== undefined && 
+            firstname !== undefined && 
+            lastname !== undefined && 
+            email !== undefined &&
+            cartContent.length > 0;
+            
+      if (tabSelector !== undefined) {
+         $(tabSelector + ' #submitButton').attr('disabled', !submitButtonEnabled);
+      }
+   };
+
    var onShoppingCartContent = function onShoppingCartContent(content) {
       cartContent = content;
       updateTab();
+      updateSubmitButton();
    };
    
    var onCountryOfDestination = function onCountryOfDestination(country) {
       countryOfDestination = country;
       updateTab();
+      updateSubmitButton();
    };
    
    var onCurrentLanguage = function onCurrentLanguage(language) {
+      console.log('lng = ' + language);
       currentLanguage = language;
       var index = languages.indexOf(language);
       if (index === -1) {
@@ -198,9 +217,42 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       updateTab();
    };
    
+   var isValidName = function isValidName(value) {
+      return value.length >= 3;
+   };
+   
+   var isValidEmail = function isValidEmail(value) {
+      return value.match(/.+@.+\.[^.]+/) !== null;
+   };
+   
+   var onOrderFormElementChanged = function onOrderFormElementChanged(uiComponentId) {
+      var value = $(tabSelector + ' #' + uiComponentId).val();
+      switch(uiComponentId) {
+         case 'firstname': firstname = isValidName(value) ? value : undefined;
+                           break;
+                           
+         case 'lastname':  lastname = isValidName(value) ? value : undefined;
+                           break;
+                           
+         case 'email':     email = isValidEmail(value) ? value : undefined;
+                           break;
+      }
+      
+      updateSubmitButton();
+   };
+   
+   var setValuesEnteredByUser = function setValuesEnteredByUser() {
+      $(tabSelector + ' #countryOfDestination').val((countryOfDestination === undefined) ? 'nothing' : countryOfDestination);
+      $(tabSelector + ' #firstname').val(firstname);
+      $(tabSelector + ' #lastname').val(lastname);
+      $(tabSelector + ' #email').val(email);
+   };
+   
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
       tabSelector = selector;
       updateTab();
+      setValuesEnteredByUser();
+      updateSubmitButton();
    };
    
    subscribeToLanguageDependentTextPublication('quantityHeader');
@@ -213,5 +265,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);
    bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);
+   
+   bus.subscribeToCommand(shop.topics.ORDER_FORM_ELEMENT_CHANGED, onOrderFormElementChanged);
 };
 

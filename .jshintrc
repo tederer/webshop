@@ -10,7 +10,7 @@
   "maxparams": 7,
   "maxdepth": 5,
   "maxcomplexity": 15,
-  "esversion": 6,
+  "esversion": 5,
 
   "globals": {
    "require": false,

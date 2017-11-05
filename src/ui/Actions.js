@@ -52,6 +52,10 @@ shop.ui.Actions = {
       var selectedValue = $('#shop > #content > #shoppingCart #countryOfDestination').val();
       var valueToPublish = (selectedValue === 'nothing') ? undefined : selectedValue;
       shop.Context.bus.publish(shop.topics.COUNTRY_OF_DESTINATION, valueToPublish);
+   },
+   
+   orderFormElementChanged: function orderFormElementChanged(uiComponentId) {
+      shop.Context.bus.sendCommand(shop.topics.ORDER_FORM_ELEMENT_CHANGED, uiComponentId);
    }
 };
 

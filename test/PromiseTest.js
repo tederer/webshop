@@ -110,16 +110,16 @@ describe('Promise', function() {
    
    it('chained onFulfilledActions of then() get executed in the order of definition', function() {
       
-      var promise = new common.Promise((fulfill, reject) => fulfill(3));
-      promise.then((value) => value * 2).then((value) => value + 1).then(onFulfilled);
+      var promise = new common.Promise(function(fulfill, reject){ fulfill(3); });
+      promise.then(function(value) { return value * 2; }).then(function(value) { return value + 1; }).then(onFulfilled);
       
       expect(capturedData).to.be.eql(7);
    });   
    
    it('exception in onFulfilledActions of then() gets provided to onRejectedAction', function() {
       
-      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
-      promise.then((data) => {throw 'an error happened';}).then(onFulfilled, onRejected);
+      var promise = new common.Promise(function(fulfill, reject) { fulfill('some data'); });
+      promise.then(function(data) {throw 'an error happened';}).then(onFulfilled, onRejected);
       
       expect(!resolveCalled && rejectCalled).to.be.eql(true);
       expect(capturedError).to.be.eql('an error happened');
@@ -127,8 +127,8 @@ describe('Promise', function() {
    
    it('exception in onFulfilledActions of then() gets provided to last defined onRejectedAction when no onRejectedAction is defined before', function() {
       
-      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
-      promise.then((data) => {throw 'an error happened';}).then((data) => data).then(onFulfilled, onRejected);
+      var promise = new common.Promise(function(fulfill, reject) { fulfill('some data'); });
+      promise.then(function(data) {throw 'an error happened';}).then(function(data) { return data; }).then(onFulfilled, onRejected);
       
       expect(!resolveCalled && rejectCalled).to.be.eql(true);
       expect(capturedError).to.be.eql('an error happened');
@@ -158,8 +158,8 @@ describe('Promise', function() {
 
    it('onRejectedAction providing data triggers onFulfilledActions of next then()', function() {
       
-      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
-      promise.then((data) => {throw 'an error happened';}).then(onFulfilled, (error) => 'corrected data').then(onFulfilled, onRejected);
+      var promise = new common.Promise(function(fulfill, reject) { fulfill('some data'); });
+      promise.then(function(data) {throw 'an error happened';}).then(onFulfilled, function(error) { return 'corrected data'; }).then(onFulfilled, onRejected);
       
       expect(resolveCalled && !rejectCalled).to.be.eql(true);
       expect(capturedData).to.be.eql('corrected data');
@@ -167,8 +167,8 @@ describe('Promise', function() {
 
    it('exception in onRejectedAction gets provided to onRejectedAction', function() {
       
-      var promise = new common.Promise((fulfill, reject) => fulfill('some data'));
-      promise.then((data) => {throw 'an error happened';}).then(onFulfilled, (error) => {throw 'another error happened';}).then(onFulfilled, onRejected);
+      var promise = new common.Promise(function(fulfill, reject) {fulfill('some data');});
+      promise.then(function(data) {throw 'an error happened';}).then(onFulfilled, function(error) {throw 'another error happened';}).then(onFulfilled, onRejected);
       
       expect(!resolveCalled && rejectCalled).to.be.eql(true);
       expect(capturedError).to.be.eql('another error happened');

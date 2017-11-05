@@ -41,3 +41,6 @@ shop.topics.ADD_PRODUCT_TO_SHOPPING_CART = '/commands/addProductToShoppingCart';
 
 // data: the product ID of the product to remove
 shop.topics.REMOVE_PRODUCT_FROM_SHOPPING_CART = '/commands/removeProductFromShoppingCart';
+
+// data: the ID of the UI component whose content was changed
+shop.topics.ORDER_FORM_ELEMENT_CHANGED = '/commands/orderFormElementChanged';
