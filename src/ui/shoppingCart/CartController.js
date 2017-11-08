@@ -192,7 +192,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    };
    
    var onCurrentLanguage = function onCurrentLanguage(language) {
-      console.log('lng = ' + language);
       currentLanguage = language;
       var index = languages.indexOf(language);
       if (index === -1) {

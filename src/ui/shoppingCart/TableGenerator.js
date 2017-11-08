@@ -31,31 +31,31 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
    
    var addEmptyHeader = function addEmptyHeader() {
       intentations++;
-      append('<th>&nbsp;</th>');
+      append('<th class="rightMostColumn">&nbsp;</th>');
       intentations--;
    };
    
-   var addText = function addText(text) {
+   var addText = function addText(text, cssClass) {
       intentations++;
-      append('<td>' + ((text === undefined) ? '&nbsp;' : text) + '</td>');
+      append('<td' + ((cssClass !== undefined) ? ' class="' + cssClass + '"' : '') + '>' + ((text === undefined) ? '&nbsp;' : text) + '</td>');
       intentations--;
    };
    
-   var addPrice = function addPrice(price) {
+   var addPrice = function addPrice(price, isRightMostColumn) {
       intentations++;
-      append('<td>' + price.toFixed(2) + ' EUR</td>');
+      append('<td class="rechtsAusgerichteterText' + (isRightMostColumn ? ' rightMostColumn"' : '') + '">' + price.toFixed(2) + ' EUR</td>');
       intentations--;
    };
    
    var addDeleteButton = function addDeleteButton(productId) {
       intentations++;
-      append('<td><button type="button" class="removeButton" onclick="shop.ui.Actions.removeProductFromShoppingCart(\'' + productId + '\');"><img src="/images/warenkorb/kreuz.svg"></button></td>');
+      append('<td class="zentrierterText rightMostColumn"><button type="button" class="removeButton" onclick="shop.ui.Actions.removeProductFromShoppingCart(\'' + productId + '\');"><img src="/images/warenkorb/kreuz.svg"></button></td>');
       intentations--;
    };
    
    var addCaptions = function addCaptions() {
       intentations++;
-      append('<tr>');
+      append('<tr class="headers">');
       addHeader('quantityHeader');
       addHeader('nameHeader');
       addHeader('priceHeader');
@@ -64,10 +64,10 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
       intentations--;
    };
    
-   var addRow = function addRow(product) {
+   var addRow = function addRow(product, isTotalCostRow) {
       intentations++;
       append('<tr>');
-      addText(product.quantity);
+      addText(product.quantity, 'zentrierterText');
       addText(product.name);
       addPrice(product.price * product.quantity);
       addDeleteButton(product.productId);
@@ -78,20 +78,22 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
    var addShippingCosts = function addShippingCosts(shippingCosts, shippingCostsText) {
       intentations++;
       append('<tr>');
-      addText(1);
+      addText('&nbsp;');
       addText(shippingCostsText);
-      addPrice(shippingCosts);
+      addPrice(shippingCosts, true);
+      append('<td class="rightMostColumn">&nbsp;</td>');
       append('</tr>');
       intentations--;
    };
    
    var addTotalCosts = function addTotalCosts(totalCosts, totalCostsText) {
       intentations++;
-      append('<tr class="totalCosts">');
+      append('<tr class="totalCostRow">');
       intentations++;
       append('<td colspan="2">' + ((totalCostsText === undefined) ? '&nbsp;' : totalCostsText) + '</td>');
       intentations--;
-      addPrice(totalCosts);
+      addPrice(totalCosts, true);
+      append('<td class="rightMostColumn">&nbsp;</td>');
       append('</tr>');
       intentations--;
    };
@@ -101,11 +103,11 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
       htmlContent = '';
       tableHeaders = data.tableHeaders;
       
-      append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
+      append('<table>');
       addCaptions();
-      data.productsInShoppingCart.forEach(function(product) { 
-         addRow(product);
-      });
+      for (var index = 0; index < data.productsInShoppingCart.length; index++) { 
+         addRow(data.productsInShoppingCart[index]);
+      }
       if (data.shippingCosts !== undefined) {
          addShippingCosts(data.shippingCosts, data.shippingCostsText);
       }

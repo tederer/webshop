@@ -205,6 +205,7 @@ body {
     border: none;
     display: inline-block;
     cursor: pointer;
+    height: 24px;
 }
 
 #shop #content .alternierendeZeilenFarbe tr:nth-child(even) {background-color:#EEEEEE;}
@@ -225,5 +226,6 @@ body {
 #shop #content .ohneRahmen tr:first-child {border-bottom-style: none;}
 #shop #content .transparent { background-color:transparent; }
 #shop #content .ohneUeberschriften tr:first-child {border-bottom-style: none;}
+#shop #content .rechtsAusgerichteterText { text-align:right; }
 #shop #content .zentrierterText { text-align:center; }
 #shop #content .figcaption {text-align:center;}
