@@ -1,0 +1,27 @@
+<html>
+<head>
+   <title>push test</title>
+   <script type='text/javascript' src='lib/jquery-3.2.1.min.js' charset='UTF-8'></script>
+   <script>
+      var onButtonClicked = function onButtonClicked() {
+         console.log('trigger ajax post ...');
+         $.ajax({
+            type: 'POST',
+            url: '/cgi-bin/form.cgi',
+            data: 'Hello World',
+            success: function(data) {
+               console.log('success: ' + data);
+               },
+            error: function(jqXHR) {
+               var errorMessage = jqXHR.status + ' ' + jqXHR.statusText;
+               console.log(errorMessage);
+               }
+         });
+      };
+   </script>
+</head>
+
+<body>
+<button onclick='onButtonClicked();'>submit</button> 
+</body>
+</html>
