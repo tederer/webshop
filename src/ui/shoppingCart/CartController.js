@@ -3,7 +3,7 @@
 require('../../NamespaceUtils.js');
 require('../../Context.js');
 require('../../Topics.js');
-require('./ShoppingCartTableGenerator.js');
+require('./ProductConfig.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
@@ -26,8 +26,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var tableHeaders = {};
    var cartContent;
    var tabSelector;
-   var languages = [];
-   var productConfigurations = {};
    var currentLanguage;
    var countryOfDestination;
    var shippingCostsText;
@@ -36,6 +34,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var firstname;
    var lastname;
    var email;
+   var productConfigs = new shop.ui.shoppingCart.ProductConfig(products);
    
    var allTableHeadersAreAvailable = function allTableHeadersAreAvailable() {
       var result = true;
@@ -48,28 +47,12 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       return result;
    };
    
-   var getProductConfig = function getProductConfig(productId) {
-      var config;
-      var languageRelatedConfigs = productConfigurations[currentLanguage];
-      var productCategories = Object.keys(languageRelatedConfigs);
-      for (var index = 0; config === undefined && index < productCategories.length; index++) {
-         var products = languageRelatedConfigs[productCategories[index]].products;
-         for (var productIndex = 0; config === undefined && productIndex < products.length; productIndex++) {
-            var productConfig = products[productIndex];
-            if (productConfig.id === productId) {
-               config = productConfig;
-            }
-         }
-      }
-      return config;
-   };
-   
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
       
       for (var index = 0; configAvailable && index < cartContent.length; index++ ) {
          var productId = cartContent[index].productId;
-         configAvailable = getProductConfig(productId) !== undefined;
+         configAvailable = productConfigs.get(productId) !== undefined;
       }
       
       return configAvailable;
@@ -97,7 +80,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       };
       
       for(var index = 0; index < cartContent.length; index++) {
-         var productConfig = getProductConfig(cartContent[index].productId);
+         var productConfig = productConfigs.get(cartContent[index].productId);
          data.productsInShoppingCart[data.productsInShoppingCart.length] = {
             productId: productConfig.id,
             name: productConfig.name,
@@ -111,7 +94,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var getTotalProductCosts = function getTotalProductCosts() {
       var costs = 0;
       for(var index = 0; index < cartContent.length; index++) {
-         var productConfig = getProductConfig(cartContent[index].productId);
+         var productConfig = productConfigs.get(cartContent[index].productId);
          costs += productConfig.price * cartContent[index].quantity;
       }
       return costs;
@@ -145,25 +128,10 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       updateTab();
    };
    
-   var onProductConfiguration = function onProductConfiguration(productName, language, config) {
-      if (productConfigurations[language] === undefined) {
-         productConfigurations[language] = {};
-      }
-      productConfigurations[language][productName] = config;
-   };
-   
    var subscribeToLanguageDependentTextPublication = function subscribeToLanguageDependentTextPublication(id) {
       tableHeaders[id] = undefined;
       var topic = shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + id;
       bus.subscribeToPublication(topic, onLanguageDependentTextChanged.bind(this, id));
-   };
-   
-   var subscribeToProductConfigurations = function subscribeToProductConfigurations(language) {
-      for (var index = 0; index < products.length; index++) {
-         var product = products[index];
-         var topic = '/jsonContent/' + language + '/' + product;
-         bus.subscribeToPublication(topic, onProductConfiguration.bind(this, product, language));
-      }
    };
    
    var updateSubmitButton = function updateSubmitButton() {
@@ -193,11 +161,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    
    var onCurrentLanguage = function onCurrentLanguage(language) {
       currentLanguage = language;
-      var index = languages.indexOf(language);
-      if (index === -1) {
-         languages[languages.length] = language;
-         subscribeToProductConfigurations(language);
-      }
       updateTab();
    };
    
