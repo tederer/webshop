@@ -117,18 +117,6 @@ body {
    z-index: 1;
 }
 
-#shop > #content > #picture {
-   position : absolute;
-   top : 0;
-   left : 0;
-   bottom : 2em;
-   width : 100%;
-   border-radius : 0 0 0 0;
-   background-color : #FF0000;
-   visibility : hidden;
-   z-index: 2;
-}
-
 #shop > #footer {
    position : absolute;
    left : 0;

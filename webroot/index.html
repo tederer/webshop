@@ -4,6 +4,7 @@
    <title>WebShop-SPA</title>
    <link rel="stylesheet" type="text/css" href="css/shop.css">
    <link rel="stylesheet" type="text/css" href="css/shoppingCartContentTable.css">
+   <link rel="stylesheet" type="text/css" href="css/pictureOverlay.css">
 
    <script type="text/javascript" src="lib/jquery-3.2.1.min.js" charset="UTF-8"></script>
    <script type="text/javascript" src="lib/jquery.uriAnchor.js" charset="UTF-8"></script>
@@ -133,7 +134,7 @@
          accessoriesTab.onTabContentChanged(setter.onTabContentChangedCallback);
          
          var pictureOverlayConfig = {
-            selector: '#shop > #content > #picture',
+            selector: '#shop > #picture',
             contentTemplateName: 'pictureOverlay',
             languages: supportedLanguages
          };
@@ -199,9 +200,10 @@
       <div id="shipping"></div>
       <div id="companyDetails"></div>
       <div id="shoppingCart"></div>
-      <div id="picture"></div>
    </div>
    
+   <div id="picture"></div>
+
    <div id="footer">
       <div id="author">written by Thomas Ederer</div>
    </div>

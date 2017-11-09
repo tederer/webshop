@@ -100,8 +100,8 @@ describe('PictureOverlay', function() {
       givenTemplatePublication(shop.Language.EN, 'a prefix' + PLACEHOLDER + 'a suffix');
       givenDefaultPictureOverlay();
       givenPublishedLanguageIs(shop.Language.DE);
-      whenShownPicturePublicationIs('images/plants/flower.jpg');
-      expect(capturedHtmlContent).to.be.eql('irgendwas davor<img src="/shop/images/plants/flower.jpg">und noch was danach');
+      whenShownPicturePublicationIs('/images/plants/flower.jpg');
+      expect(capturedHtmlContent).to.be.eql('irgendwas davor<img src="/images/plants/flower.jpg">und noch was danach');
    });
    
    it('english content gets set when picture publication gets updated and language is english', function() {
@@ -110,8 +110,8 @@ describe('PictureOverlay', function() {
       givenTemplatePublication(shop.Language.EN, 'a prefix' + PLACEHOLDER + 'a suffix');
       givenDefaultPictureOverlay();
       givenPublishedLanguageIs(shop.Language.EN);
-      whenShownPicturePublicationIs('images/plants/flower.jpg');
-      expect(capturedHtmlContent).to.be.eql('a prefix<img src="/shop/images/plants/flower.jpg">a suffix');
+      whenShownPicturePublicationIs('/images/plants/flower.jpg');
+      expect(capturedHtmlContent).to.be.eql('a prefix<img src="/images/plants/flower.jpg">a suffix');
    });
    
    it('the overlay gets set visible when an image was published', function() {
@@ -120,7 +120,7 @@ describe('PictureOverlay', function() {
       givenTemplatePublication(shop.Language.EN, 'a prefix' + PLACEHOLDER + 'a suffix');
       givenDefaultPictureOverlay();
       givenPublishedLanguageIs(shop.Language.DE);
-      whenShownPicturePublicationIs('images/plants/flower.jpg');
+      whenShownPicturePublicationIs('/images/plants/flower.jpg');
       expect(capturedVisiblityChanges.length).to.be.eql(1);
       expect(capturedVisiblityChanges[0]).to.be.eql('show');
    });
@@ -131,7 +131,7 @@ describe('PictureOverlay', function() {
       givenTemplatePublication(shop.Language.EN, 'a prefix' + PLACEHOLDER + 'a suffix');
       givenDefaultPictureOverlay();
       givenPublishedLanguageIs(shop.Language.DE);
-      givenShownPicturePublicationIs('images/plants/flower.jpg');
+      givenShownPicturePublicationIs('/images/plants/flower.jpg');
       whenShownPicturePublicationIs(undefined);
       expect(capturedVisiblityChanges.length).to.be.eql(2);
       expect(capturedVisiblityChanges[1]).to.be.eql('hide');
