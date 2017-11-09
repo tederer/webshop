@@ -4,11 +4,10 @@ require('../../NamespaceUtils.js');
 require('../../Context.js');
 require('../../Topics.js');
 require('./ProductConfig.js');
+require('./TableHeaders.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
-/**
- */
 shop.ui.shoppingCart.CartController = function CartController(products, optionalUiComponentProvider, optionalTableGenerator, optionalBus) {
    
    var TEXT_KEY_PREFIX = 'shoppingCartContentTable.';
@@ -65,7 +64,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
          totalCosts: totalCosts,
          shippingCostsText: shippingCostsText,
          totalCostsText: totalCostsText,
-         tableHeaders: tableHeaders // TODO
+         tableHeaders: tableHeaders
       };
       
       for(var index = 0; index < cartContent.length; index++) {
