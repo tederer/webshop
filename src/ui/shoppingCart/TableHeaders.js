@@ -14,7 +14,9 @@ shop.ui.shoppingCart.TableHeaders = function TableHeaders(optionalBus) {
    var callbacks = [];
    
    var notifyListeners = function notifyListeners() {
-      
+      for(var index = 0; index < callbacks.length; index++) {
+         callbacks[index]();
+      }
    };
    
    var onLanguageDependentTextChanged = function onLanguageDependentTextChanged(id, text) {
