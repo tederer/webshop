@@ -23,7 +23,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var tableGenerator = (optionalTableGenerator === undefined) ? new shop.ui.shoppingCart.TableGenerator() : optionalTableGenerator;
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var tableHeaders = {};
    var cartContent;
    var tabSelector;
    var currentLanguage;
@@ -35,17 +34,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var lastname;
    var email;
    var productConfigs = new shop.ui.shoppingCart.ProductConfig(products);
-   
-   var allTableHeadersAreAvailable = function allTableHeadersAreAvailable() {
-      var result = true;
-      var ids = Object.keys(tableHeaders);
-      for(var index = 0; result && index < ids.length; index++) {
-         if (tableHeaders[ids[index]] === undefined) {
-            result = false;
-         }
-      }
-      return result;
-   };
+   var tableHeaders = new shop.ui.shoppingCart.TableHeaders();
    
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
@@ -59,7 +48,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    };
    
    var allDataAvailable = function allDataAvailable() {
-      return allTableHeadersAreAvailable() && 
+      return tableHeaders.allHeadersAreAvailable() && 
          productConfigForCartContentAvailable() &&
          currentLanguage !== undefined &&
          cartContent !== undefined && 
@@ -76,7 +65,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
          totalCosts: totalCosts,
          shippingCostsText: shippingCostsText,
          totalCostsText: totalCostsText,
-         tableHeaders: tableHeaders
+         tableHeaders: tableHeaders // TODO
       };
       
       for(var index = 0; index < cartContent.length; index++) {
@@ -123,17 +112,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       }
    };
 
-   var onLanguageDependentTextChanged = function onLanguageDependentTextChanged(id, text) {
-      tableHeaders[id] = text;
-      updateTab();
-   };
-   
-   var subscribeToLanguageDependentTextPublication = function subscribeToLanguageDependentTextPublication(id) {
-      tableHeaders[id] = undefined;
-      var topic = shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + id;
-      bus.subscribeToPublication(topic, onLanguageDependentTextChanged.bind(this, id));
-   };
-   
    var updateSubmitButton = function updateSubmitButton() {
          
       var submitButtonEnabled = countryOfDestination !== undefined && 
@@ -203,6 +181,10 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       updateSubmitButton();
    };
    
+   var onTableHeaderChanged = function onTableHeaderChanged() {
+      updateTab();
+   };
+   
    var setValuesEnteredByUser = function setValuesEnteredByUser() {
       $(tabSelector + ' #countryOfDestination').val((countryOfDestination === undefined) ? 'nothing' : countryOfDestination);
       $(tabSelector + ' #firstname').val(firstname);
@@ -217,9 +199,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       updateSubmitButton();
    };
    
-   subscribeToLanguageDependentTextPublication('quantityHeader');
-   subscribeToLanguageDependentTextPublication('nameHeader');
-   subscribeToLanguageDependentTextPublication('priceHeader');
+   tableHeaders.onTableHeaderChanged(onTableHeaderChanged);
    
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'shippingCosts', onShippingCostsText);
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'totalCosts', onTotalCostsText);

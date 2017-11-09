@@ -25,7 +25,7 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
    
    var addHeader = function addHeader(id) {
       intentations++;
-      append('<th>' + tableHeaders[id] + '</th>');
+      append('<th>' + tableHeaders.get(id) + '</th>');
       intentations--;
    };
    
