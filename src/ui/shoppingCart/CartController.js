@@ -29,11 +29,9 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var shippingCostsText;
    var totalCostsText;
    var emptyCartText;
-   var firstname;
-   var lastname;
-   var email;
    var productConfigs = new shop.ui.shoppingCart.ProductConfig(products);
    var tableHeaders = new shop.ui.shoppingCart.TableHeaders();
+   var inputForm = new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
    
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
@@ -88,7 +86,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       return costs;
    };
    
-   var updateTab = function updateTab() {
+   var updateTable = function updateTable() {
       if (allDataAvailable()) {
          var htmlCode;
          if (cartContent.length < 1) {
@@ -111,94 +109,43 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       }
    };
 
-   var updateSubmitButton = function updateSubmitButton() {
-         
-      var submitButtonEnabled = countryOfDestination !== undefined && 
-            firstname !== undefined && 
-            lastname !== undefined && 
-            email !== undefined &&
-            cartContent.length > 0;
-            
-      if (tabSelector !== undefined) {
-         $(tabSelector + ' #submitButton').attr('disabled', !submitButtonEnabled);
-      }
-   };
-
    var onShoppingCartContent = function onShoppingCartContent(content) {
       cartContent = content;
-      updateTab();
-      updateSubmitButton();
+      updateTable();
    };
    
    var onCountryOfDestination = function onCountryOfDestination(country) {
       countryOfDestination = country;
-      updateTab();
-      updateSubmitButton();
+      updateTable();
    };
    
    var onCurrentLanguage = function onCurrentLanguage(language) {
       currentLanguage = language;
-      updateTab();
+      updateTable();
    };
    
    var onShippingCostsText = function onShippingCostsText(text) {
       shippingCostsText = text;
-      updateTab();
+      updateTable();
    };
    
    var onTotalCostsText = function onTotalCostsText(text) {
       totalCostsText = text;
-      updateTab();
+      updateTable();
    };
    
    var onEmptyCartText = function onEmptyCartText(text) {
       emptyCartText = text;
-      updateTab();
-   };
-   
-   var isValidName = function isValidName(value) {
-      return value.length >= 3;
-   };
-   
-   var isValidEmail = function isValidEmail(value) {
-      return value.match(/.+@.+\.[^.]+/) !== null;
-   };
-   
-   var onOrderFormElementChanged = function onOrderFormElementChanged(uiComponentId) {
-      var value = $(tabSelector + ' #' + uiComponentId).val();
-      switch(uiComponentId) {
-         case 'firstname': firstname = isValidName(value) ? value : undefined;
-                           break;
-                           
-         case 'lastname':  lastname = isValidName(value) ? value : undefined;
-                           break;
-                           
-         case 'email':     email = isValidEmail(value) ? value : undefined;
-                           break;
-      }
-      
-      updateSubmitButton();
-   };
-   
-   var onTableHeaderChanged = function onTableHeaderChanged() {
-      updateTab();
-   };
-   
-   var setValuesEnteredByUser = function setValuesEnteredByUser() {
-      $(tabSelector + ' #countryOfDestination').val((countryOfDestination === undefined) ? 'nothing' : countryOfDestination);
-      $(tabSelector + ' #firstname').val(firstname);
-      $(tabSelector + ' #lastname').val(lastname);
-      $(tabSelector + ' #email').val(email);
+      updateTable();
    };
    
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
       tabSelector = selector;
-      updateTab();
-      setValuesEnteredByUser();
-      updateSubmitButton();
+      updateTable();
+      inputForm.setValuesEnteredByUser();
    };
    
-   tableHeaders.onTableHeaderChanged(onTableHeaderChanged);
+   tableHeaders.onTableHeaderChanged(updateTable);
    
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'shippingCosts', onShippingCostsText);
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'totalCosts', onTotalCostsText);
@@ -206,7 +153,5 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);
    bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);
-   
-   bus.subscribeToCommand(shop.topics.ORDER_FORM_ELEMENT_CHANGED, onOrderFormElementChanged);
 };
 
