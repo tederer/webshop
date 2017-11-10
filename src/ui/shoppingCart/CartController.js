@@ -10,7 +10,6 @@ assertNamespace('shop.ui.shoppingCart');
 
 shop.ui.shoppingCart.CartController = function CartController(products, optionalUiComponentProvider, optionalTableGenerator, optionalBus) {
    
-   var TEXT_KEY_PREFIX = 'shoppingCartContentTable.';
    var SHIPPING_COSTS_AUSTRIA = 4.6;
    var SHIPPING_COSTS_NON_AUSTRIA = 11.25;
    
@@ -26,12 +25,10 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var tabSelector;
    var currentLanguage;
    var countryOfDestination;
-   var shippingCostsText;
-   var totalCostsText;
-   var emptyCartText;
    var productConfigs = new shop.ui.shoppingCart.ProductConfig(products);
    var tableHeaders = new shop.ui.shoppingCart.TableHeaders();
    var inputForm = new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
+   var texts = new shop.ui.shoppingCart.ShoppingCartTexts();
    
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
@@ -50,9 +47,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
          currentLanguage !== undefined &&
          cartContent !== undefined && 
          tabSelector !== undefined &&
-         shippingCostsText !== undefined &&
-         totalCostsText !== undefined &&
-         emptyCartText !== undefined;
+         texts.allTextsAreAvailable();
    };
       
    var getHtmlTable = function getHtmlTable(shippingCosts, totalCosts) {
@@ -60,8 +55,8 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
          productsInShoppingCart: [],
          shippingCosts: shippingCosts,
          totalCosts: totalCosts,
-         shippingCostsText: shippingCostsText,
-         totalCostsText: totalCostsText,
+         shippingCostsText: texts.getShippingCostsText(),
+         totalCostsText: texts.getTotalCostsText(),
          tableHeaders: tableHeaders
       };
       
@@ -90,7 +85,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       if (allDataAvailable()) {
          var htmlCode;
          if (cartContent.length < 1) {
-            htmlCode = '<p>' + emptyCartText + '</p>';
+            htmlCode = '<p>' + texts.getEmptyCartText() + '</p>';
          } else {
             var totalProductCosts = getTotalProductCosts();
             var shippingCosts;
@@ -124,21 +119,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       updateTable();
    };
    
-   var onShippingCostsText = function onShippingCostsText(text) {
-      shippingCostsText = text;
-      updateTable();
-   };
-   
-   var onTotalCostsText = function onTotalCostsText(text) {
-      totalCostsText = text;
-      updateTable();
-   };
-   
-   var onEmptyCartText = function onEmptyCartText(text) {
-      emptyCartText = text;
-      updateTable();
-   };
-   
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
       tabSelector = selector;
       updateTable();
@@ -146,10 +126,8 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    };
    
    tableHeaders.onTableHeaderChanged(updateTable);
+   texts.onLanguageDependentTextChanged(updateTable);
    
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'shippingCosts', onShippingCostsText);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'totalCosts', onTotalCostsText);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'emptyCart', onEmptyCartText);
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);
    bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);
