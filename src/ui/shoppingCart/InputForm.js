@@ -1,12 +1,18 @@
 /* global shop, common, assertNamespace */
 
-require('../NamespaceUtils.js');
+require('../../NamespaceUtils.js');
 require('../../Context.js');
+require('../../Topics.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
-shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalBus) {
+shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalUiComponentProvider, optionalBus) {
    
+   var defaultUiComponentProvider = function defaultUiComponentProvider(selector) {
+      return $(selector);
+   };
+   
+   var uiComponentProvider = (optionalUiComponentProvider === undefined) ? defaultUiComponentProvider : optionalUiComponentProvider;
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    
    var countryOfDestination;
@@ -23,20 +29,20 @@ shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalBus) {
             cartContent !== undefined && cartContent.length > 0;
             
       if (selector !== undefined) {
-         $(selector + ' #submitButton').attr('disabled', !submitButtonEnabled);
+         uiComponentProvider(selector + ' #submitButton').attr('disabled', !submitButtonEnabled);
       }
    };
 
    var isValidName = function isValidName(value) {
-      return value.length >= 3;
+      return value !== undefined && value.length >= 3;
    };
    
    var isValidEmail = function isValidEmail(value) {
-      return value.match(/.+@.+\.[^.]+/) !== null;
+      return value !== undefined && value.match(/.+@.+\.[^.]+/) !== null;
    };
    
    var onOrderFormElementChanged = function onOrderFormElementChanged(uiComponentId) {
-      var value = $(selector + ' #' + uiComponentId).val();
+      var value = uiComponentProvider(selector + ' #' + uiComponentId).val();
       switch(uiComponentId) {
          case 'firstname': firstname = isValidName(value) ? value : undefined;
                            break;
@@ -68,10 +74,10 @@ shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalBus) {
    };
    
    this.setValuesEnteredByUser = function setValuesEnteredByUser() {
-      $(selector + ' #countryOfDestination').val((countryOfDestination === undefined) ? 'nothing' : countryOfDestination);
-      $(selector + ' #firstname').val(firstname);
-      $(selector + ' #lastname').val(lastname);
-      $(selector + ' #email').val(email);
+      uiComponentProvider(selector + ' #countryOfDestination').val((countryOfDestination === undefined) ? 'nothing' : countryOfDestination);
+      uiComponentProvider(selector + ' #firstname').val(firstname);
+      uiComponentProvider(selector + ' #lastname').val(lastname);
+      uiComponentProvider(selector + ' #email').val(email);
       updateSubmitButton();
    };
    

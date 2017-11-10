@@ -1,4 +1,3 @@
-﻿* Warenkorb implementieren
-* recherchieren wie append von grunt funktioniert
+﻿* recherchieren wie append von grunt funktioniert
 * beim impressum eine karten mit der google-maps API einbauen
-* CartController refactoren
+* countryCode auf großschreibung ändern
