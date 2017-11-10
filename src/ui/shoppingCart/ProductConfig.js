@@ -30,14 +30,16 @@ shop.ui.shoppingCart.ProductConfig = function ProductConfig(products, optionalBu
       
    this.get = function get(productId) {
       var config;
-      var languageRelatedConfigs = productConfigurations[currentLanguage];
-      var productCategories = Object.keys(languageRelatedConfigs);
-      for (var index = 0; config === undefined && index < productCategories.length; index++) {
-         var configuredProducts = languageRelatedConfigs[productCategories[index]].products;
-         for (var productIndex = 0; config === undefined && productIndex < configuredProducts.length; productIndex++) {
-            var productConfig = configuredProducts[productIndex];
-            if (productConfig.id === productId) {
-               config = productConfig;
+      if (currentLanguage !== undefined) {
+         var languageRelatedConfigs = productConfigurations[currentLanguage];
+         var productCategories = Object.keys(languageRelatedConfigs);
+         for (var index = 0; config === undefined && index < productCategories.length; index++) {
+            var configuredProducts = languageRelatedConfigs[productCategories[index]].products;
+            for (var productIndex = 0; config === undefined && productIndex < configuredProducts.length; productIndex++) {
+               var productConfig = configuredProducts[productIndex];
+               if (productConfig.id === productId) {
+                  config = productConfig;
+               }
             }
          }
       }

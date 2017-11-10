@@ -23,7 +23,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    var cartContent;
    var tabSelector;
-   var currentLanguage;
    var countryOfDestination;
    var productConfigs = new shop.ui.shoppingCart.ProductConfig(products);
    var tableHeaders = new shop.ui.shoppingCart.TableHeaders();
@@ -44,7 +43,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    var allDataAvailable = function allDataAvailable() {
       return tableHeaders.allHeadersAreAvailable() && 
          productConfigForCartContentAvailable() &&
-         currentLanguage !== undefined &&
          cartContent !== undefined && 
          tabSelector !== undefined &&
          texts.allTextsAreAvailable();
@@ -114,11 +112,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       updateTable();
    };
    
-   var onCurrentLanguage = function onCurrentLanguage(language) {
-      currentLanguage = language;
-      updateTable();
-   };
-   
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
       tabSelector = selector;
       updateTable();
@@ -130,6 +123,5 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
    
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);
-   bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage);
 };
 
