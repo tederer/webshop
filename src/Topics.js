@@ -6,6 +6,7 @@ assertNamespace('shop.topics');
 
 //                PUBLICATIONS
 
+// data: a value defined in shop.Language
 shop.topics.CURRENT_LANGUAGE = '/currentLanguage';
 
 // data: the name of the visible tab

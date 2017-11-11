@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
-require('../NamespaceUtils.js');
+require('../../NamespaceUtils.js');
+require('../../Topics.js');
 require('../../Context.js');
 
 assertNamespace('shop.ui.shoppingCart');
@@ -19,7 +20,7 @@ shop.ui.shoppingCart.ProductConfig = function ProductConfig(products, optionalBu
       productConfigurations[language][productName] = config;
    };
 
-   this.subscribeTo = function subscribeTo(language) {
+   var subscribeTo = function subscribeTo(language) {
       for (var index = 0; index < products.length; index++) {
          var product = products[index];
          var topic = '/jsonContent/' + language + '/' + product;
@@ -27,6 +28,14 @@ shop.ui.shoppingCart.ProductConfig = function ProductConfig(products, optionalBu
       }
    };
    
+   var onCurrentLanguage = function onCurrentLanguage(language) {
+      currentLanguage = language;
+      var index = languages.indexOf(language);
+      if (index === -1) {
+         languages[languages.length] = language;
+         subscribeTo(language);
+      }
+   };
       
    this.get = function get(productId) {
       var config;
@@ -44,15 +53,6 @@ shop.ui.shoppingCart.ProductConfig = function ProductConfig(products, optionalBu
          }
       }
       return config;
-   };
-   
-   var onCurrentLanguage = function onCurrentLanguage(language) {
-      currentLanguage = language;
-      var index = languages.indexOf(language);
-      if (index === -1) {
-         languages[languages.length] = language;
-         this.subscribeTo(language);
-      }
    };
       
    bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onCurrentLanguage.bind(this));

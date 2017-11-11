@@ -32,9 +32,7 @@ shop.ui.PictureOverlay = function PictureOverlay(config, optionalSetHtmlContent,
          if (relativePicturePath !== undefined) {
             var replacement = '<img src="' + relativePicturePath + '">';
             setHtmlContent(templateContents[activeLanguage].replace(PLACEHOLDER, replacement));
-            console.log('make it visible ...');
             shop.ui.PictureOverlay.prototype.show.call(thisInstance);
-            console.log('should be visible');
             isVisible = true;
          } else {
             if (isVisible) {

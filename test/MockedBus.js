@@ -74,6 +74,12 @@ testing.MockedBus = function MockedBus() {
       return Object.keys(publicationCallbacks);
    };
    
+   this.removeCallbackFor = function removeCallbackFor(topic) {
+      if (Object.keys(publicationCallbacks).indexOf(topic) > -1) {
+         delete publicationCallbacks[topic];
+      }
+   };
+   
    this.reset = function reset() {
       commandCallbacks = [];
       publicationCallbacks = [];
