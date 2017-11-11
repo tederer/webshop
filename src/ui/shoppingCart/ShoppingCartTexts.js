@@ -9,12 +9,16 @@ assertNamespace('shop.ui.shoppingCart');
 shop.ui.shoppingCart.ShoppingCartTexts = function ShoppingCartTexts(optionalBus) {
 
    var TEXT_KEY_PREFIX = 'shoppingCartContentTable.';
+   var SHIPPING_COSTS_ID = 'shippingCosts';
+   var TOTAL_COSTS_ID = 'totalCosts';
+   var EMPTY_CART_ID = 'emptyCart';
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    var shippingCostsText;
    var totalCostsText;
    var emptyCartText;
    var callbacks = [];
+   var texts = {};
    
    var notifycallbacks = function notifycallbacks() {
       for (var index = 0; index < callbacks.length; index++) {
@@ -22,19 +26,13 @@ shop.ui.shoppingCart.ShoppingCartTexts = function ShoppingCartTexts(optionalBus)
       }
    };
    
-   var onShippingCostsText = function onShippingCostsText(text) {
-      shippingCostsText = text;
+   var onTextChanged = function onTextChanged(textId, text) {
+      texts[textId] = text;
       notifycallbacks();
    };
    
-   var onTotalCostsText = function onTotalCostsText(text) {
-      totalCostsText = text;
-      notifycallbacks();
-   };
-   
-   var onEmptyCartText = function onEmptyCartText(text) {
-      emptyCartText = text;
-      notifycallbacks();
+   var subscribeToPublication = function subscribeToPublication(textId) {
+      bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + textId, onTextChanged.bind(this, textId));
    };
    
    this.onLanguageDependentTextChanged = function onLanguageDependentTextChanged(callback) {
@@ -42,24 +40,27 @@ shop.ui.shoppingCart.ShoppingCartTexts = function ShoppingCartTexts(optionalBus)
    };
    
    this.getShippingCostsText = function getShippingCostsText() {
-      return shippingCostsText;
+      return texts[SHIPPING_COSTS_ID];
    };
    
    this.getTotalCostsText = function getTotalCostsText() {
-      return totalCostsText;
+      return texts[TOTAL_COSTS_ID];
    };
    
    this.getEmptyCartText = function getEmptyCartText() {
-      return emptyCartText;
+      return texts[EMPTY_CART_ID];
    };
    
    this.allTextsAreAvailable = function allTextsAreAvailable() {
-      return shippingCostsText !== undefined &&
-         totalCostsText !== undefined &&
-         emptyCartText !== undefined;
+      var allAvailable = true;
+      var textIds = [SHIPPING_COSTS_ID, TOTAL_COSTS_ID, EMPTY_CART_ID];
+      for (var index=0; allAvailable && index < textIds.length; index++) {
+         allAvailable = texts[textIds[index]] !== undefined;
+      }
+      return allAvailable;
    };
    
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'shippingCosts', onShippingCostsText);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'totalCosts', onTotalCostsText);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + TEXT_KEY_PREFIX + 'emptyCart', onEmptyCartText);
+   subscribeToPublication('shippingCosts');
+   subscribeToPublication('totalCosts');
+   subscribeToPublication('emptyCart');
 };
