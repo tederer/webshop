@@ -1,3 +1,5 @@
-﻿* recherchieren wie append von grunt funktioniert
+﻿* tests für CartController schreiben
+
+* recherchieren wie append von grunt funktioniert
 * beim impressum eine karten mit der google-maps API einbauen
 * countryCode auf großschreibung ändern

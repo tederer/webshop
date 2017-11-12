@@ -5,10 +5,12 @@ require('../../Context.js');
 require('../../Topics.js');
 require('./ProductConfig.js');
 require('./TableHeaders.js');
+require('./InputForm.js');
+require('./ShoppingCartTexts.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
-shop.ui.shoppingCart.CartController = function CartController(products, optionalUiComponentProvider, optionalTableGenerator, optionalBus) {
+shop.ui.shoppingCart.CartController = function CartController(products, testingComponents, optionalUiComponentProvider, optionalTableGenerator, optionalBus) {
    
    var SHIPPING_COSTS_AUSTRIA = 4.6;
    var SHIPPING_COSTS_NON_AUSTRIA = 11.25;
@@ -17,17 +19,21 @@ shop.ui.shoppingCart.CartController = function CartController(products, optional
       return $(selector);
    };
    
-   var uiComponentProvider = (optionalUiComponentProvider === undefined) ? defaultUiComponentProvider : optionalUiComponentProvider;
-   var tableGenerator = (optionalTableGenerator === undefined) ? new shop.ui.shoppingCart.TableGenerator() : optionalTableGenerator;
+   var testingComponentAvailable = function testingComponentAvailable(paramId) {
+      return (testingComponents !== undefined && testingComponents[paramId] !== undefined);
+   };
    
-   var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
+   var bus = testingComponentAvailable('bus') ? testingComponents.bus : shop.Context.bus;
+   var uiComponentProvider = testingComponentAvailable('uiComponentProvider') ? testingComponents.uiComponentProvider : defaultUiComponentProvider;
+   var tableGenerator = testingComponentAvailable('tableGenerator') ? testingComponents.tableGenerator : new shop.ui.shoppingCart.TableGenerator();
+   var tableHeaders = testingComponentAvailable('tableHeaders') ? testingComponents.tableHeaders : new shop.ui.shoppingCart.TableHeaders();
+   var productConfigs = testingComponentAvailable('productConfigs') ? testingComponents.productConfigs : new shop.ui.shoppingCart.ProductConfig(products);
+   var texts = testingComponentAvailable('texts') ? testingComponents.texts : new shop.ui.shoppingCart.ShoppingCartTexts();
+   var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
+   
    var cartContent;
    var tabSelector;
    var countryOfDestination;
-   var productConfigs = new shop.ui.shoppingCart.ProductConfig(products);
-   var tableHeaders = new shop.ui.shoppingCart.TableHeaders();
-   var inputForm = new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
-   var texts = new shop.ui.shoppingCart.ShoppingCartTexts();
    
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
