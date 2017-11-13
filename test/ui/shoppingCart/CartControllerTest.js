@@ -16,17 +16,22 @@ var tableHeadersAreAvailable;
 var tableGeneratorResult;
 var cartTextsAreAvailable;
 var configuredProducts;
+var capturedGeneratorData;
 
 var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
    return {
       html: function html(htmlCode) {
-         capturedHtmlContent[selector] = htmlCode;
+         if (capturedHtmlContent[selector] === undefined) {
+            capturedHtmlContent[selector] = [];
+         }
+         capturedHtmlContent[selector].push(htmlCode);
       }
    };
 };
 
 var mockedTableGenerator = {
    generateTable: function generateTable(data) {
+      capturedGeneratorData[capturedGeneratorData.length] = data;
       return tableGeneratorResult;
    }
 };
@@ -44,7 +49,7 @@ var mockedProductConfig = {
       var result;
       for(var index = 0; result === undefined && index < configuredProducts.length; index++) {
          if (configuredProducts[index].id === productId) {
-            result = configuredProducts[index].id;
+            result = configuredProducts[index];
          }
       }
       return result;
@@ -117,9 +122,39 @@ var whenContentOfTabChanges = function whenContentOfTabChanges(tabSelector) {
    givenContentOfTabChanges(tabSelector);
 };
 
+var whenTheShoppingCartContentIs = function whenTheShoppingCartContentIs(content) {
+   givenTheShoppingCartContentIs(content);
+};
+
+var getCapturedHtmlContents = function getCapturedHtmlContents() {
+   return capturedHtmlContent[ 'tab_selector' + ' > #shoppingCartContent'];
+};
+
+var lastPublishedHtmlContent = function lastPublishedHtmlContent() {
+   var data = getCapturedHtmlContents();
+   return data[data.length - 1];
+};
+
+var lastGeneratorData = function lastGeneratorData() {
+   return capturedGeneratorData[capturedGeneratorData.length - 1];
+};
+
+var lastGeneratorDataContainsProductInCart = function lastGeneratorDataContainsProductInCart(productId, name, quantity, price) {
+   var cartContent = lastGeneratorData().productsInShoppingCart;
+   var contains = false;
+   for(var index = 0; !contains && index < cartContent.length; index++) {
+      contains = cartContent[index].productId === productId &&
+                 cartContent[index].name === name &&
+                 cartContent[index].quantity === quantity &&
+                 cartContent[index].price === price;
+   }
+   return contains;
+};
+
 var setup = function setup() {
    mockedBus = new testing.MockedBus();
    capturedHtmlContent = {};
+   capturedGeneratorData = [];
    tableHeadersAreAvailable = undefined;
    tableGeneratorResult = undefined;
    configuredProducts = {};
@@ -142,8 +177,54 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'prodA', name: 'pflanze_A'}]);
       givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 2 }]);
       whenContentOfTabChanges('tab_selector');
-      expect(capturedHtmlContent[ 'tab_selector' + ' > #shoppingCartContent']).to.be.eql('some html code');
+      expect(lastPublishedHtmlContent()).to.be.eql('some html code');
    });
-});  
-
+   
+   it('table content gets updated when the cart content changes', function() {
+      givenInstance();
+      givenTableGeneratorReturns('some html code');
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenConfiguredProducts([{id: 'prodA', name: 'pflanze_A'}]);
+      givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 2 }]);
+      givenContentOfTabChanges('tab_selector');
+      whenTheShoppingCartContentIs([]);
+      expect(getCapturedHtmlContents().length).to.be.eql(2);
+   });
+      
+   it('table generator data contains the current cart content A', function() {
+      givenInstance();
+      givenTableGeneratorReturns('some html code');
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenConfiguredProducts([{id: 'prodA', name: 'pflanze_A', price: 5},{id: 'prodB', name: 'pflanze_B', price: 7}]);
+      givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 1 },{ productId: 'prodB', quantity: 2 }]);
+      whenContentOfTabChanges('tab_selector');
+      expect(lastGeneratorData().productsInShoppingCart.length).to.be.eql(2);
+      expect(lastGeneratorDataContainsProductInCart('prodA', 'pflanze_A', 1, 5)).to.be.eql(true);
+      expect(lastGeneratorDataContainsProductInCart('prodB', 'pflanze_B', 2, 7)).to.be.eql(true);
+   });
+      
+   it('table generator data contains the current cart content B', function() {
+      givenInstance();
+      givenTableGeneratorReturns('another html code');
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 120},{id: 'potato', name: 'blue potato', price: 0.7}]);
+      givenTheShoppingCartContentIs([{ productId: 'potato', quantity: 15 }]);
+      whenContentOfTabChanges('tab_selector_B');
+      expect(lastGeneratorData().productsInShoppingCart.length).to.be.eql(1);
+      expect(lastGeneratorDataContainsProductInCart('potato', 'blue potato', 15, 0.7)).to.be.eql(true);
+   });
+}); 
+/* 
+      var data = {
+         productsInShoppingCart: [],
+         shippingCosts: shippingCosts,
+         totalCosts: totalCosts,
+         shippingCostsText: texts.getShippingCostsText(),
+         totalCostsText: texts.getTotalCostsText(),
+         tableHeaders: tableHeaders
+      };
+*/
       
