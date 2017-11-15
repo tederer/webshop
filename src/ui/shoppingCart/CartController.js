@@ -47,10 +47,10 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    };
    
    var allDataAvailable = function allDataAvailable() {
-      return tableHeaders.allHeadersAreAvailable() && 
-         productConfigForCartContentAvailable() &&
-         cartContent !== undefined && 
+      return cartContent !== undefined && 
          tabSelector !== undefined &&
+         tableHeaders.allHeadersAreAvailable() && 
+         productConfigForCartContentAvailable() &&
          texts.allTextsAreAvailable();
    };
       
