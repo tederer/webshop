@@ -373,5 +373,17 @@ describe('CartController', function() {
       whenContentOfTabChanges();
       expect(lastGeneratorData().tableHeaders.id).to.be.eql('mockedTableHeaders');
    });
+   
+   it('instead of the table content the empty cart text gets set when the cart is empty', function() {
+      givenInstance();
+      givenTableGeneratorReturns('some html code');
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenEmptyCartTextIs('your cart is empty');
+      givenConfiguredProducts([{id: 'prodA', name: 'pflanze_A'}]);
+      givenTheShoppingCartContentIs([]);
+      whenContentOfTabChanges('tab_selector');
+      expect(lastPublishedHtmlContent()).to.be.eql('<p>your cart is empty</p>');
+   });
 }); 
       
