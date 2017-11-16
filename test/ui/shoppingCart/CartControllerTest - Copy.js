@@ -22,11 +22,6 @@ var tabSelector;
 var shippingCostsText;
 var totalCostsText;
 var emptyCartText;
-var capturedCartContentsInCalculator;
-var capturedCountryCodeInCalculator;
-var calculatedCosts;
-var shippingCosts;
-var totalCosts;
 
 var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
    return {
@@ -83,15 +78,9 @@ var mockedInputForm = {
 };
 
 var mockedCostCalculator = {
-   setCartContent: function setCartContent(content) {
-      capturedCartContentsInCalculator[capturedCartContentsInCalculator.length] = content;
-   },
-   setCountryOfDestination: function setCountryOfDestination(countryCode) {
-      capturedCountryCodeInCalculator[capturedCountryCodeInCalculator.length] = countryCode;
-   },
-   calculateCosts: function calculateCosts() {
-      return {totalCosts: totalCosts, shippingCosts: shippingCosts};
-   }
+   setCartContent: function setCartContent(content) {},
+   setCountryOfDestination: function setCountryOfDestination(countryCode) {},
+   calculateCosts: function calculateCosts() {}
 };
 
 function valueIsAnObject(val) {
@@ -138,14 +127,6 @@ var givenTableGeneratorReturns = function givenTableGeneratorReturns(contentToRe
    tableGeneratorResult = contentToReturn;
 };
 
-var givenTheShippingCostsAre = function givenTheShippingCostsAre(costs) {
-   shippingCosts = costs;
-};
-
-var givenTheTotalCostsAre = function givenTheTotalCostsAre(costs) {
-   totalCosts = costs;
-};
-
 var givenShippingCostsTextIs = function givenShippingCostsTextIs(text) {
    shippingCostsText = text;
 };
@@ -161,10 +142,6 @@ var givenEmptyCartTextIs = function givenEmptyCartTextIs(text) {
 var givenContentOfTabChanges = function givenContentOfTabChanges(tabSelectorToUse) {
    tabSelector = (tabSelectorToUse === undefined) ? DEFAULT_TAB_SELECTOR : tabSelectorToUse;
    instance.onTabContentChangedCallback(tabSelector);  
-};
-
-var whenCountryOfDestinationIs = function whenCountryOfDestinationIs(countryCode) {
-   givenCountryOfDestinationIs(countryCode);
 };
 
 var whenContentOfTabChanges = function whenContentOfTabChanges(tabSelector) {
@@ -184,10 +161,6 @@ var lastPublishedHtmlContent = function lastPublishedHtmlContent() {
    return data[data.length - 1];
 };
 
-var lastCartContentsInCalculator = function lastCartContentsInCalculator() {
-   return capturedCartContentsInCalculator[capturedCartContentsInCalculator.length - 1];   
-};
-
 var lastGeneratorData = function lastGeneratorData() {
    return capturedGeneratorData[capturedGeneratorData.length - 1];
 };
@@ -204,16 +177,6 @@ var lastGeneratorDataContainsProductInCart = function lastGeneratorDataContainsP
    return contains;
 };
 
-var lastCartContentsInCalculatorContains = function lastCartContentsInCalculatorContains(productId, quantity) {
-   var cartContent = lastCartContentsInCalculator();
-   var contains = false;
-   for(var index = 0; !contains && index < cartContent.length; index++) {
-      contains = cartContent[index].productId === productId &&
-                 cartContent[index].quantity === quantity;
-   }
-   return contains;
-};
-   
 var setup = function setup() {
    mockedBus = new testing.MockedBus();
    capturedHtmlContent = {};
@@ -225,11 +188,6 @@ var setup = function setup() {
    shippingCostsText = undefined;
    totalCostsText = undefined;
    emptyCartText = undefined;
-   capturedCartContentsInCalculator = [];
-   capturedCountryCodeInCalculator = [];
-   calculatedCosts = undefined;
-   shippingCosts = undefined;
-   totalCosts = undefined;
 };
 
 describe('CartController', function() {
@@ -287,57 +245,82 @@ describe('CartController', function() {
       expect(lastGeneratorDataContainsProductInCart('potato', 'blue potato', 15, 0.7)).to.be.eql(true);
    });
       
-   it('table generator data contains the costs provided by the CostCalculator A', function() {
+   it('table generator data contains no shipping costs when no country of destination is selected', function() {
       givenInstance();
       givenAllTableHeadersAreAvailable();
       givenCartTextsAreAvailable();
-      givenTheShippingCostsAre(12.7);
-      givenTheTotalCostsAre(undefined);
-      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 120}]);
-      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
-      whenContentOfTabChanges();
-      expect(lastGeneratorData().shippingCosts).to.be.eql(12.7);
-      expect(lastGeneratorData().totalCosts).to.be.eql(undefined);
-   });
-      
-   it('table generator data contains the costs provided by the CostCalculator B', function() {
-      givenInstance();
-      givenAllTableHeadersAreAvailable();
-      givenCartTextsAreAvailable();
-      givenTheShippingCostsAre(undefined);
-      givenTheTotalCostsAre(321.9);
       givenConfiguredProducts([{id: 'fish', name: 'shark', price: 120}]);
       givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
       whenContentOfTabChanges();
       expect(lastGeneratorData().shippingCosts).to.be.eql(undefined);
-      expect(lastGeneratorData().totalCosts).to.be.eql(321.9);
    });
       
-   it('new cart content gets forwarded to the CostsCalculator A', function() {
+   it('table generator data contains shipping costs of 4.60 when country of destination is AT and total product costs are < 50', function() {
       givenInstance();
-      whenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
-      expect(lastCartContentsInCalculator().length).to.be.eql(1);
-      expect(lastCartContentsInCalculatorContains('fish', 2)).to.be.eql(true);
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenCountryOfDestinationIs('AT');
+      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 49.99}]);
+      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      whenContentOfTabChanges();
+      expect(lastGeneratorData().shippingCosts).to.be.eql(4.6);
    });
       
-   it('new cart content gets forwarded to the CostsCalculator B', function() {
+   it('table generator data contains shipping costs of 0 when country of destination is AT and total product costs are >= 50', function() {
       givenInstance();
-      whenTheShoppingCartContentIs([]);
-      expect(lastCartContentsInCalculator().length).to.be.eql(0);
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenCountryOfDestinationIs('AT');
+      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 50}]);
+      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      whenContentOfTabChanges();
+      expect(lastGeneratorData().shippingCosts).to.be.eql(0);
    });
       
-   it('new country of destination gets forwarded to the CostsCalculator A', function() {
+   it('table generator data contains shipping costs of 11.25 when country of destination is selected but not AT and total product costs are < 100', function() {
       givenInstance();
-      whenCountryOfDestinationIs('DE');
-      expect(capturedCountryCodeInCalculator[capturedCountryCodeInCalculator.length - 1]).to.be.eql('DE');
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenCountryOfDestinationIs('DE');
+      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 99.99}]);
+      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      whenContentOfTabChanges();
+      expect(lastGeneratorData().shippingCosts).to.be.eql(11.25);
    });
       
-   it('new country of destination gets forwarded to the CostsCalculator B', function() {
+   it('table generator data contains shipping costs of 0 when country of destination is selected but not AT and total product costs are >= 100', function() {
       givenInstance();
-      whenCountryOfDestinationIs('AT');
-      expect(capturedCountryCodeInCalculator[capturedCountryCodeInCalculator.length - 1]).to.be.eql('AT');
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenCountryOfDestinationIs('DE');
+      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 100}]);
+      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      whenContentOfTabChanges();
+      expect(lastGeneratorData().shippingCosts).to.be.eql(0);
    });
-
+      
+   it('table generator data contains total costs A', function() {
+      givenInstance();
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenCountryOfDestinationIs('DE');
+      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 70}]);
+      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      whenContentOfTabChanges();
+      expect(lastGeneratorData().totalCosts).to.be.eql(81.25);
+   });
+      
+   it('table generator data contains total costs B', function() {
+      givenInstance();
+      givenAllTableHeadersAreAvailable();
+      givenCartTextsAreAvailable();
+      givenCountryOfDestinationIs('AT');
+      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
+      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      whenContentOfTabChanges();
+      expect(lastGeneratorData().totalCosts).to.be.eql(54);
+   });
+      
    it('table generator data contains the shipping costs text provided by the ShoppingCartTexts A', function() {
       givenInstance();
       givenAllTableHeadersAreAvailable();

@@ -7,10 +7,11 @@ require('./ProductConfig.js');
 require('./TableHeaders.js');
 require('./InputForm.js');
 require('./ShoppingCartTexts.js');
+require('./CostsCalculator.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
-shop.ui.shoppingCart.CartController = function CartController(products, testingComponents, optionalUiComponentProvider, optionalTableGenerator, optionalBus) {
+shop.ui.shoppingCart.CartController = function CartController(products, testingComponents) {
    
    var SHIPPING_COSTS_AUSTRIA = 4.6;
    var SHIPPING_COSTS_NON_AUSTRIA = 11.25;
@@ -30,6 +31,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    var productConfigs = testingComponentAvailable('productConfigs') ? testingComponents.productConfigs : new shop.ui.shoppingCart.ProductConfig(products);
    var texts = testingComponentAvailable('texts') ? testingComponents.texts : new shop.ui.shoppingCart.ShoppingCartTexts();
    var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
+   var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.ui.shoppingCart.CostsCalculator(productConfigs);
    
    var cartContent;
    var tabSelector;
@@ -54,11 +56,11 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
          texts.allTextsAreAvailable();
    };
       
-   var getHtmlTable = function getHtmlTable(shippingCosts, totalCosts) {
+   var getHtmlTable = function getHtmlTable(costs) {
       var data = {
          productsInShoppingCart: [],
-         shippingCosts: shippingCosts,
-         totalCosts: totalCosts,
+         shippingCosts: costs.shippingCosts,
+         totalCosts: costs.totalCosts,
          shippingCostsText: texts.getShippingCostsText(),
          totalCostsText: texts.getTotalCostsText(),
          tableHeaders: tableHeaders
@@ -76,33 +78,14 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
       return tableGenerator.generateTable(data);
    };
    
-   var getTotalProductCosts = function getTotalProductCosts() {
-      var costs = 0;
-      for(var index = 0; index < cartContent.length; index++) {
-         var productConfig = productConfigs.get(cartContent[index].productId);
-         costs += productConfig.price * cartContent[index].quantity;
-      }
-      return costs;
-   };
-   
    var updateTable = function updateTable() {
       if (allDataAvailable()) {
          var htmlCode;
          if (cartContent.length < 1) {
             htmlCode = '<p>' + texts.getEmptyCartText() + '</p>';
          } else {
-            var totalProductCosts = getTotalProductCosts();
-            var shippingCosts;
-            
-            if (countryOfDestination !== undefined) {
-               if (countryOfDestination === 'AT') {
-                  shippingCosts = (totalProductCosts >= 50) ? 0 : SHIPPING_COSTS_AUSTRIA;
-               } else {
-                  shippingCosts = (totalProductCosts >= 100) ? 0 : SHIPPING_COSTS_NON_AUSTRIA;
-               }
-            }
-            var totalCosts = (shippingCosts !== undefined) ? totalProductCosts + shippingCosts : undefined;
-            htmlCode = getHtmlTable(shippingCosts, totalCosts);
+            var costs = costCalculator.calculateCosts();
+            htmlCode = getHtmlTable(costs);
          }
          uiComponentProvider(tabSelector + ' > #shoppingCartContent').html(htmlCode);
       }
@@ -110,11 +93,13 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
 
    var onShoppingCartContent = function onShoppingCartContent(content) {
       cartContent = content;
+      costCalculator.setCartContent(content);
       updateTable();
    };
    
-   var onCountryOfDestination = function onCountryOfDestination(country) {
-      countryOfDestination = country;
+   var onCountryOfDestination = function onCountryOfDestination(countryCode) {
+      countryOfDestination = countryCode;
+      costCalculator.setCountryOfDestination(countryCode);
       updateTable();
    };
    
