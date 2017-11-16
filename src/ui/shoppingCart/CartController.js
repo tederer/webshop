@@ -59,8 +59,8 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    var getHtmlTable = function getHtmlTable(costs) {
       var data = {
          productsInShoppingCart: [],
-         shippingCosts: costs.shippingCosts,
-         totalCosts: costs.totalCosts,
+         shippingCosts: (costs !== undefined) ? costs.shippingCosts : undefined,
+         totalCosts: (costs !== undefined) ? costs.totalCosts : undefined,
          shippingCostsText: texts.getShippingCostsText(),
          totalCostsText: texts.getTotalCostsText(),
          tableHeaders: tableHeaders
@@ -81,10 +81,11 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    var updateTable = function updateTable() {
       if (allDataAvailable()) {
          var htmlCode;
+         var costs = costCalculator.calculateCosts();
+            
          if (cartContent.length < 1) {
             htmlCode = '<p>' + texts.getEmptyCartText() + '</p>';
          } else {
-            var costs = costCalculator.calculateCosts();
             htmlCode = getHtmlTable(costs);
          }
          uiComponentProvider(tabSelector + ' > #shoppingCartContent').html(htmlCode);

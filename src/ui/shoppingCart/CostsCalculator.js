@@ -12,6 +12,10 @@ shop.ui.shoppingCart.CostsCalculator = function CostsCalculator(productConfigs) 
    var cartContent;
    var countryOfDestination;
    
+   var cartContainsProducts = function cartContainsProducts() {
+      return cartContent !== undefined && cartContent.length > 0;
+   };
+   
    this.setCartContent = function setCartContent(content) {
       cartContent = content;
    };
@@ -21,22 +25,24 @@ shop.ui.shoppingCart.CostsCalculator = function CostsCalculator(productConfigs) 
    };
    
    this.calculateCosts = function calculateCosts() {
-      var totalProductCosts = 0;
-      var shippingCosts;
+      var result;
       
-      for(var index = 0; cartContent !== undefined && index < cartContent.length; index++) {
-         var productConfig = productConfigs.get(cartContent[index].productId);
-         totalProductCosts += productConfig.price * cartContent[index].quantity;
-      }
+      if (cartContainsProducts() && countryOfDestination !== undefined) {
+         var totalProductCosts = 0;
+         var shippingCosts;
+      
+         for(var index = 0; index < cartContent.length; index++) {
+            var productConfig = productConfigs.get(cartContent[index].productId);
+            totalProductCosts += productConfig.price * cartContent[index].quantity;
+         }
 
-      if (countryOfDestination !== undefined) {
          if (countryOfDestination === 'AT') {
             shippingCosts = (totalProductCosts >= 50) ? 0 : SHIPPING_COSTS_AUSTRIA;
          } else {
             shippingCosts = (totalProductCosts >= 100) ? 0 : SHIPPING_COSTS_NON_AUSTRIA;
          }
+         result = {totalCosts: totalProductCosts + shippingCosts, shippingCosts: shippingCosts};
       }
-      var totalCosts = (shippingCosts !== undefined) ? totalProductCosts + shippingCosts : undefined;
-      return {totalCosts: totalCosts, shippingCosts: shippingCosts};
+      return result;
    };
 };
