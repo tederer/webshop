@@ -1,9 +1,9 @@
 /* global shop, common, assertNamespace */
 
-require('../NamespaceUtils.js');
-require('../Topics.js');
-require('../bus/Bus.js');
-require('../ui/Actions.js');
+require('../../NamespaceUtils.js');
+require('../../Topics.js');
+require('../../bus/Bus.js');
+require('../../ui/Actions.js');
 
 assertNamespace('shop.ui');
 

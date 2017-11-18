@@ -1,11 +1,11 @@
 /* global shop, common, assertNamespace */
 
-require('../NamespaceUtils.js');
-require('../Context.js');
-require('../bus/Bus.js');
-require('../Promise.js');
-require('./AbstractHideableLanguageDependentComponent.js');
-require('./ProductTableGenerator.js');
+require('../../NamespaceUtils.js');
+require('../../Context.js');
+require('../../bus/Bus.js');
+require('../../Promise.js');
+require('../AbstractHideableLanguageDependentComponent.js');
+require('../tab/ProductTableGenerator.js');
 
 assertNamespace('shop.ui');
 
