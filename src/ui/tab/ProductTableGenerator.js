@@ -1,9 +1,6 @@
 /* global shop, common, assertNamespace */
 
 require('../../NamespaceUtils.js');
-require('../../Topics.js');
-require('../../bus/Bus.js');
-require('../../ui/Actions.js');
 
 assertNamespace('shop.ui');
 
@@ -38,7 +35,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    var intentationAsString = '   ';
    var intentations;
    var content;
-   var tableId;
+   var configKey;
    
    var append = function(text) {
       var line = '';
@@ -68,7 +65,7 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
    
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
       intentations++;
-      var commonId = tableId + '_' + product.id;
+      var commonId = configKey + '_' + product.id;
       var buttonId = commonId + '_button';
       var textfieldId = commonId + '_textfield';
       var button = '<button type="button" id="' + buttonId + '" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\', \'' + textfieldId + '\');"></button>';
@@ -118,10 +115,10 @@ shop.ui.ProductTableGenerator = function ProductTableGenerator() {
       intentations--;
    };
    
-   this.generateTable = function generateTable(id, config) {
+   this.generateTable = function generateTable(configurationId, config) {
       intentations = 1;
       content = '';
-      tableId = id;
+      configKey = configurationId;
       
       append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
       addCaptions();
