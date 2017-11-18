@@ -1,6 +1,6 @@
 /* global global, shop, testing, assertNamespace */
 
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/tab/Tab.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/Tab.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 
 require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
