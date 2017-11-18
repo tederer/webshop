@@ -1,4 +1,4 @@
 ﻿* recherchieren wie append von grunt funktioniert
 * beim impressum eine karten mit der google-maps API einbauen
-* countryCode auf großschreibung ändern
-* Termine hinzufügen
+* bei den diversen Tabs den inhalt vervollständigen
+* einen generator für die termine bauen

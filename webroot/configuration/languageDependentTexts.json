@@ -2,6 +2,7 @@
    "menu.startButton":                          { "de": "Startseite",         "en": "start page" },
    "menu.plantsButton":                         { "de": "Jungpflanzen",       "en": "seedlings" },
    "menu.accessoriesButton":                    { "de": "Zubehör",            "en": "accessories" },
+   "menu.events":                               { "de": "Termine",            "en": "events" },
    "menu.shoppingCartButton":                   { "de": "Warenkorb",          "en": "shopping cart" },
    "menu.shippingButton":                       { "de": "Versandbedingungen", "en": "shipping details" },
    "menu.companyDetailsButton":                 { "de": "Impressum",          "en": "company details" },

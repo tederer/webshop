@@ -78,6 +78,19 @@ body {
    z-index: 1;
 }
 
+#shop > #content > #events {
+   position : absolute;
+   top : 0;
+   bottom : 2em;
+   left : 1em;
+   right : 1em;
+   border-radius : 0 0 0 0;
+   background-color : transparent;
+   visibility : hidden;
+   overflow : auto;
+   z-index: 1;
+}
+
 #shop > #content > #shipping {
    position : absolute;
    top : 0;

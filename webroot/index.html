@@ -50,23 +50,25 @@
       var htmlContentLoader      = new shop.configuration.HtmlContentLoader(baseAddress + 'templates', supportedLanguages);
       var languageDependentTexts = new shop.LanguageDependentTexts(baseAddress + 'configuration');
       
-      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'versandbedingungen', 'impressum', 'warenkorb', 'pictureOverlay']);
+      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'termine', 'versandbedingungen', 'impressum', 'warenkorb', 'pictureOverlay']);
       configContentLoader.load(products);
       languageDependentTexts.load();
       
       $(document).ready(function() {
          new shop.ShoppingCart();
          
-         new shop.ui.LanguageDependentTextSetter('#shop > #header #start',           'menu.startButton' );
-         new shop.ui.LanguageDependentTextSetter('#shop > #header #plants',          'menu.plantsButton' );
-         new shop.ui.LanguageDependentTextSetter('#shop > #header #accessories',     'menu.accessoriesButton' );
-         new shop.ui.LanguageDependentTextSetter('#shop > #header #shipping',        'menu.shippingButton' );
-         new shop.ui.LanguageDependentTextSetter('#shop > #header #companyDetails',  'menu.companyDetailsButton' );
-         new shop.ui.ShoppingCartButtonTextSetter('#shop > #header #shoppingCart',    'menu.shoppingCartButton' );
+         new shop.ui.LanguageDependentTextSetter('#shop > #header #start',          'menu.startButton' );
+         new shop.ui.LanguageDependentTextSetter('#shop > #header #plants',         'menu.plantsButton' );
+         new shop.ui.LanguageDependentTextSetter('#shop > #header #accessories',    'menu.accessoriesButton' );
+         new shop.ui.LanguageDependentTextSetter('#shop > #header #events',         'menu.events' );
+         new shop.ui.LanguageDependentTextSetter('#shop > #header #shipping',       'menu.shippingButton' );
+         new shop.ui.LanguageDependentTextSetter('#shop > #header #companyDetails', 'menu.companyDetailsButton' );
+         new shop.ui.ShoppingCartButtonTextSetter('#shop > #header #shoppingCart',  'menu.shoppingCartButton' );
          
          new shop.ui.VisibleTabSetter('#shop > #header #start',            'start');
          new shop.ui.VisibleTabSetter('#shop > #header #plants',           'plants');
          new shop.ui.VisibleTabSetter('#shop > #header #accessories',      'accessories');
+         new shop.ui.VisibleTabSetter('#shop > #header #events',           'events');
          new shop.ui.VisibleTabSetter('#shop > #header #shipping',         'shipping');
          new shop.ui.VisibleTabSetter('#shop > #header #companyDetails',   'companyDetails');
          new shop.ui.VisibleTabSetter('#shop > #header #shoppingCart',     'shoppingCart');
@@ -100,6 +102,16 @@
          };
          
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
+         
+         var eventsTabConfig = {
+            tabId: 'events',
+            selector: '#shop > #content > #events',
+            configName: undefined,
+            contentTemplateName: 'termine',
+            languages: supportedLanguages
+         };
+         
+         var eventsTab = new shop.ui.Tab(eventsTabConfig);
          
          var shippingTabConfig = {
             tabId: 'shipping',
@@ -149,7 +161,7 @@
          new shop.ui.LanguageSelector(function() { return $('#shop > #header #languageSelector'); });
          
          var uiStatePublisherConfig = {
-            supportedTabs:       ['start', 'plants', 'accessories', 'shipping', 'companyDetails', 'shoppingCart'],
+            supportedTabs:       ['start', 'plants', 'accessories', 'events', 'shipping', 'companyDetails', 'shoppingCart'],
             supportedLanguages:  supportedLanguages,
             defaultTab:          'start',
             defaultLanguage:     shop.Language.DE
@@ -188,6 +200,7 @@
                <button id="start"></button> 
                <button id="plants"></button> 
                <button id="accessories"></button> 
+               <button id="events"></button> 
                <button id="shipping"></button> 
                <button id="companyDetails"></button> 
             </td>
@@ -202,6 +215,7 @@
       <div id="start"></div>
       <div id="plants"></div>
       <div id="accessories"></div>
+      <div id="events"></div>
       <div id="shipping"></div>
       <div id="companyDetails"></div>
       <div id="shoppingCart"></div>
