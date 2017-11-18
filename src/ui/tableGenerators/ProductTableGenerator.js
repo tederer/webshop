@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
 require('../../NamespaceUtils.js');
+require('./AbstractTableGenerator.js');
 
 assertNamespace('shop.ui');
 
@@ -29,103 +30,87 @@ assertNamespace('shop.ui');
  *      ]
  *   }
  */
-shop.ui.ProductTableGenerator = function ProductTableGenerator() {
+shop.ui.tablegenerators.ProductTableGenerator = function ProductTableGenerator() {
 
-   var CRLF = '\r\n';
-   var intentationAsString = '   ';
-   var intentations;
-   var content;
+   var thisInstance = this;
    var configKey;
    
-   var append = function(text) {
-      var line = '';
-      for (var i = 0; i < intentations; i++) {
-         line += intentationAsString;
-      }
-      content += line + text + CRLF;
-   };
-   
    var addText = function addText(text) {
-      intentations++;
-      append('<td>' + ((text === undefined) ? '&nbsp;' : text) + '</td>');
-      intentations--;
+      thisInstance.incrementIntentation();
+      thisInstance.append('<td>' + ((text === undefined) ? '&nbsp;' : text) + '</td>');
+      thisInstance.decrementIntentation();
    };
    
    var addPrice = function addPrice(price) {
-      intentations++;
-      append('<td>' + price.toFixed(2) + ' EUR</td>');
-      intentations--;
-   };
-   
-   var addHeader = function addHeader(classId) {
-      intentations++;
-      append('<th class="' + classId + '"></th>');
-      intentations--;
+      thisInstance.incrementIntentation();
+      thisInstance.append('<td>' + price.toFixed(2) + ' EUR</td>');
+      thisInstance.decrementIntentation();
    };
    
    var addShoppingCartAdder = function addShoppingCartAdder(product) {
-      intentations++;
+      thisInstance.incrementIntentation();
       var commonId = configKey + '_' + product.id;
       var buttonId = commonId + '_button';
       var textfieldId = commonId + '_textfield';
       var button = '<button type="button" id="' + buttonId + '" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\', \'' + textfieldId + '\');"></button>';
       var input = '<input type="text" id="' + textfieldId + '" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + commonId + '\');">';
-      append('<td>' + input + '&nbsp;' + button + '</td>');
-      intentations--;
+      thisInstance.append('<td>' + input + '&nbsp;' + button + '</td>');
+      thisInstance.decrementIntentation();
    };
    
    var addImage = function addImage(imageSmall, imageBig, url) {
-      intentations++;
-      var content = '';
+      thisInstance.incrementIntentation();
+      var htmlContent = '';
       if (imageSmall !== undefined) {
-         content = '<img src="' + imageSmall + '">';
+         htmlContent = '<img src="' + imageSmall + '">';
          if (imageBig !== undefined) {
-            content = content + '<br><a class="bigPictureAnchor" href="javascript:shop.ui.Actions.showPicture(\'' + imageBig + '\');"></a>';
+            htmlContent = htmlContent + '<br><a class="bigPictureAnchor" href="javascript:shop.ui.Actions.showPicture(\'' + imageBig + '\');"></a>';
          }
       } else {
          if (url !== undefined) {
-            content = '<a class="onTheInternetAnchor" href="' + url + '"></a>';
+            htmlContent = '<a class="onTheInternetAnchor" href="' + url + '"></a>';
          }
       }
-      append('<td>' + content + '</td>');
-      intentations--;
+      thisInstance.append('<td>' + htmlContent + '</td>');
+      thisInstance.decrementIntentation();
    };
    
    var addRow = function addRow(product) {
-      intentations++;
-      append('<tr>');
+      thisInstance.incrementIntentation();
+      thisInstance.append('<tr>');
       addImage(product.imageSmall, product.imageBig, product.url);
       addText(product.name);
       addText(product.description);
       addPrice(product.price);
       addShoppingCartAdder(product);
-      append('</tr>');
-      intentations--;
+      thisInstance.append('</tr>');
+      thisInstance.decrementIntentation();
    };
    
    var addCaptions = function addCaptions() {
-      intentations++;
-      append('<tr>');
-      addHeader('fotoHeader');
-      addHeader('nameHeader');
-      addHeader('descriptionHeader');
-      addHeader('priceHeader');
-      addHeader('&nbsp;');
-      append('</tr>');
-      intentations--;
+      thisInstance.incrementIntentation();
+      thisInstance.append('<tr>');
+      thisInstance.addHeader('fotoHeader');
+      thisInstance.addHeader('nameHeader');
+      thisInstance.addHeader('descriptionHeader');
+      thisInstance.addHeader('priceHeader');
+      thisInstance.addHeader('&nbsp;');
+      thisInstance.append('</tr>');
+      thisInstance.decrementIntentation();
    };
    
    this.generateTable = function generateTable(configurationId, config) {
-      intentations = 1;
-      content = '';
       configKey = configurationId;
       
-      append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
+      thisInstance.reset();
+      thisInstance.append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
       addCaptions();
       config.products.forEach(function(product) { 
          addRow(product);
       });  
-      append('</table>');
-      return content;
+      thisInstance.append('</table>');
+      return thisInstance.getContent();
    };
 };
+
+shop.ui.tablegenerators.ProductTableGenerator.prototype = new shop.ui.tablegenerators.AbstractTableGenerator();

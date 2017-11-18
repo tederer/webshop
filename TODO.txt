@@ -2,3 +2,4 @@
 * beim impressum eine karten mit der google-maps API einbauen
 * bei den diversen Tabs den inhalt vervollständigen
 * einen generator für die termine bauen
+* kontrollieren ob "prototype.load.call" wirklich notwendig ist oder ob man mit thisIstance durchkommt

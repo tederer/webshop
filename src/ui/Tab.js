@@ -27,7 +27,7 @@ assertNamespace('shop.ui');
  */
 shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableGenerator, optionalBus) {
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var productTableGenerator = (optionalProductTableGenerator === undefined) ? new shop.ui.ProductTableGenerator() : optionalProductTableGenerator;
+   var productTableGenerator = (optionalProductTableGenerator === undefined) ? new shop.ui.tablegenerators.ProductTableGenerator() : optionalProductTableGenerator;
    
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
