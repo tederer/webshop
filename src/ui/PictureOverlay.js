@@ -32,11 +32,11 @@ shop.ui.PictureOverlay = function PictureOverlay(config, optionalSetHtmlContent,
          if (relativePicturePath !== undefined) {
             var replacement = '<img src="' + relativePicturePath + '">';
             setHtmlContent(templateContents[activeLanguage].replace(PLACEHOLDER, replacement));
-            shop.ui.PictureOverlay.prototype.show.call(thisInstance);
+            thisInstance.show();
             isVisible = true;
          } else {
             if (isVisible) {
-               shop.ui.PictureOverlay.prototype.hide.call(thisInstance);
+               thisInstance.hide();
                isVisible = false;
             }
          }

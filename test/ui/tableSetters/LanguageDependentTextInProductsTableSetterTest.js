@@ -1,7 +1,7 @@
 /* global global, shop, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/LanguageDependentTextInProductTableSetter.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/tableSetters/LanguageDependentTextInProductsTableSetter.js');
 
 require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
@@ -46,37 +46,37 @@ var MockedTab = function MockedTab(optionalSelector) {
 var mockedTab;
 var mockedTab2;
 
-var givenDefaultLanguageDependentTextInProductTableSetter = function givenDefaultLanguageDependentTextInProductTableSetter() {
-   instance = new shop.ui.LanguageDependentTextInProductTableSetter(mockedUiComponentProvider, mockedBus);
+var givenDefaultLanguageDependentTextInProductsTableSetter = function givenDefaultLanguageDependentTextInProductsTableSetter() {
+   instance = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter(mockedUiComponentProvider, mockedBus);
    mockedTab.onTabContentChanged(instance.onTabContentChangedCallback);
 };
 
 var givenAddToShoppingCartButtonTextIs = function givenAddToShoppingCartButtonTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.addToShoppingCartButton', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.addToShoppingCartButton', text);
 };
 
 var givenOnTheInternetAnchorTextIs = function givenOnTheInternetAnchorTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.onTheInternetAnchor', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.onTheInternetAnchor', text);
 };
 
 var givenBigPictureAnchorTextIs = function givenBigPictureAnchorTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.bigPictureAnchor', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.bigPictureAnchor', text);
 };
 
 var givenFotoHeaderTextIs = function givenFotoHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.fotoHeader', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.fotoHeader', text);
 };
 
 var givenNameHeaderTextIs = function givenNameHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.nameHeader', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.nameHeader', text);
 };
 
 var givenDescriptionHeaderTextIs = function givenDescriptionHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.descriptionHeader', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.descriptionHeader', text);
 };
 
 var givenPriceHeaderTextIs = function givenPriceHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productTable.priceHeader', text);
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.priceHeader', text);
 };
 
 var givenTabContentChanges = function givenTabContentChanges() {
@@ -178,13 +178,13 @@ var setup = function setup() {
    mockedTab2 = new MockedTab(DEFAULT_TAB2_SELECTOR);
 };
 
-describe('LanguageDependentTextInProductTableSetter', function() {
+describe('LanguageDependentTextInProductsTableSetter', function() {
 	
    beforeEach(setup);
    
    it('creating an instance is an instance/object', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
@@ -193,7 +193,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       givenAddToShoppingCartButtonTextIs('in den Warenkorb');
       givenOnTheInternetAnchorTextIs('im www');
       givenBigPictureAnchorTextIs('groaßes buedl');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(capturedSelectors.length).to.be.eql(7);
       expect(capturedSelectorsContains(DEFAULT_TAB_SELECTOR + ' button')).to.be.eql(true);
@@ -208,7 +208,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    it('when the tab content changes the buttons get updated', function() {
       
       givenAddToShoppingCartButtonTextIs('in den Warenkorb');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedButtonTextIs('in den Warenkorb')).to.be.eql(true);
    });
@@ -216,7 +216,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    it('when the tab content changes the "onTheInternetAnchor"s get updated', function() {
       
       givenOnTheInternetAnchorTextIs('im www');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedOnTheInternetAnchorTextIs('im www')).to.be.eql(true);
    });
@@ -224,7 +224,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    it('when the tab content changes the "bigPictureAnchor"s get updated', function() {
       
       givenBigPictureAnchorTextIs('groaßes buedl');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedBigPictureAnchorTextIs('groaßes buedl')).to.be.eql(true);
    });
@@ -232,7 +232,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    it('when the tab content changes the "fotoHeader" get updated', function() {
       
       givenFotoHeaderTextIs('foto_header');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedFotoHeaderTextIs('foto_header')).to.be.eql(true);
    });
@@ -240,7 +240,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    it('when the tab content changes the "nameHeader" get updated', function() {
       
       givenNameHeaderTextIs('name_header');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedNameHeaderTextIs('name_header')).to.be.eql(true);
    });
@@ -248,7 +248,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    it('when the tab content changes the "descriptionHeader" get updated', function() {
       
       givenDescriptionHeaderTextIs('description_header');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedDescriptionHeaderTextIs('description_header')).to.be.eql(true);
    });
@@ -256,63 +256,63 @@ describe('LanguageDependentTextInProductTableSetter', function() {
    it('when the tab content changes the "priceHeader" get updated', function() {
       
       givenPriceHeaderTextIs('price_header');
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedPriceHeaderTextIs('price_header')).to.be.eql(true);
    });
    
    it('when the tab content changes and the button text is undefined, then the buttons get updated with an empty text', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedButtonTextIs('')).to.be.eql(true);
    });
       
    it('when the tab content changes and the anchor text is undefined, then the "onTheInternetAnchor"s get updated with an empty text', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedOnTheInternetAnchorTextIs('')).to.be.eql(true);
    });
       
    it('when the tab content changes and the anchor text is undefined, then the "bigPictureAnchor"s get updated with an empty text', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedBigPictureAnchorTextIs('')).to.be.eql(true);
    });
       
    it('when the tab content changes and the fotoHeader text is undefined, then the header get updated with an empty text', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedFotoHeaderTextIs('')).to.be.eql(true);
    });
       
    it('when the tab content changes and the nameHeader text is undefined, then the header get updated with an empty text', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedNameHeaderTextIs('')).to.be.eql(true);
    });
       
    it('when the tab content changes and the descriptionHeader text is undefined, then the header get updated with an empty text', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedDescriptionHeaderTextIs('')).to.be.eql(true);
    });
       
    it('when the tab content changes and the priceHeader text is undefined, then the header get updated with an empty text', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       whenTabContentChanges();
       expect(lastCapturedPriceHeaderTextIs('')).to.be.eql(true);
    });
       
    it('when the language dependent text changes the buttons get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenTabContentChanges();
       whenAddToShoppingCartButtonTextIs('new button text');
       expect(lastCapturedButtonTextIs('new button text')).to.be.eql(true);
@@ -320,7 +320,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the "onTheInternetAnchor"s get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenTabContentChanges();
       whenOnTheInternetAnchorTextIs('new anchor text');
       expect(lastCapturedOnTheInternetAnchorTextIs('new anchor text')).to.be.eql(true);
@@ -328,7 +328,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the "bigPictureAnchor"s get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenTabContentChanges();
       whenBigPictureAnchorTextIs('biggest picture text');
       expect(lastCapturedBigPictureAnchorTextIs('biggest picture text')).to.be.eql(true);
@@ -336,7 +336,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the fotoHeader get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenTabContentChanges();
       whenFotoHeaderTextIs('new photo header');
       expect(lastCapturedFotoHeaderTextIs('new photo header')).to.be.eql(true);
@@ -344,7 +344,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the nameHeader get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenTabContentChanges();
       whenNameHeaderTextIs('new name header');
       expect(lastCapturedNameHeaderTextIs('new name header')).to.be.eql(true);
@@ -352,7 +352,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the descriptionHeader get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenTabContentChanges();
       whenDescriptionHeaderTextIs('new description header');
       expect(lastCapturedDescriptionHeaderTextIs('new description header')).to.be.eql(true);
@@ -360,7 +360,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the priceHeader get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenTabContentChanges();
       whenPriceHeaderTextIs('new price header');
       expect(lastCapturedPriceHeaderTextIs('new price header')).to.be.eql(true);
@@ -368,7 +368,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the buttons of previously changes tabs get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
       whenAddToShoppingCartButtonTextIs('some text');
@@ -378,7 +378,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the "onTheInternetAnchor"s of previously changes tabs get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
       whenOnTheInternetAnchorTextIs('some secret info');
@@ -388,7 +388,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the "bigPictureAnchor"s of previously changes tabs get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
       whenBigPictureAnchorTextIs('some secret pic');
@@ -398,7 +398,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the fotoHeader of previously changes tabs get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
       whenFotoHeaderTextIs('brand new foto header');
@@ -408,7 +408,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the nameHeader of previously changes tabs get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
       whenNameHeaderTextIs('brand new name header');
@@ -418,7 +418,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the descriptionHeader of previously changes tabs get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
       whenDescriptionHeaderTextIs('brand new description header');
@@ -428,7 +428,7 @@ describe('LanguageDependentTextInProductTableSetter', function() {
       
    it('when the language dependent text changes the priceHeader of previously changes tabs get updated', function() {
       
-      givenDefaultLanguageDependentTextInProductTableSetter();
+      givenDefaultLanguageDependentTextInProductsTableSetter();
       givenAnotherTabGetsObservedByTheSetter();
       givenContentOfBothTabsChanges();
       whenPriceHeaderTextIs('brand new price header');

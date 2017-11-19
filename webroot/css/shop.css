@@ -219,8 +219,8 @@ body {
 #shop #content table {margin-left:auto; margin-right:auto; border-collapse: collapse; border: 1px solid #666666; background-color:#DDDDDD;}
 #shop #content table tr:first-child {border-bottom-style: double;}
 #shop #content table caption { text-align:center; padding:0.5em;}
-#shop #content th { padding:2pt; border: 1px solid #666666; font-weight:normal; background-color:white; text-align:center;}
-#shop #content td { padding:2pt; border: 1px solid #666666; }
+#shop #content th { padding:0.5em; border: 1px solid #666666; font-weight:normal; background-color:white; text-align:center;}
+#shop #content td { padding:0.5em; border: 1px solid #666666; }
 
 #shop #content .ohneRahmen { border: none; }
 #shop #content .ohneRahmen tr td { border: none; }

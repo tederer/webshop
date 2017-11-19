@@ -5,7 +5,7 @@ require('../Context.js');
 require('../bus/Bus.js');
 require('../Promise.js');
 require('./AbstractHideableLanguageDependentComponent.js');
-require('./tablegenerators/ProductTableGenerator.js');
+require('./tablegenerators/ProductsTableGenerator.js');
 
 assertNamespace('shop.ui');
 
@@ -15,21 +15,32 @@ assertNamespace('shop.ui');
  * configuration object description:
  *
  * {
- *    tabId:                  this ID is required to show/hide the tab based on the shop.topics.VISIBLE_TAB publication
- *    selector:               the selector identifies the <div> that should receive the content.
- *    configName:             the name of the configuration to use to genenerate the product table. No table gets added when it's undefined.
- *    contentTemplateName:    the name of the HTML template to use. If a product table is configured, the template also requires the PLACEHOLDER in its content.
- *    languages:              an array of supported languages defined in shop.Language
+ *    tabId:                     this ID is required to show/hide the tab based on the shop.topics.VISIBLE_TAB publication
+ *    selector:                  the selector identifies the <div> that should receive the content.
+ *    configName:                the name of the configuration to use to genenerate the product table. No table gets added when it's undefined.
+ *    contentTemplateName:       the name of the HTML template to use. If a product table is configured, the template also requires the PLACEHOLDER in its content.
+ *    languages:                 an array of supported languages defined in shop.Language
+ *    tableGenerator (optional): the name of the generator to use, default = ProductTableGenerator
  * }
  *
  * onTabContentChanged(callback) adds a callback to the tab that gets called every time when the tab content gets updated.
  * The callback does not get anything from the caller (argument count = 0).
  */
 shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableGenerator, optionalBus) {
-   var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var productTableGenerator = (optionalProductTableGenerator === undefined) ? new shop.ui.tablegenerators.ProductTableGenerator() : optionalProductTableGenerator;
-   
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
+   
+   var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
+   var productTableGenerator;
+
+   if (optionalProductTableGenerator !== undefined) {
+      productTableGenerator = optionalProductTableGenerator;
+   } else {
+      if (config.tableGenerator === undefined) {
+         productTableGenerator = new shop.ui.tablegenerators.ProductTableGenerator();
+      } else {
+         productTableGenerator = new shop.ui.tablegenerators[config.tableGenerator]();
+      }
+   }
    
    var configs = {};
    var templateContents = {};
@@ -137,9 +148,9 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
       
       if (newVisible !== visible) {
          if (newVisible) {
-            shop.ui.Tab.prototype.show.call(this);
+            this.show();
          } else {
-            shop.ui.Tab.prototype.hide.call(this);
+            this.hide();
          }
          visible = newVisible;
       }

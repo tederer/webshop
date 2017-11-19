@@ -29,11 +29,13 @@
    <script type="text/javascript" src="javascripts/ui/LanguageSelector.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/Tab.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/tablegenerators/AbstractTableGenerator.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/tablegenerators/ProductTableGenerator.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/tablegenerators/ProductsTableGenerator.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/tablegenerators/EventsTableGenerator.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/Actions.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/PictureOverlay.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageDependentTextSetter.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/LanguageDependentTextInProductTableSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/tableSetters/LanguageDependentTextInProductsTableSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/tableSetters/LanguageDependentTextInEventsTableSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/ShoppingCartButtonTextSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/shoppingCart/ProductConfig.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/shoppingCart/TableHeaders.js" charset="UTF-8"></script>
@@ -47,12 +49,13 @@
       var baseAddress            = window.location.protocol + '//' + window.location.host + '/';
       var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
       var products               = ['pflanzen', 'zubehoer'];
+      var configurations         = ['pflanzen', 'zubehoer', 'termine'];
       var configContentLoader    = new shop.configuration.JsonContentLoader(baseAddress + 'configuration', supportedLanguages);
       var htmlContentLoader      = new shop.configuration.HtmlContentLoader(baseAddress + 'templates', supportedLanguages);
       var languageDependentTexts = new shop.LanguageDependentTexts(baseAddress + 'configuration');
       
       htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'termine', 'versandbedingungen', 'impressum', 'warenkorb', 'pictureOverlay']);
-      configContentLoader.load(products);
+      configContentLoader.load(configurations);
       languageDependentTexts.load();
       
       $(document).ready(function() {
@@ -64,6 +67,7 @@
          new shop.ui.LanguageDependentTextSetter('#shop > #header #events',         'menu.events' );
          new shop.ui.LanguageDependentTextSetter('#shop > #header #shipping',       'menu.shippingButton' );
          new shop.ui.LanguageDependentTextSetter('#shop > #header #companyDetails', 'menu.companyDetailsButton' );
+         
          new shop.ui.ShoppingCartButtonTextSetter('#shop > #header #shoppingCart',  'menu.shoppingCartButton' );
          
          new shop.ui.VisibleTabSetter('#shop > #header #start',            'start');
@@ -107,9 +111,10 @@
          var eventsTabConfig = {
             tabId: 'events',
             selector: '#shop > #content > #events',
-            configName: undefined,
+            configName: 'termine',
             contentTemplateName: 'termine',
-            languages: supportedLanguages
+            languages: supportedLanguages,
+            tableGenerator: 'EventsTableGenerator'
          };
          
          var eventsTab = new shop.ui.Tab(eventsTabConfig);
@@ -147,9 +152,12 @@
          var cartController = new shop.ui.shoppingCart.CartController(products);
          shoppingCartTab.onTabContentChanged(cartController.onTabContentChangedCallback);
          
-         var setter = new shop.ui.LanguageDependentTextInProductTableSetter();
-         plantTab.onTabContentChanged(setter.onTabContentChangedCallback);
-         accessoriesTab.onTabContentChanged(setter.onTabContentChangedCallback);
+         var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter();
+         plantTab.onTabContentChanged(plantTableSetter.onTabContentChangedCallback);
+         accessoriesTab.onTabContentChanged(plantTableSetter.onTabContentChangedCallback);
+         
+         var eventsTableSetter = new shop.ui.tablesetters.LanguageDependentTextInEventsTableSetter();
+         eventsTab.onTabContentChanged(eventsTableSetter.onTabContentChangedCallback);
          
          var pictureOverlayConfig = {
             selector: '#shop > #picture',

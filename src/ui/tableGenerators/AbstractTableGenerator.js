@@ -16,14 +16,6 @@ shop.ui.tablegenerators.AbstractTableGenerator = function AbstractTableGenerator
       content = '';
    };
    
-   this.incrementIntentation = function incrementIntentation() {
-      intentations++;
-   };
-   
-   this.decrementIntentation = function decrementIntentation() {
-      intentations--;
-   };
-   
    this.append = function(text) {
       var line = '';
       for (var i = 0; i < intentations; i++) {
@@ -38,6 +30,22 @@ shop.ui.tablegenerators.AbstractTableGenerator = function AbstractTableGenerator
       intentations--;
    };
 
+   this.addText = function addText(text) {
+      intentations++;
+      this.append('<td>' + ((text === undefined) ? '&nbsp;' : text) + '</td>');
+      intentations--;
+   };
+   
+   this.startRow = function startRow() {
+      intentations++;
+      this.append('<tr>');
+   };
+   
+   this.endRow = function endRow() {
+      this.append('</tr>');
+      intentations--;
+   };
+   
    this.getContent = function getContent() {
       return content;
    };
