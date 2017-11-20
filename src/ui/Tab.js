@@ -30,15 +30,15 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
-   var productTableGenerator;
+   var tableGenerator;
 
    if (optionalProductTableGenerator !== undefined) {
-      productTableGenerator = optionalProductTableGenerator;
+      tableGenerator = optionalProductTableGenerator;
    } else {
       if (config.tableGenerator === undefined) {
-         productTableGenerator = new shop.ui.tablegenerators.ProductTableGenerator();
+         tableGenerator = new shop.ui.tablegenerators.ProductTableGenerator();
       } else {
-         productTableGenerator = new shop.ui.tablegenerators[config.tableGenerator]();
+         tableGenerator = new shop.ui.tablegenerators[config.tableGenerator]();
       }
    }
    
@@ -75,7 +75,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
                   if (data === undefined) {
                      fulfill(formatErrorMessage('configuration ' + config.configName + ' is not available in language ' + activeLanguage + '!'));
                   } else {
-                     fulfill(productTableGenerator.generateTable(configKey, data));
+                     fulfill(tableGenerator.generateTable(configKey, data));
                   }
                }
             }
