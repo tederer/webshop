@@ -5,6 +5,7 @@
    <link rel="stylesheet" type="text/css" href="css/shop.css">
    <link rel="stylesheet" type="text/css" href="css/shoppingCartContentTable.css">
    <link rel="stylesheet" type="text/css" href="css/pictureOverlay.css">
+   <link rel="stylesheet" type="text/css" href="css/draftOverlay.css">
 
    <script type="text/javascript" src="lib/jquery-3.2.1.min.js" charset="UTF-8"></script>
    <script type="text/javascript" src="lib/jquery.uriAnchor.js" charset="UTF-8"></script>
@@ -21,6 +22,7 @@
    <script type="text/javascript" src="javascripts/HtmlContentLoader.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/LanguageDependentTexts.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ShoppingCart.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/DraftOverlay.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/AbstractHideableLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/UiStateSetter.js" charset="UTF-8"></script>
@@ -184,11 +186,36 @@
          };
          
          $(window).bind( 'hashchange', onHashChange ).trigger( 'hashchange' );
+         
+         shop.ui.DraftOverlay.init();
       });
    </script>
 </head>
 
 <body>
+<div id="draftOverlay">
+   <table class="fullscreenTable">
+      <tr>
+         <td>
+         
+            <table>
+               <tr>
+                  <td colspan="2" class="caption"><h1>Test / Draft</h1></td>
+               <tr>
+               <tr>
+                  <td><p>Passwort:</p></td>
+                  <td><input id="passwordTextField" value="" size="40" type="password">
+               </tr>
+               <tr>
+                  <td colspan="2" class="buttonRow"><button type="button" id="draftOverlayButton" onclick="shop.ui.DraftOverlay.passwordEntered()">Fortsetzen</button></td>
+               </tr>
+            </table>
+            
+         </td>
+      </tr>
+   </table>   
+</div>
+
 <div id="shop">
 
    <div id="header">
