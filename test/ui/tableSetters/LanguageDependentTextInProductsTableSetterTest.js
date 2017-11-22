@@ -14,6 +14,7 @@ function valueIsAnObject(val) {
 
 var DEFAULT_TAB_SELECTOR = 'defaultTabSelector';
 var DEFAULT_TAB2_SELECTOR = 'defaultTab2Selector';
+var DEFAULT_TEXT_KEY_PREFIX = 'productsTable';
 
 var instance;
 var capturedSelectors;
@@ -47,36 +48,46 @@ var mockedTab;
 var mockedTab2;
 
 var givenDefaultLanguageDependentTextInProductsTableSetter = function givenDefaultLanguageDependentTextInProductsTableSetter() {
-   instance = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter(mockedUiComponentProvider, mockedBus);
+   instance = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter(DEFAULT_TEXT_KEY_PREFIX, mockedUiComponentProvider, mockedBus);
    mockedTab.onTabContentChanged(instance.onTabContentChangedCallback);
 };
 
-var givenAddToShoppingCartButtonTextIs = function givenAddToShoppingCartButtonTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.addToShoppingCartButton', text);
+var givenLanguageDependentTextInProductsTableSetterWithTextKeyPrefix = function givenLanguageDependentTextInProductsTableSetterWithTextKeyPrefix(textKeyPrefix) {
+   instance = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter(textKeyPrefix, mockedUiComponentProvider, mockedBus);
+   mockedTab.onTabContentChanged(instance.onTabContentChangedCallback);
 };
 
-var givenOnTheInternetAnchorTextIs = function givenOnTheInternetAnchorTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.onTheInternetAnchor', text);
+var givenLanguageDependentTextIs = function givenLanguageDependentTextIs(textId, text, optionalPrefix) {
+   var prefix = (optionalPrefix === undefined) ? 'productsTable' : optionalPrefix;
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + prefix + '.' + textId, text);
 };
 
-var givenBigPictureAnchorTextIs = function givenBigPictureAnchorTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.bigPictureAnchor', text);
+var givenAddToShoppingCartButtonTextIs = function givenAddToShoppingCartButtonTextIs(text, optionalPrefix) {
+   givenLanguageDependentTextIs('addToShoppingCartButton', text, optionalPrefix);
 };
 
-var givenFotoHeaderTextIs = function givenFotoHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.fotoHeader', text);
+var givenOnTheInternetAnchorTextIs = function givenOnTheInternetAnchorTextIs(text, optionalPrefix) {
+   givenLanguageDependentTextIs('onTheInternetAnchor', text, optionalPrefix);
 };
 
-var givenNameHeaderTextIs = function givenNameHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.nameHeader', text);
+var givenBigPictureAnchorTextIs = function givenBigPictureAnchorTextIs(text, optionalPrefix) {
+   givenLanguageDependentTextIs('bigPictureAnchor', text, optionalPrefix);
 };
 
-var givenDescriptionHeaderTextIs = function givenDescriptionHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.descriptionHeader', text);
+var givenFotoHeaderTextIs = function givenFotoHeaderTextIs(text, optionalPrefix) {
+   givenLanguageDependentTextIs('fotoHeader', text, optionalPrefix);
 };
 
-var givenPriceHeaderTextIs = function givenPriceHeaderTextIs(text) {
-   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.priceHeader', text);
+var givenNameHeaderTextIs = function givenNameHeaderTextIs(text, optionalPrefix) {
+   givenLanguageDependentTextIs('nameHeader', text, optionalPrefix);
+};
+
+var givenDescriptionHeaderTextIs = function givenDescriptionHeaderTextIs(text, optionalPrefix) {
+   givenLanguageDependentTextIs('descriptionHeader', text, optionalPrefix);
+};
+
+var givenPriceHeaderTextIs = function givenPriceHeaderTextIs(text, optionalPrefix) {
+   givenLanguageDependentTextIs('priceHeader', text, optionalPrefix);
 };
 
 var givenTabContentChanges = function givenTabContentChanges() {
@@ -434,5 +445,32 @@ describe('LanguageDependentTextInProductsTableSetter', function() {
       whenPriceHeaderTextIs('brand new price header');
       expect(lastCapturedPriceHeaderTextIs('brand new price header', DEFAULT_TAB_SELECTOR)).to.be.eql(true);
       expect(lastCapturedPriceHeaderTextIs('brand new price header', DEFAULT_TAB2_SELECTOR)).to.be.eql(true);
+   }); 
+   
+   it('the setter uses the provided text key prefix', function() {
+      var prefix = 'specialKeyPrefix';
+      givenLanguageDependentTextInProductsTableSetterWithTextKeyPrefix(prefix);
+      givenAddToShoppingCartButtonTextIs('AddToShoppingCartButtonText', prefix);
+      givenOnTheInternetAnchorTextIs('OnTheInternetAnchorText', prefix);
+      givenBigPictureAnchorTextIs('BigPictureAnchorText', prefix);
+      givenFotoHeaderTextIs('FotoHeaderText', prefix);
+      givenNameHeaderTextIs('NameHeaderText', prefix);
+      givenDescriptionHeaderTextIs('DescriptionHeaderText', prefix);
+      givenPriceHeaderTextIs('PriceHeaderText', prefix);
+      givenAddToShoppingCartButtonTextIs('a');
+      givenOnTheInternetAnchorTextIs('b');
+      givenBigPictureAnchorTextIs('c');
+      givenFotoHeaderTextIs('d');
+      givenNameHeaderTextIs('e');
+      givenDescriptionHeaderTextIs('f');
+      givenPriceHeaderTextIs('g');
+      whenTabContentChanges();
+      expect(lastCapturedButtonTextIs('AddToShoppingCartButtonText')).to.be.eql(true);
+      expect(lastCapturedOnTheInternetAnchorTextIs('OnTheInternetAnchorText')).to.be.eql(true);
+      expect(lastCapturedBigPictureAnchorTextIs('BigPictureAnchorText')).to.be.eql(true);
+      expect(lastCapturedFotoHeaderTextIs('FotoHeaderText')).to.be.eql(true);
+      expect(lastCapturedNameHeaderTextIs('NameHeaderText')).to.be.eql(true);
+      expect(lastCapturedDescriptionHeaderTextIs('DescriptionHeaderText')).to.be.eql(true);
+      expect(lastCapturedPriceHeaderTextIs('PriceHeaderText')).to.be.eql(true);
    });
 });  

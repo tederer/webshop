@@ -6,7 +6,8 @@
    right : 0.5em;
    background-color : rgba(127,0,0,0.9);
    z-index : 100;
-   visibility : visible;
+   /*visibility : visible;*/
+   visibility : hidden;
 }
 
 

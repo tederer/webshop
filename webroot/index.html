@@ -154,9 +154,10 @@
          var cartController = new shop.ui.shoppingCart.CartController(products);
          shoppingCartTab.onTabContentChanged(cartController.onTabContentChangedCallback);
          
-         var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter();
+         var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter('plantsTable');
+         var accessoriesTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter();
          plantTab.onTabContentChanged(plantTableSetter.onTabContentChangedCallback);
-         accessoriesTab.onTabContentChanged(plantTableSetter.onTabContentChangedCallback);
+         accessoriesTab.onTabContentChanged(accessoriesTableSetter.onTabContentChangedCallback);
          
          var eventsTableSetter = new shop.ui.tablesetters.LanguageDependentTextInEventsTableSetter();
          eventsTab.onTabContentChanged(eventsTableSetter.onTabContentChangedCallback);

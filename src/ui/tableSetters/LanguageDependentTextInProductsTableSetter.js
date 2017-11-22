@@ -22,7 +22,7 @@ assertNamespace('shop.ui.tablesetters');
  *    'productTable.onTheInternetAnchor'
  *    'productTable.bigPictureAnchor'
  */
-shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function LanguageDependentTextInProductsTableSetter(optionalUiComponentProvider, optionalBus) {
+shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function LanguageDependentTextInProductsTableSetter(optionalTextKeyPrefix, optionalUiComponentProvider, optionalBus) {
    
    var addToShoppingCartButtonText;
    var onTheInternetAnchorText;
@@ -32,6 +32,8 @@ shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function Langu
    var descriptionHeader;
    var priceHeader;
    var selectors = [];
+   
+   var textKeyPrefix = (optionalTextKeyPrefix === undefined) ? 'productsTable' : optionalTextKeyPrefix;
    
    var defaultUiComponentProvider = function defaultUiComponentProvider(selector) {
       return $(selector);
@@ -115,15 +117,15 @@ shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function Langu
       updateAnchors();
       updateTableHeaders();
    };
-   
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.addToShoppingCartButton', onAddToShoppingCartButtonText);
 
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.onTheInternetAnchor', onOnTheInternetAnchorText);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.bigPictureAnchor', onBigPictureAnchorText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.addToShoppingCartButton', onAddToShoppingCartButtonText);
 
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.fotoHeader', onFotoHeader);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.nameHeader', onNameHeader);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.descriptionHeader', onDescriptionHeader);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.priceHeader', onPriceHeader);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.onTheInternetAnchor', onOnTheInternetAnchorText);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.bigPictureAnchor', onBigPictureAnchorText);
+
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.fotoHeader', onFotoHeader);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.nameHeader', onNameHeader);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.descriptionHeader', onDescriptionHeader);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.priceHeader', onPriceHeader);
 };
 
