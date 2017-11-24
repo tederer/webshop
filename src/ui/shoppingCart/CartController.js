@@ -8,6 +8,7 @@ require('./TableHeaders.js');
 require('./InputForm.js');
 require('./ShoppingCartTexts.js');
 require('./CostsCalculator.js');
+require('./EmailTextGenerator.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
@@ -32,7 +33,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    var texts = testingComponentAvailable('texts') ? testingComponents.texts : new shop.ui.shoppingCart.ShoppingCartTexts();
    var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
    var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.ui.shoppingCart.CostsCalculator(productConfigs);
-   
+   var emailTextGenerator = testingComponentAvailable('emailTextGenerator') ? testingComponents.emailTextGenerator : new shop.ui.shoppingCart.EmailTextGenerator();
    var cartContent;
    var tabSelector;
    var countryOfDestination;
@@ -56,7 +57,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
          texts.allTextsAreAvailable();
    };
       
-   var getHtmlTable = function getHtmlTable(costs) {
+   var getShoppingCartData = function getShoppingCartData(costs) {
       var data = {
          productsInShoppingCart: [],
          shippingCosts: (costs !== undefined) ? costs.shippingCosts : undefined,
@@ -75,6 +76,10 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
             price: productConfig.price
          };
       }
+      return data;
+   };
+   
+   var getHtmlTable = function getHtmlTable(data) {
       return tableGenerator.generateTable(data);
    };
    
@@ -86,7 +91,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
          if (cartContent.length < 1) {
             htmlCode = '<p>' + texts.getEmptyCartText() + '</p>';
          } else {
-            htmlCode = getHtmlTable(costs);
+            htmlCode = getHtmlTable(getShoppingCartData(costs));
          }
          uiComponentProvider(tabSelector + ' > #shoppingCartContent').html(htmlCode);
       }

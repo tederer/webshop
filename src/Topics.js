@@ -45,3 +45,6 @@ shop.topics.REMOVE_PRODUCT_FROM_SHOPPING_CART = '/commands/removeProductFromShop
 
 // data: the ID of the UI component whose content was changed
 shop.topics.ORDER_FORM_ELEMENT_CHANGED = '/commands/orderFormElementChanged';
+
+// data: nothing
+shop.topics.SUBMIT_ORDER = '/commands/submitOrder';

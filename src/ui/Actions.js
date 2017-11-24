@@ -56,6 +56,10 @@ shop.ui.Actions = {
    
    orderFormElementChanged: function orderFormElementChanged(uiComponentId) {
       shop.Context.bus.sendCommand(shop.topics.ORDER_FORM_ELEMENT_CHANGED, uiComponentId);
+   },
+   
+   submitOrder: function submitOrder() {
+      shop.Context.bus.sendCommand(shop.topics.SUBMIT_ORDER);
    }
 };
 

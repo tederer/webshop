@@ -55,6 +55,18 @@ module.exports = function(grunt) {
             src: '**/*.js',
             dest: 'webroot/javascripts'
          }
+      },
+      
+      concat: {
+         options: {
+            process: function(src, filepath) {
+               return src.replace(/\s*require\(.*\);\s*\r?\n/g, '');
+            }
+         },
+         javascripts: {
+            src: ['src/**/*.js'],
+            dest: 'concat/built.js',
+         },
       }
    });
 
@@ -62,10 +74,11 @@ module.exports = function(grunt) {
    grunt.loadNpmTasks('grunt-mocha-test');
    grunt.loadNpmTasks('grunt-contrib-copy');
    grunt.loadNpmTasks('grunt-contrib-clean');
-
+   grunt.loadNpmTasks('grunt-contrib-concat');
+   
    grunt.registerTask('lint', ['jshint']);
    grunt.registerTask('format', ['jsbeautifier']);
    grunt.registerTask('test', ['mochaTest:libRaw']);
-
+   /* damit concat automatisch läuft gehört 'concat' zu den default hinzugefügt. */
    grunt.registerTask('default', ['clean', 'lint', 'test', 'copy']);
  };
