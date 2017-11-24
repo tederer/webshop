@@ -47,4 +47,4 @@ shop.topics.REMOVE_PRODUCT_FROM_SHOPPING_CART = '/commands/removeProductFromShop
 shop.topics.ORDER_FORM_ELEMENT_CHANGED = '/commands/orderFormElementChanged';
 
 // data: nothing
-shop.topics.SUBMIT_ORDER = '/commands/submitOrder';
+shop.topics.USER_CLICKED_SUBMIT_ORDER_BUTTON = '/commands/userClickedSubmitOrderButton';

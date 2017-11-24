@@ -27,8 +27,12 @@ var capturedCountryCodeInCalculator;
 var calculatedCosts;
 var shippingCosts;
 var totalCosts;
-var capturedEmailTextGeneratorData;
-var emailTextGeneratorDataResult;
+var capturedEmailTextGeneratorCartData;
+var capturedEmailTextGeneratorCustomerData;
+var cartContentAsText;
+var customerDataAsText;
+var capturedOrderText;
+var uiComponentValues;
 
 var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
    return {
@@ -37,6 +41,10 @@ var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
             capturedHtmlContent[selector] = [];
          }
          capturedHtmlContent[selector].push(htmlCode);
+      },
+      
+      val: function val() {
+         return uiComponentValues[selector];
       }
    };
 };
@@ -49,9 +57,14 @@ var mockedTableGenerator = {
 };
 
 var mockedEmailTextGenerator = {
-   generatEmailText: function generatEmailText(data) {
-      capturedEmailTextGeneratorData[capturedEmailTextGeneratorData.length] = data;
-      return emailTextGeneratorDataResult;
+   generateCartContentAsText: function generateCartContentAsText(cartData) {
+      capturedEmailTextGeneratorCartData[capturedEmailTextGeneratorCartData.length] = cartData;
+      return cartContentAsText;
+   },
+   
+   generateCustomerDataAsText: function generateCustomerDataAsText(customerData) {
+      capturedEmailTextGeneratorCustomerData[capturedEmailTextGeneratorCustomerData.length] = customerData;
+      return customerDataAsText;
    }
 };
 
@@ -83,6 +96,12 @@ var mockedTexts = {
    getEmptyCartText : function getEmptyCartText() { return emptyCartText; },
    allTextsAreAvailable : function allTextsAreAvailable() {
       return cartTextsAreAvailable;
+   }
+};
+
+var mockedOrderSubmitter = {
+   submit: function submit(orderText) {
+      capturedOrderText = orderText;
    }
 };
 
@@ -119,7 +138,8 @@ var givenInstance = function givenInstance() {
       texts                : mockedTexts,
       inputForm            : mockedInputForm,
       costCalculator       : mockedCostCalculator,
-      emailTextGenerator   :mockedEmailTextGenerator
+      emailTextGenerator   : mockedEmailTextGenerator,
+      orderSubmitter       : mockedOrderSubmitter
    };
    instance = new shop.ui.shoppingCart.CartController(products, testingComponents);
 };
@@ -173,6 +193,36 @@ var givenContentOfTabChanges = function givenContentOfTabChanges(tabSelectorToUs
    instance.onTabContentChangedCallback(tabSelector);  
 };
 
+var givenTheEmailTextGeneratorReturnsCartContentText = function givenTheEmailTextGeneratorReturnsCartContentText(text) {
+   cartContentAsText = text;
+};
+
+var givenTheEmailTextGeneratorReturnsCustomerContentText = function givenTheEmailTextGeneratorReturnsCustomerContentText(text) {
+   customerDataAsText = text;
+};
+
+var givenCustomerNameIs = function givenCustomerNameIs(firstname, lastname) {
+   uiComponentValues['#shop > #content > #shoppingCart #firstname'] = firstname;
+   uiComponentValues['#shop > #content > #shoppingCart #lastname'] = lastname;
+};
+
+var givenCustomerEmailAddressIs = function givenCustomerEmailAddressIs(emailAddress) {
+   uiComponentValues['#shop > #content > #shoppingCart #email'] = emailAddress;
+};
+
+var givenCustomerCommentIs = function givenCustomerCommentIs(comment) {
+   uiComponentValues['#shop > #content > #shoppingCart #comment'] = comment;
+};
+      
+var givenValidCartContent = function givenValidCartContent() {
+   givenAllTableHeadersAreAvailable();
+   givenCartTextsAreAvailable();
+   givenTotalCostsTextIs('another total costs');
+   givenCountryOfDestinationIs('AT');
+   givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
+   givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+};
+
 var whenCountryOfDestinationIs = function whenCountryOfDestinationIs(countryCode) {
    givenCountryOfDestinationIs(countryCode);
 };
@@ -183,6 +233,10 @@ var whenContentOfTabChanges = function whenContentOfTabChanges(tabSelector) {
 
 var whenTheShoppingCartContentIs = function whenTheShoppingCartContentIs(content) {
    givenTheShoppingCartContentIs(content);
+};
+
+var whenTheUserSubmitsAnOrder = function whenTheUserSubmitsAnOrder() {
+   mockedBus.sendCommand(shop.topics.USER_CLICKED_SUBMIT_ORDER_BUTTON);
 };
 
 var getCapturedHtmlContents = function getCapturedHtmlContents() {
@@ -202,8 +256,12 @@ var lastTableGeneratorData = function lastTableGeneratorData() {
    return capturedGeneratorData[capturedGeneratorData.length - 1];
 };
 
-var lastEmailTextGeneratorData = function lastEmailTextGeneratorData() {
-   return capturedEmailTextGeneratorData[capturedEmailTextGeneratorData.length - 1];
+var lastEmailTextGeneratorCartData = function lastEmailTextGeneratorCartData() {
+   return capturedEmailTextGeneratorCartData[capturedEmailTextGeneratorCartData.length - 1];
+};
+
+var lastEmailTextGeneratorCustomerData = function lastEmailTextGeneratorCustomerData() {
+   return capturedEmailTextGeneratorCustomerData[capturedEmailTextGeneratorCustomerData.length - 1];
 };
 
 var shoppingCartContains = function shoppingCartContains(cartContent, expectedProduct) {
@@ -222,8 +280,8 @@ var lastTableGeneratorDataContainsProductInCart = function lastTableGeneratorDat
    return shoppingCartContains(cartContent, {productId: productId, name: name, quantity: quantity, price: price});
 };
 
-var lastEmailTextGeneratorDataContainsProductInCart = function lastEmailTextGeneratorDataContainsProductInCart(productId, name, quantity, price) {
-   var cartContent = lastEmailTextGeneratorData().productsInShoppingCart;
+var lastEmailTextGeneratorCartDataContainsProductInCart = function lastEmailTextGeneratorCartDataContainsProductInCart(productId, name, quantity, price) {
+   var cartContent = lastEmailTextGeneratorCartData().productsInShoppingCart;
    return shoppingCartContains(cartContent, {productId: productId, name: name, quantity: quantity, price: price});
 };
 
@@ -253,8 +311,12 @@ var setup = function setup() {
    calculatedCosts = undefined;
    shippingCosts = undefined;
    totalCosts = undefined;
-   capturedEmailTextGeneratorData = [];
-   emailTextGeneratorDataResult = undefined;
+   capturedEmailTextGeneratorCartData = [];
+   capturedEmailTextGeneratorCustomerData = [];
+   cartContentAsText = undefined;
+   customerDataAsText = undefined;
+   capturedOrderText = undefined;
+   uiComponentValues = {};
 };
 
 describe('CartController', function() {
@@ -269,10 +331,7 @@ describe('CartController', function() {
    it('table content gets updated when all necessary data are available', function() {
       givenInstance();
       givenTableGeneratorReturns('some html code');
-      givenAllTableHeadersAreAvailable();
-      givenCartTextsAreAvailable();
-      givenConfiguredProducts([{id: 'prodA', name: 'pflanze_A'}]);
-      givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 2 }]);
+      givenValidCartContent();
       whenContentOfTabChanges('tab_selector');
       expect(lastPublishedHtmlContent()).to.be.eql('some html code');
    });
@@ -280,10 +339,7 @@ describe('CartController', function() {
    it('table content gets updated when the cart content changes', function() {
       givenInstance();
       givenTableGeneratorReturns('some html code');
-      givenAllTableHeadersAreAvailable();
-      givenCartTextsAreAvailable();
-      givenConfiguredProducts([{id: 'prodA', name: 'pflanze_A'}]);
-      givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 2 }]);
+      givenValidCartContent();
       givenContentOfTabChanges();
       whenTheShoppingCartContentIs([]);
       expect(getCapturedHtmlContents().length).to.be.eql(2);
@@ -376,24 +432,14 @@ describe('CartController', function() {
       
    it('table generator data contains the total costs text provided by the ShoppingCartTexts B', function() {
       givenInstance();
-      givenAllTableHeadersAreAvailable();
-      givenCartTextsAreAvailable();
-      givenTotalCostsTextIs('another total costs');
-      givenCountryOfDestinationIs('AT');
-      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
-      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      givenValidCartContent();
       whenContentOfTabChanges();
       expect(lastTableGeneratorData().totalCostsText).to.be.eql('another total costs');
    });
       
    it('table generator data contains the TableHeaders object owned by the controller', function() {
       givenInstance();
-      givenAllTableHeadersAreAvailable();
-      givenCartTextsAreAvailable();
-      givenTotalCostsTextIs('another total costs');
-      givenCountryOfDestinationIs('AT');
-      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
-      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      givenValidCartContent();
       whenContentOfTabChanges();
       expect(lastTableGeneratorData().tableHeaders.id).to.be.eql('mockedTableHeaders');
    });
@@ -411,7 +457,7 @@ describe('CartController', function() {
    });
         
    // EmailTextGeneratorTests
-   /*
+   
    it('email text generator data contains the current cart content A', function() {
       givenInstance();
       givenAllTableHeadersAreAvailable();
@@ -419,9 +465,9 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'prodA', name: 'pflanze_A', price: 5},{id: 'prodB', name: 'pflanze_B', price: 7}]);
       givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 1 },{ productId: 'prodB', quantity: 2 }]);
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().productsInShoppingCart.length).to.be.eql(2);
-      expect(lastEmailTextGeneratorDataContainsProductInCart('prodA', 'pflanze_A', 1, 5)).to.be.eql(true);
-      expect(lastEmailTextGeneratorDataContainsProductInCart('prodB', 'pflanze_B', 2, 7)).to.be.eql(true);
+      expect(lastEmailTextGeneratorCartData().productsInShoppingCart.length).to.be.eql(2);
+      expect(lastEmailTextGeneratorCartDataContainsProductInCart('prodA', 'pflanze_A', 1, 5)).to.be.eql(true);
+      expect(lastEmailTextGeneratorCartDataContainsProductInCart('prodB', 'pflanze_B', 2, 7)).to.be.eql(true);
    });
       
    it('email text generator data contains the current cart content B', function() {
@@ -431,8 +477,8 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'fish', name: 'shark', price: 120},{id: 'potato', name: 'blue potato', price: 0.7}]);
       givenTheShoppingCartContentIs([{ productId: 'potato', quantity: 15 }]);
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().productsInShoppingCart.length).to.be.eql(1);
-      expect(lastEmailTextGeneratorDataContainsProductInCart('potato', 'blue potato', 15, 0.7)).to.be.eql(true);
+      expect(lastEmailTextGeneratorCartData().productsInShoppingCart.length).to.be.eql(1);
+      expect(lastEmailTextGeneratorCartDataContainsProductInCart('potato', 'blue potato', 15, 0.7)).to.be.eql(true);
    });
       
    it('email text generator data contains the costs provided by the CostCalculator A', function() {
@@ -444,8 +490,8 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'fish', name: 'shark', price: 120}]);
       givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().shippingCosts).to.be.eql(12.7);
-      expect(lastEmailTextGeneratorData().totalCosts).to.be.eql(undefined);
+      expect(lastEmailTextGeneratorCartData().shippingCosts).to.be.eql(12.7);
+      expect(lastEmailTextGeneratorCartData().totalCosts).to.be.eql(undefined);
    });
       
    it('email text generator data contains the costs provided by the CostCalculator B', function() {
@@ -457,8 +503,8 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'fish', name: 'shark', price: 120}]);
       givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().shippingCosts).to.be.eql(undefined);
-      expect(lastEmailTextGeneratorData().totalCosts).to.be.eql(321.9);
+      expect(lastEmailTextGeneratorCartData().shippingCosts).to.be.eql(undefined);
+      expect(lastEmailTextGeneratorCartData().totalCosts).to.be.eql(321.9);
    });
 
    it('email text generator data contains the shipping costs text provided by the ShoppingCartTexts A', function() {
@@ -470,7 +516,7 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
       givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().shippingCostsText).to.be.eql('special shipping costs');
+      expect(lastEmailTextGeneratorCartData().shippingCostsText).to.be.eql('special shipping costs');
    });
       
    it('email text generator data contains the shipping costs text provided by the ShoppingCartTexts B', function() {
@@ -482,7 +528,7 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
       givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().shippingCostsText).to.be.eql('another shipping costs text');
+      expect(lastEmailTextGeneratorCartData().shippingCostsText).to.be.eql('another shipping costs text');
    });
          
    it('email text generator data contains the total costs text provided by the ShoppingCartTexts A', function() {
@@ -494,34 +540,35 @@ describe('CartController', function() {
       givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
       givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().totalCostsText).to.be.eql('total costs');
+      expect(lastEmailTextGeneratorCartData().totalCostsText).to.be.eql('total costs');
    });
       
    it('email text generator data contains the total costs text provided by the ShoppingCartTexts B', function() {
       givenInstance();
-      givenAllTableHeadersAreAvailable();
-      givenCartTextsAreAvailable();
-      givenTotalCostsTextIs('another total costs');
-      givenCountryOfDestinationIs('AT');
-      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
-      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      givenValidCartContent();
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().totalCostsText).to.be.eql('another total costs');
+      expect(lastEmailTextGeneratorCartData().totalCostsText).to.be.eql('another total costs');
    });
       
    it('email text generator data contains the TableHeaders object owned by the controller', function() {
       givenInstance();
-      givenAllTableHeadersAreAvailable();
-      givenCartTextsAreAvailable();
-      givenTotalCostsTextIs('another total costs');
-      givenCountryOfDestinationIs('AT');
-      givenConfiguredProducts([{id: 'fish', name: 'shark', price: 54}]);
-      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
+      givenValidCartContent();
       whenContentOfTabChanges();
-      expect(lastEmailTextGeneratorData().tableHeaders.id).to.be.eql('mockedTableHeaders');
+      expect(lastEmailTextGeneratorCartData().tableHeaders.id).to.be.eql('mockedTableHeaders');
    });
-   */
-   // END
+      
+   it('email text generator data contains the customer data', function() {
+      givenInstance();
+      givenCustomerNameIs('Thomas', 'Ederer');
+      givenCustomerEmailAddressIs('thomas@home.com');
+      givenCustomerCommentIs('my personal comment');
+      whenTheUserSubmitsAnOrder();
+      expect(lastEmailTextGeneratorCustomerData().firstname).to.be.eql('Thomas');
+      expect(lastEmailTextGeneratorCustomerData().lastname).to.be.eql('Ederer');
+      expect(lastEmailTextGeneratorCustomerData().email).to.be.eql('thomas@home.com');
+      expect(lastEmailTextGeneratorCustomerData().comment).to.be.eql('my personal comment');
+   });
+   
    it('new cart content gets forwarded to the CostsCalculator A', function() {
       givenInstance();
       whenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
@@ -545,6 +592,16 @@ describe('CartController', function() {
       givenInstance();
       whenCountryOfDestinationIs('AT');
       expect(capturedCountryCodeInCalculator[capturedCountryCodeInCalculator.length - 1]).to.be.eql('AT');
+   });
+   
+   it('texts returned by email text generator gets provided concatenated to the OrderSubmitter', function() {
+      givenInstance();
+      givenValidCartContent();
+      givenTheEmailTextGeneratorReturnsCartContentText('products in the cart');
+      givenTheEmailTextGeneratorReturnsCustomerContentText('customers details');
+      givenContentOfTabChanges();
+      whenTheUserSubmitsAnOrder();
+      expect(capturedOrderText).to.be.eql('products in the cart' + 'customers details');
    });
 }); 
       

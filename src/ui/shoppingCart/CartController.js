@@ -34,9 +34,12 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
    var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.ui.shoppingCart.CostsCalculator(productConfigs);
    var emailTextGenerator = testingComponentAvailable('emailTextGenerator') ? testingComponents.emailTextGenerator : new shop.ui.shoppingCart.EmailTextGenerator();
+   var orderSubmitter = testingComponentAvailable('orderSubmitter') ? testingComponents.orderSubmitter : new shop.ui.shoppingCart.OrderSubmitter();
+   
    var cartContent;
    var tabSelector;
    var countryOfDestination;
+   var cartContentAsText;
    
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
@@ -91,7 +94,9 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
          if (cartContent.length < 1) {
             htmlCode = '<p>' + texts.getEmptyCartText() + '</p>';
          } else {
-            htmlCode = getHtmlTable(getShoppingCartData(costs));
+            var cartData = getShoppingCartData(costs);
+            htmlCode = getHtmlTable(cartData);
+            cartContentAsText = emailTextGenerator.generateCartContentAsText(cartData);
          }
          uiComponentProvider(tabSelector + ' > #shoppingCartContent').html(htmlCode);
       }
@@ -109,6 +114,21 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
       updateTable();
    };
    
+   var getCustomerData = function getCustomerData() {
+      return {
+         firstname:  uiComponentProvider('#shop > #content > #shoppingCart #firstname').val(),
+         lastname:   uiComponentProvider('#shop > #content > #shoppingCart #lastname').val(),
+         email:      uiComponentProvider('#shop > #content > #shoppingCart #email').val(),
+         comment:    uiComponentProvider('#shop > #content > #shoppingCart #comment').val(),
+      };
+   };
+   
+   var onUserClickedSubmitOrderButton = function onUserClickedSubmitOrderButton() {
+      var customerDataAsText = emailTextGenerator.generateCustomerDataAsText(getCustomerData());
+      var emailText = cartContentAsText + customerDataAsText;
+      orderSubmitter.submit(emailText);
+   };
+   
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
       tabSelector = selector;
       updateTable();
@@ -120,5 +140,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);
+   
+   bus.subscribeToCommand(shop.topics.USER_CLICKED_SUBMIT_ORDER_BUTTON, onUserClickedSubmitOrderButton);
 };
 
