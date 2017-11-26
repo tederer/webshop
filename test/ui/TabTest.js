@@ -24,7 +24,6 @@ var placeholder;
 var suffix;
 
 var capturedHtmlContent;
-var capturedVisiblityChanges;
 var productTable;
 var mockedBus;
 
@@ -32,11 +31,9 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
    this.initialize = function initialize() {};
    
    this.show = function show() {
-      capturedVisiblityChanges[capturedVisiblityChanges.length] = 'show';
    };
    
    this.hide = function hide() {
-      capturedVisiblityChanges[capturedVisiblityChanges.length] = 'hide';
    };
 };
 
@@ -52,11 +49,11 @@ var setHtmlContent = function setHtmlContent(selector, content) {
 
 var getDefaultConfig = function getDefaultConfig() {
    return {
-      tabId: DEFAULT_TAB_ID,
-      selector: DEFAULT_SELECTOR,
-      configName: DEFAULT_CONFIG_NAME,
+      id:                  DEFAULT_TAB_ID,
+      selector:            DEFAULT_SELECTOR,
+      configName:          DEFAULT_CONFIG_NAME,
       contentTemplateName: DEFAULT_TEMPLATE_NAME,
-      languages: DEFAULT_LANGUAGES
+      languages:           DEFAULT_LANGUAGES
    };
 };
 
@@ -87,6 +84,12 @@ var givenTabWithUndefinedContentTemplateTopic = function givenTabWithUndefinedCo
 var givenTabWithUndefinedConfigTopic = function givenTabWithUndefinedConfigTopic() {
    var config = getDefaultConfig();
    config.configName = undefined;
+   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
+};
+
+var givenTabWithId = function givenTabWithId(id) {
+   var config = getDefaultConfig();
+   config.id = id;
    instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
 };
 
@@ -158,7 +161,6 @@ var setup = function setup() {
    placeholder = '<!--DYNAMIC_CONTENT-->';
    suffix = '<p>after configured content</p>';
    shop.Context.log = function log(message) {};
-   capturedVisiblityChanges = [];
    shop.ui.Tab.prototype = new MockedAbstractHideableLanguageDependentComponent();
 };
 
@@ -170,6 +172,18 @@ describe('Tab', function() {
       
       givenDefaultTab();
       expect(valueIsAnObject(instance)).to.be.eql(true);
+   });
+   
+   it('getId() returns the ID of the tab A', function() {
+      
+      givenDefaultTab();
+      expect(instance.getId()).to.be.eql(DEFAULT_TAB_ID);
+   });
+   
+   it('getId() returns the ID of the tab B', function() {
+      
+      givenTabWithId('myIdentifier');
+      expect(instance.getId()).to.be.eql('myIdentifier');
    });
    
    it('the Tab does not publish something when no language publication is available', function() {
@@ -303,40 +317,6 @@ describe('Tab', function() {
       expect(capturedHtmlContent).to.be.eql('<p>new prefix</p>' + table + '<p>new suffix</p>');
    });
    
-   it('the Tab gets shown when the published visible tab matches', function() {
-      
-      givenTabWithMockedPrototype('tabId-A');
-      whenPublishedVisibleTabIs('tabId-A');
-      expect(capturedVisiblityChanges.length).to.be.eql(1);
-      expect(capturedVisiblityChanges[0]).to.be.eql('show');
-   });
-   
-   it('the Tab gets hidden when the published visible tab does not matches', function() {
-      
-      givenTabWithMockedPrototype('tabId-A');
-      whenPublishedVisibleTabIs('tabId-A');
-      whenPublishedVisibleTabIs('tabId-B');
-      expect(capturedVisiblityChanges.length).to.be.eql(2);
-      expect(capturedVisiblityChanges[1]).to.be.eql('hide');
-   });
-   
-   it('the Tab gets shown only once when the visible tab gets repeatedly published', function() {
-      
-      givenTabWithMockedPrototype('tabId-B');
-      whenPublishedVisibleTabIs('tabId-B');
-      whenPublishedVisibleTabIs('tabId-B');
-      expect(capturedVisiblityChanges.length).to.be.eql(1);
-   });
-   
-   it('the Tab gets hideen only once when the visible tab gets repeatedly published', function() {
-      
-      givenTabWithMockedPrototype('tabId-B');
-      whenPublishedVisibleTabIs('tabId-B');
-      whenPublishedVisibleTabIs('tabId-A');
-      whenPublishedVisibleTabIs('tabId-A');
-      expect(capturedVisiblityChanges.length).to.be.eql(2);
-      expect(capturedVisiblityChanges[1]).to.be.eql('hide');
-   });
    
    it('the Tab notifies the registered TabContentChangedCallbacks when tab content gets set to an error message', function() {
 

@@ -1,166 +1,68 @@
 body {
-   width : 100%;
-   height : 100%; 
-   overflow : hidden;
-   background-color : #777;
+   background-color: #777;
    font-family: Verdana;
+   overflow: auto;
 }
 
 #shop {
-   position : absolute;
-   top : 0.5em;
-   left : 0.5em;
-   bottom : 0.5em;
-   right : 0.5em;
-   border-radius : 1em 1em 1em 1em;
-   background-color : transparent;
-   z-index : 1;
+   border-radius: 1em 1em 1em 1em;
+   background-color: transparent;
+   z-index: 1;
 }
 
 #shop > #header {
-   position : absolute;
-   top : 0;
-   left : 0;
-   width : 100%;
-   height : 11em;
-   border-radius : 1em 1em 0 0;
-   background-color : #DDDD00;
-   font-size : 1em;
+   border-radius: 1em 1em 0 0;
+   background-color: #DDDD00;
+   font-size: 1em;
    text-align: center;
+   z-index: 1;
 }
 
 #shop > #content {
-   position : absolute;
-   top : 11em;
-   bottom : 2em;
-   left : 0;
-   width : 100%;
-   border-radius : 0 0 0 0;
-   background-color : #eee;
-}
-
-#shop > #content > #start {
-   position : absolute;
-   top : 0;
-   bottom : 2em;
-   left : 1em;
-   right : 1em;
-   border-radius : 0 0 0 0;
-   background-color : transparent;
-   visibility : hidden;
-   overflow : auto;
+   position: relative;
+   border-radius: 0 0 0 0;
+   background-color: #eee;
    z-index: 1;
 }
 
-#shop > #content > #plants {
-   position : absolute;
-   top : 0;
-   bottom : 2em;
-   left : 1em;
-   right : 1em;
-   border-radius : 0 0 0 0;
-   background-color : transparent;
-   visibility : hidden;
-   overflow : auto;
-   z-index: 1;
-}
-
-#shop > #content > #accessories {
-   position : absolute;
-   top : 0;
-   bottom : 2em;
-   left : 1em;
-   right : 1em;
-   border-radius : 0 0 0 0;
-   background-color : transparent;
-   visibility : hidden;
-   overflow : auto;
-   z-index: 1;
-}
-
-#shop > #content > #events {
-   position : absolute;
-   top : 0;
-   bottom : 2em;
-   left : 1em;
-   right : 1em;
-   border-radius : 0 0 0 0;
-   background-color : transparent;
-   visibility : hidden;
-   overflow : auto;
-   z-index: 1;
-}
-
-#shop > #content > #shipping {
-   position : absolute;
-   top : 0;
-   bottom : 2em;
-   left : 1em;
-   right : 1em;
-   border-radius : 0 0 0 0;
-   background-color : transparent;
-   visibility : hidden;
-   overflow : auto;
-   z-index: 1;
-}
-
-#shop > #content > #companyDetails {
-   position : absolute;
-   top : 0;
-   bottom : 2em;
-   left : 1em;
-   right : 1em;
-   border-radius : 0 0 0 0;
-   background-color : transparent;
-   visibility : hidden;
-   overflow : auto;
-   z-index: 1;
-}
-
-#shop > #content > #shoppingCart {
-   position : absolute;
-   top : 0;
-   bottom : 2em;
-   left : 1em;
-   right : 1em;
-   border-radius : 0 0 0 0;
-   background-color : transparent;
-   visibility : hidden;
-   overflow : auto;
-   z-index: 1;
+#shop > #content > .tab {
+   position: absolute;
+   border-radius: 0 0 0 0;
+   background-color: transparent;
+   visibility: hidden;
+   top: 0;
+   left: 0;
+   right: 0;
+   padding: 0.5em;
 }
 
 #shop > #footer {
-   position : absolute;
-   left : 0;
-   bottom : 0;
-   width : 100%;
-   height : 2em;
-   border-radius : 0 0 1em 1em;
-   background-color : #AAAAAA;
+   border-radius: 0 0 1em 1em;
+   background-color: #AAAAAA;
+   padding: 0.5em;
 }
 
 #shop > #footer > #author  {
-   text-align : center;
-   font-size : 0.5em;
-   margin : 1.5em 0 1.5em 0;
+   text-align: center;
+   font-size: 0.5em;
+   margin: 1.5em 0 1.5em 0;
 }
 
 .validInput {
-   background-color : #FFFFFF;
+   background-color: #FFFFFF;
 }
 
 .invalidInput {
-   background-color : #FF0000;
+   background-color: #FF0000;
 }
 
 #shop > #header .leftColumn img {
-   height : 10em;
-   width : 10em;
+   height: 10em;
+   width: 10em;
 } 
 
 #shop > #header table {
-   width : 100%;
+   width: 100%;
    border: none;
 } 
 
@@ -173,11 +75,11 @@ body {
 } 
 
 #shop > #header .leftColumn {
-   width : 11em;
+   width: 11em;
 } 
 
 #shop > #header .rightColumn {
-   width : 12em;
+   width: 12em;
 } 
 
 #shop > #header button {

@@ -1,4 +1,4 @@
 ﻿* recherchieren wie append von grunt funktioniert
 * beim impressum eine karten mit der google-maps API einbauen
-* design auf tablets anpassen
 * wenn pflanzen gekauft werden, dann sieht man im warenkorb nicht mehr, dass es sich um 5 stück handelt
+* CartController soll die Tabelle in cart nicht mehr selbst ändern, das soll der tab machen

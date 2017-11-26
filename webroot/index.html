@@ -27,7 +27,8 @@
    <script type="text/javascript" src="javascripts/ui/AbstractHideableLanguageDependentComponent.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/UiStateSetter.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/UiStatePublisher.js" charset="UTF-8"></script>
-   <script type="text/javascript" src="javascripts/ui/VisibleTabSetter.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/SetTabVisibleAction.js" charset="UTF-8"></script>
+   <script type="text/javascript" src="javascripts/ui/VisibleTabController.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/LanguageSelector.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/Tab.js" charset="UTF-8"></script>
    <script type="text/javascript" src="javascripts/ui/tablegenerators/AbstractTableGenerator.js" charset="UTF-8"></script>
@@ -74,16 +75,16 @@
          
          new shop.ui.ShoppingCartButtonTextSetter('#shop > #header #shoppingCart',  'menu.shoppingCartButton' );
          
-         new shop.ui.VisibleTabSetter('#shop > #header #start',            'start');
-         new shop.ui.VisibleTabSetter('#shop > #header #plants',           'plants');
-         new shop.ui.VisibleTabSetter('#shop > #header #accessories',      'accessories');
-         new shop.ui.VisibleTabSetter('#shop > #header #events',           'events');
-         new shop.ui.VisibleTabSetter('#shop > #header #shipping',         'shipping');
-         new shop.ui.VisibleTabSetter('#shop > #header #companyDetails',   'companyDetails');
-         new shop.ui.VisibleTabSetter('#shop > #header #shoppingCart',     'shoppingCart');
+         new shop.ui.SetTabVisibleAction('#shop > #header #start',            'start');
+         new shop.ui.SetTabVisibleAction('#shop > #header #plants',           'plants');
+         new shop.ui.SetTabVisibleAction('#shop > #header #accessories',      'accessories');
+         new shop.ui.SetTabVisibleAction('#shop > #header #events',           'events');
+         new shop.ui.SetTabVisibleAction('#shop > #header #shipping',         'shipping');
+         new shop.ui.SetTabVisibleAction('#shop > #header #companyDetails',   'companyDetails');
+         new shop.ui.SetTabVisibleAction('#shop > #header #shoppingCart',     'shoppingCart');
          
          var startTabConfig = {
-            tabId: 'start',
+            id: 'start',
             selector: '#shop > #content > #start',
             configName: undefined,
             contentTemplateName: 'start',
@@ -93,7 +94,7 @@
          var startTab = new shop.ui.Tab(startTabConfig);
          
          var plantTabConfig = {
-            tabId: 'plants',
+            id: 'plants',
             selector: '#shop > #content > #plants',
             configName: 'pflanzen',
             contentTemplateName: 'pflanzen',
@@ -103,7 +104,7 @@
          var plantTab = new shop.ui.Tab(plantTabConfig);
          
          var accessoriesTabConfig = {
-            tabId: 'accessories',
+            id: 'accessories',
             selector: '#shop > #content > #accessories',
             configName: 'zubehoer',
             contentTemplateName: 'zubehoer',
@@ -113,7 +114,7 @@
          var accessoriesTab = new shop.ui.Tab(accessoriesTabConfig);
          
          var eventsTabConfig = {
-            tabId: 'events',
+            id: 'events',
             selector: '#shop > #content > #events',
             configName: 'termine',
             contentTemplateName: 'termine',
@@ -124,7 +125,7 @@
          var eventsTab = new shop.ui.Tab(eventsTabConfig);
          
          var shippingTabConfig = {
-            tabId: 'shipping',
+            id: 'shipping',
             selector: '#shop > #content > #shipping',
             configName: undefined,
             contentTemplateName: 'versandbedingungen',
@@ -134,7 +135,7 @@
          var shippingTab = new shop.ui.Tab(shippingTabConfig);
          
          var companyDetailsTabConfig = {
-            tabId: 'companyDetails',
+            id: 'companyDetails',
             selector: '#shop > #content > #companyDetails',
             configName: undefined,
             contentTemplateName: 'impressum',
@@ -144,7 +145,7 @@
          var companyDetailsTab = new shop.ui.Tab(companyDetailsTabConfig);
          
          var shoppingCartTabConfig = {
-            tabId: 'shoppingCart',
+            id: 'shoppingCart',
             selector: '#shop > #content > #shoppingCart',
             configName: undefined,
             contentTemplateName: 'warenkorb',
@@ -152,6 +153,17 @@
          };
          
          var shoppingCartTab = new shop.ui.Tab(shoppingCartTabConfig);
+         
+         new shop.ui.VisibleTabController([
+               startTab, 
+               plantTab, 
+               accessoriesTab, 
+               eventsTab, 
+               shippingTab, 
+               companyDetailsTab, 
+               shoppingCartTab
+            ],
+            '#shop > #content');
          
          var cartController = new shop.ui.shoppingCart.CartController(products);
          shoppingCartTab.onTabContentChanged(cartController.onTabContentChangedCallback);
@@ -251,13 +263,13 @@
    </div>
 
    <div id="content">
-      <div id="start"></div>
-      <div id="plants"></div>
-      <div id="accessories"></div>
-      <div id="events"></div>
-      <div id="shipping"></div>
-      <div id="companyDetails"></div>
-      <div id="shoppingCart"></div>
+      <div class="tab" id="start"></div>
+      <div class="tab" id="plants"></div>
+      <div class="tab" id="accessories"></div>
+      <div class="tab" id="events"></div>
+      <div class="tab" id="shipping"></div>
+      <div class="tab" id="companyDetails"></div>
+      <div class="tab" id="shoppingCart"></div>
    </div>
    
    <div id="picture"></div>

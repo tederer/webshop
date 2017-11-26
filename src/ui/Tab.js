@@ -15,7 +15,6 @@ assertNamespace('shop.ui');
  * configuration object description:
  *
  * {
- *    tabId:                     this ID is required to show/hide the tab based on the shop.topics.VISIBLE_TAB publication
  *    selector:                  the selector identifies the <div> that should receive the content.
  *    configName:                the name of the configuration to use to genenerate the product table. No table gets added when it's undefined.
  *    contentTemplateName:       the name of the HTML template to use. If a product table is configured, the template also requires the PLACEHOLDER in its content.
@@ -46,7 +45,6 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    var templateContents = {};
    var tabContentChangedCallbacks = [];
    var activeLanguage;
-   var visible = false;
    
    var defaultSetHtmlContent = function defaultSetHtmlContent(content) {
       $(config.selector).html(content);
@@ -129,6 +127,10 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
          .then(notifyTableChangeListeners, shop.Context.log);
    };
    
+   this.getId = function getId() {
+      return config.id;
+   }; 
+   
    this.getSelector = function getSelector() {
       return config.selector;
    };
@@ -141,19 +143,6 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    
    this.onTabContentChanged = function onTabContentChanged(callback) {
       tabContentChangedCallbacks[tabContentChangedCallbacks.length] = callback;
-   };
-   
-   var onVisibleTabPublication = function onVisibleTabPublication(publishedTabId) {
-      var newVisible = config.tabId === publishedTabId;
-      
-      if (newVisible !== visible) {
-         if (newVisible) {
-            this.show();
-         } else {
-            this.hide();
-         }
-         visible = newVisible;
-      }
    };
    
    var setMapContent = function setMapContent(map, key, value) {
@@ -172,8 +161,6 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
          bus.subscribeToPublication('/htmlContent/' + language + '/' + config.contentTemplateName, setMapContent.bind(this, templateContents, config.contentTemplateName + '_' + language));
       }
    }
-   
-   bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTabPublication.bind(this));
    
    this.initialize();
 };
