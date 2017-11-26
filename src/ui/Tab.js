@@ -46,11 +46,12 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    var tabContentChangedCallbacks = [];
    var activeLanguage;
    
-   var defaultSetHtmlContent = function defaultSetHtmlContent(content) {
-      $(config.selector).html(content);
+   var defaultHtmlContentSetter = function defaultHtmlContentSetter(selector, htmlContent) {
+      $(selector).html(htmlContent);
    };
    
-   var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultSetHtmlContent : optionalSetHtmlContent.bind(this, config.selector);
+   var setHtmlContentOfTab = (optionalSetHtmlContent === undefined) ? defaultHtmlContentSetter.bind(this, config.selector) : optionalSetHtmlContent.bind(this, config.selector);
+   var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultHtmlContentSetter : optionalSetHtmlContent;
    
    var formatErrorMessage = function formatErrorMessage(message) {
       return '<p class="errorMessage">' + message + '</p>';
@@ -123,7 +124,7 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    var updateHtmlContent = function updateHtmlContent() {
       createDynamicHtmlContent()
          .then(insertContentIntoTemplate)
-         .then(setHtmlContent)
+         .then(setHtmlContentOfTab)
          .then(notifyTableChangeListeners, shop.Context.log);
    };
    
@@ -143,6 +144,11 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    
    this.onTabContentChanged = function onTabContentChanged(callback) {
       tabContentChangedCallbacks[tabContentChangedCallbacks.length] = callback;
+   };
+   
+   this.setHtmlContentOfChildElement = function setHtmlContentOfChildElement(childElementId, htmlContent) {
+      setHtmlContent(config.selector + ' #' + childElementId, htmlContent);
+      notifyTableChangeListeners();
    };
    
    var setMapContent = function setMapContent(map, key, value) {

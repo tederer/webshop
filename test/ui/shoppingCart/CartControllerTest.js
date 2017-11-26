@@ -34,15 +34,17 @@ var customerDataAsText;
 var capturedOrderText;
 var uiComponentValues;
 
+var mockedTab = {
+   setHtmlContentOfChildElement: function setHtmlContentOfChildElement(childElementId, htmlContent) {
+      if (capturedHtmlContent[childElementId] === undefined) {
+         capturedHtmlContent[childElementId] = [];
+      }
+      capturedHtmlContent[childElementId].push(htmlContent);
+   }
+};
+
 var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
    return {
-      html: function html(htmlCode) {
-         if (capturedHtmlContent[selector] === undefined) {
-            capturedHtmlContent[selector] = [];
-         }
-         capturedHtmlContent[selector].push(htmlCode);
-      },
-      
       val: function val() {
          return uiComponentValues[selector];
       }
@@ -141,7 +143,7 @@ var givenInstance = function givenInstance() {
       emailTextGenerator   : mockedEmailTextGenerator,
       orderSubmitter       : mockedOrderSubmitter
    };
-   instance = new shop.ui.shoppingCart.CartController(products, testingComponents);
+   instance = new shop.ui.shoppingCart.CartController(products, mockedTab, testingComponents);
 };
 
 var givenAllTableHeadersAreAvailable = function givenAllTableHeadersAreAvailable() {
@@ -240,7 +242,7 @@ var whenTheUserSubmitsAnOrder = function whenTheUserSubmitsAnOrder() {
 };
 
 var getCapturedHtmlContents = function getCapturedHtmlContents() {
-   return capturedHtmlContent[ tabSelector + ' > #shoppingCartContent'];
+   return capturedHtmlContent.shoppingCartContent;
 };
 
 var lastPublishedHtmlContent = function lastPublishedHtmlContent() {

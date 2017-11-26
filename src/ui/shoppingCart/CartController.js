@@ -9,10 +9,11 @@ require('./InputForm.js');
 require('./ShoppingCartTexts.js');
 require('./CostsCalculator.js');
 require('./EmailTextGenerator.js');
+require('../Tab.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
-shop.ui.shoppingCart.CartController = function CartController(products, testingComponents) {
+shop.ui.shoppingCart.CartController = function CartController(products, tab, testingComponents) {
    
    var SHIPPING_COSTS_AUSTRIA = 4.6;
    var SHIPPING_COSTS_NON_AUSTRIA = 11.25;
@@ -40,6 +41,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    var tabSelector;
    var countryOfDestination;
    var cartContentAsText;
+   var ignoreNextContentChangeCallback = false;
    
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
@@ -98,7 +100,8 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
             htmlCode = getHtmlTable(cartData);
             cartContentAsText = emailTextGenerator.generateCartContentAsText(cartData);
          }
-         uiComponentProvider(tabSelector + ' > #shoppingCartContent').html(htmlCode);
+         ignoreNextContentChangeCallback = true;
+         tab.setHtmlContentOfChildElement('shoppingCartContent', htmlCode);
       }
    };
 
@@ -130,9 +133,13 @@ shop.ui.shoppingCart.CartController = function CartController(products, testingC
    };
    
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
-      tabSelector = selector;
-      updateTable();
-      inputForm.setValuesEnteredByUser();
+      if (!ignoreNextContentChangeCallback) {
+         tabSelector = selector;
+         updateTable();
+         inputForm.setValuesEnteredByUser();
+      } else {
+         ignoreNextContentChangeCallback = false;
+      }
    };
    
    tableHeaders.onTableHeaderChanged(updateTable);

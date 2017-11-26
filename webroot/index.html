@@ -165,7 +165,7 @@
             ],
             '#shop > #content');
          
-         var cartController = new shop.ui.shoppingCart.CartController(products);
+         var cartController = new shop.ui.shoppingCart.CartController(products, shoppingCartTab);
          shoppingCartTab.onTabContentChanged(cartController.onTabContentChangedCallback);
          
          var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter('plantsTable');
