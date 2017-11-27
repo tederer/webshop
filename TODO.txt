@@ -1,3 +1,6 @@
 ﻿* recherchieren wie append von grunt funktioniert
 * beim impressum eine karten mit der google-maps API einbauen
 * wenn pflanzen gekauft werden, dann sieht man im warenkorb nicht mehr, dass es sich um 5 stück handelt
+* CartController soll HtmlCode der Tabelle nur dann setzen, wenn seit dem letzten "onTabContentChanged" noch 
+  kein HtmlCode gesetzt wurde oder sich dieser geändert hat
+* layout aus layout.html übernehmen
