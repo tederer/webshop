@@ -2,6 +2,7 @@
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/Tab.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
 
 require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
@@ -35,6 +36,10 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
    
    this.hide = function hide() {
    };
+   
+   this.simulateLanguageChangeTo = function simulateLanguageChangeTo(language) {
+      this.onLanguageChanged(language);
+   };
 };
 
 var mockedProductTableGenerator = {
@@ -57,12 +62,17 @@ var getDefaultConfig = function getDefaultConfig() {
    };
 };
 
+var publishCurrentLanguage = function publishCurrentLanguage(language) {
+   mockedBus.publish(shop.topics.CURRENT_LANGUAGE, language);
+   instance.simulateLanguageChangeTo(language);
+};
+
 var givenPublishedLanguageIsGerman = function givenPublishedLanguageIsGerman() {
-   instance.onLanguageChanged(shop.Language.DE);
+   publishCurrentLanguage(shop.Language.DE);
 };
 
 var givenPublishedLanguageIsEnglish = function givenPublishedLanguageIsEnglish() {
-   instance.onLanguageChanged(shop.Language.EN);
+   publishCurrentLanguage(shop.Language.EN);
 };
 
 var givenTabWithMockedPrototype = function givenTabWithMockedPrototype(tabId) {
