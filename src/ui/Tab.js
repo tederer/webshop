@@ -2,10 +2,8 @@
 
 require('../NamespaceUtils.js');
 require('../Context.js');
-require('../Promise.js');
 require('./TabContent.js');
 require('./AbstractHideableLanguageDependentComponent.js');
-require('./tablegenerators/ProductsTableGenerator.js');
 
 assertNamespace('shop.ui');
 
@@ -25,13 +23,12 @@ assertNamespace('shop.ui');
  * onTabContentChanged(callback) adds a callback to the tab that gets called every time when the tab content gets updated.
  * The callback does not get anything from the caller (argument count = 0).
  */
-shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableGenerator, optionalBus) {
+shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlContent) {
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
-   var tabContent = new shop.ui.TabContent(config, optionalProductTableGenerator, optionalBus);
+   var tabContent = optionalTabContentFactory === undefined ? new shop.ui.TabContent(config) : optionalTabContentFactory(config);
    
    var tabContentChangedCallbacks = [];
-   var activeLanguage;
    
    var defaultHtmlContentSetter = function defaultHtmlContentSetter(selector, htmlContent) {
       $(selector).html(htmlContent);
@@ -59,7 +56,6 @@ shop.ui.Tab = function Tab(config, optionalSetHtmlContent, optionalProductTableG
    };
    
    this.onLanguageChanged = function onLanguageChanged(newLanguage) {
-      activeLanguage = newLanguage;
       updateHtmlContent();
    };
    

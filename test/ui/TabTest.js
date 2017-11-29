@@ -1,8 +1,9 @@
-/* global global, shop, testing, assertNamespace */
+/* global global, shop, common, testing, assertNamespace */
 
 require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/Tab.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Topics.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/Promise.js');
 
 require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
 
@@ -25,8 +26,11 @@ var placeholder;
 var suffix;
 
 var capturedHtmlContent;
-var productTable;
+var capturedTabContentChangeListeners;
+var capturedTabContentConfig;
 var mockedBus;
+var htmlTabContent;
+var getHtmlContentInvocationCount;
 
 var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHideableLanguageDependentComponent() {
    this.initialize = function initialize() {};
@@ -42,13 +46,21 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
    };
 };
 
-var mockedProductTableGenerator = {
-   generateTable: function generateTable(configId, config) {
-      return productTable;
-   }
+var mockedTabContentFactory = function mockedTabContentFactory(config) {
+   capturedTabContentConfig.push(config);
+   return {
+      getHtmlContent: function getHtmlContent() {
+         getHtmlContentInvocationCount++;
+         return new common.Promise(function(fulfill, reject) { fulfill(htmlTabContent); });
+      },
+      
+      addContentChangedListener: function addContentChangedListener(callback) {
+         capturedTabContentChangeListeners.push(callback);
+      }
+   };
 };
 
-var setHtmlContent = function setHtmlContent(selector, content) {
+var mockedHtmlContentSetter = function mockedHtmlContentSetter(selector, content) {
    capturedHtmlContent[selector] = content;
 };
 
@@ -62,80 +74,40 @@ var getDefaultConfig = function getDefaultConfig() {
    };
 };
 
-var publishCurrentLanguage = function publishCurrentLanguage(language) {
-   mockedBus.publish(shop.topics.CURRENT_LANGUAGE, language);
-   instance.simulateLanguageChangeTo(language);
+var createInstance = function createInstance(config) {
+   instance = new shop.ui.Tab(config, mockedTabContentFactory, mockedHtmlContentSetter);
 };
 
-var givenPublishedLanguageIsGerman = function givenPublishedLanguageIsGerman() {
-   publishCurrentLanguage(shop.Language.DE);
-};
-
-var givenPublishedLanguageIsEnglish = function givenPublishedLanguageIsEnglish() {
-   publishCurrentLanguage(shop.Language.EN);
-};
-
-var givenTabWithMockedPrototype = function givenTabWithMockedPrototype(tabId) {
+var givenInstanceWith = function givenInstanceWith(configChanges) {
    var config = getDefaultConfig();
-   config.tabId = tabId;
-   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
+   Object.keys(configChanges).forEach(function(key) { config[key] = configChanges[key]; });
+   createInstance(config);
 };
-
-var givenDefaultTab = function givenDefaultTab() {
-   instance = new shop.ui.Tab(getDefaultConfig(), setHtmlContent, mockedProductTableGenerator, mockedBus);
-};
-
-var givenTabWithUndefinedContentTemplateTopic = function givenTabWithUndefinedContentTemplateTopic() {
-   var config = getDefaultConfig();
-   config.contentTemplateName = undefined;
-   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
-};
-
-var givenTabWithUndefinedConfigTopic = function givenTabWithUndefinedConfigTopic() {
-   var config = getDefaultConfig();
-   config.configName = undefined;
-   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
-};
-
-var givenTabWithId = function givenTabWithId(id) {
-   var config = getDefaultConfig();
-   config.id = id;
-   instance = new shop.ui.Tab(config, setHtmlContent, mockedProductTableGenerator, mockedBus);
-};
-
-var givenConfigPublication = function givenConfigPublication(name, language, data) {
-   var dataToUse = data;
    
-   if (data !== undefined && !(data instanceof Error)) {
-      dataToUse = JSON.parse(data);
-   }
-   
-   mockedBus.publish('/jsonContent/' + language + '/' + name, dataToUse);
-};
-
-var givenTemplatePublication = function givenTemplatePublication(name, language, data) {
-   mockedBus.publish('/htmlContent/' + language + '/' + name, data);
-};
-
-var givenTheProductTableGeneratorReturns = function givenTheProductTableGeneratorReturns(text) {
-   productTable = text;
+var givenDefaultInstance = function givenDefaultInstance() {
+   givenInstanceWith({});
 };
 
 var givenRegisteredTableChangeListener = function givenRegisteredTableChangeListener(callback) {
    instance.onTabContentChanged(callback);
 };
-   
-var whenConfigPublicationGetsUpdated = function whenConfigPublicationGetsUpdated(name, language, data) {
-   mockedBus.publish('/jsonContent/' + language + '/' + name, JSON.parse(data));
-};
 
-var whenTemplatePublicationGetsUpdated = function whenTemplatePublicationGetsUpdated(name, language, data) {
-   mockedBus.publish('/htmlContent/' + language + '/' + name, data);
+var givenTabContentProvides = function givenTabContentProvides(htmlContent) {
+   htmlTabContent = htmlContent;
+};
+   
+var whenTabContentChanges = function whenTabContentChanges() {
+   capturedTabContentChangeListeners.forEach(function(callback) { callback(); });
 };
 
 var whenPublishedVisibleTabIs = function whenPublishedVisibleTabIs(tabId) {
    mockedBus.publish(shop.topics.VISIBLE_TAB, tabId);
 };
+
+var whenCurrentLanguageGetsChanged = function whenCurrentLanguageGetsChanged() {
+   instance.simulateLanguageChangeTo('notRelevant');
+};
+
 
 var whenHtmlContentOfAChildElementGetsSet = function whenHtmlContentOfAChildElementGetsSet(childElementId, htmlContent) {
    instance.setHtmlContentOfChildElement(childElementId, htmlContent);
@@ -155,6 +127,10 @@ var expectContentContainsErrorMessage = function expectContentContainsErrorMessa
    expect(error.length).to.be.greaterThan(0);
 };
 
+var lastCapturedTabContentConfig = function lastCapturedTabContentConfig() {
+   return capturedTabContentConfig[capturedTabContentConfig.length - 1];
+};
+
 var expectContentContainsTemplateWithErrorMessage = function expectContentContainsTemplateWithErrorMessage() {
    
    var prefixStart = capturedHtmlContent[DEFAULT_SELECTOR].indexOf(templatePrefix);
@@ -170,9 +146,11 @@ var expectContentContainsTemplateWithErrorMessage = function expectContentContai
 var setup = function setup() {
    mockedBus = new testing.MockedBus();
    capturedHtmlContent = {};
-   productTable = undefined;
+   capturedTabContentChangeListeners = [];
+   capturedTabContentConfig = [];
+   htmlTabContent = undefined;
+   getHtmlContentInvocationCount = 0;
    templatePrefix = '<h1>Hello World</h1>';
-   placeholder = '<!--DYNAMIC_CONTENT-->';
    suffix = '<p>after configured content</p>';
    shop.Context.log = function log(message) {};
    shop.ui.Tab.prototype = new MockedAbstractHideableLanguageDependentComponent();
@@ -182,203 +160,90 @@ describe('Tab', function() {
 	
    beforeEach(setup);
    
-   it('creating an instance of a Tab is an instance/object', function() {
-      
-      givenDefaultTab();
+   it('creating an instance is an instance/object', function() {
+      givenDefaultInstance();
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
+   it('new Instance provides configuration to TabContent', function() {
+      givenInstanceWith({id: 'myIdentifier'});
+      expect(lastCapturedTabContentConfig()).to.be.eql({ 
+         id: 'myIdentifier', 
+         selector: 'defaultSelector', 
+         configName: 'myConfig', 
+         contentTemplateName: 'myTemplate', 
+         languages: [ 'de', 'en' ]
+      });
+   });
+   
+   // TODO zweiten test für die config schreiben
+   
+   it('new instance adds ContentChangeListener to TabContent', function() {
+      givenDefaultInstance();
+      expect(capturedTabContentChangeListeners.length).to.be.eql(1);
+   });
+   
    it('getId() returns the ID of the tab A', function() {
-      
-      givenDefaultTab();
+      givenDefaultInstance();
       expect(instance.getId()).to.be.eql(DEFAULT_TAB_ID);
    });
    
    it('getId() returns the ID of the tab B', function() {
-      
-      givenTabWithId('myIdentifier');
+      givenInstanceWith({id: 'myIdentifier'});
       expect(instance.getId()).to.be.eql('myIdentifier');
    });
    
    it('the Tab does not publish something when no language publication is available', function() {
-      
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenDefaultTab();
+      givenDefaultInstance();
       expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql(undefined);
    });
    
-   it('the Tab publishes a table with the configured plants', function() {
-      
-      var table = '<table></table>';
-      givenTheProductTableGeneratorReturns(table);
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
-      givenDefaultTab();
-      givenPublishedLanguageIsGerman();
-      expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql(templatePrefix + table + suffix);
+   it('the Tab publishes the html content provided by the TabContent instance A', function() {
+      givenTabContentProvides('<p>some html content</p>');
+      givenDefaultInstance();
+      whenTabContentChanges();
+      expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql('<p>some html content</p>');
    });
    
-   it('the Tab publishes a table with the configured plants when contentTemplateName is undefined', function() {
-      
-      var table = '<table id="bla"></table>';
-      givenTheProductTableGeneratorReturns(table);
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'somePrefix' + placeholder + 'someSuffix');
-      givenTabWithUndefinedContentTemplateTopic();
-      givenPublishedLanguageIsGerman();
-      expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql(table);
+   it('the Tab publishes the html content provided by the TabContent instance B', function() {
+      givenTabContentProvides('<h1>I am a header</h1>');
+      givenInstanceWith({selector: 'specialSelector'});
+      whenTabContentChanges();
+      expect(capturedHtmlContent.specialSelector).to.be.eql('<h1>I am a header</h1>');
    });
    
-   it('the Tab publishes an error when the config is not available yet', function() {
-      
-      givenConfigPublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, '<h1>Hello World</h1><!--DYNAMIC_CONTENT--><p>after configured content</p>');
-      givenDefaultTab();
-      givenPublishedLanguageIsGerman();
-      expectContentContainsTemplateWithErrorMessage();
+   it('the Tab does not publish something when no language publication is available', function() {
+      givenDefaultInstance();
+      whenCurrentLanguageGetsChanged();
+      expect(getHtmlContentInvocationCount).to.be.eql(1);
    });
-   
-   it('the Tab publishes an error when the template is not available yet', function() {
-      
-      var table = '<table id="anyTable"></table>';
-      givenTheProductTableGeneratorReturns(table);
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
-      givenDefaultTab();
-      givenPublishedLanguageIsGerman();
-      expectContentContainsErrorMessage();
-   });
-   
-   it('the Tab publishes an error when the template cannot be loaded', function() {
-      
-      var table = '<table id="anyTable"></table>';
-      givenTheProductTableGeneratorReturns(table);
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, new Error('failed to load ' + DEFAULT_TEMPLATE_NAME));
-      givenDefaultTab();
-      givenPublishedLanguageIsGerman();
-      expectContentContainsErrorMessage();
-   });
-   
-   it('the Tab publishes an error when the template does not contain a placeholder', function() {
-      
-      var table = '<table id="anyTable"></table>';
-      givenTheProductTableGeneratorReturns(table);
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + suffix);
-      givenDefaultTab();
-      givenPublishedLanguageIsGerman();
-      expectContentContainsErrorMessage();
-   });
-   
-   it('the Tab publishes an error when the config contains an error and template is undefined', function() {
-      
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, new Error('error in configuration ' + DEFAULT_CONFIG_NAME));
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE,'a' + placeholder + 'b');
-      givenTabWithUndefinedContentTemplateTopic();
-      givenPublishedLanguageIsGerman();
-      expectContentContainsErrorMessage();
-   }); 
-   
-   it('the Tab publishes an error when the config is not available yet and template is undefined', function() {
-      
-      givenConfigPublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, undefined);
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'a' + placeholder + 'b');
-      givenTabWithUndefinedContentTemplateTopic();
-      givenPublishedLanguageIsGerman();
-      expectContentContainsErrorMessage();
-   });   
-   
-   it('the Tab publishes the template without changes when the config is undefined', function() {
-      
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN,'<p>hello world' + placeholder + '</p>');
-      givenTabWithUndefinedConfigTopic();
-      givenPublishedLanguageIsEnglish();
-      expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql('<p>hello world' + placeholder + '</p>');
-   });
-   
-   it('the Tab publishes the template, that does not contain the placeholder, without changes when the config is undefined', function() {
-      
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE,'<p>hello world</p>');
-      givenTabWithUndefinedConfigTopic();
-      givenPublishedLanguageIsGerman();
-      expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql('<p>hello world</p>');
-   });
-   
-   it('the Tab updates the content when a new config is received', function() {
-      
-      var table = '<table id="id1"></table>';
-      givenTheProductTableGeneratorReturns(table);
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN, templatePrefix + placeholder + suffix);
-      givenDefaultTab();
-      givenPublishedLanguageIsEnglish();
-      whenConfigPublicationGetsUpdated(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Sophronitis coccinea", "price":  15}]}');
-      expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql(templatePrefix + table + suffix);
-   });
-   
-   it('the Tab updates the content when a new template content is received', function() {
-      
-      var table = '<table id="id1"></table>';
-      givenTheProductTableGeneratorReturns(table);
-      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
-      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN, templatePrefix + placeholder + suffix);
-      givenDefaultTab();
-      givenPublishedLanguageIsEnglish();
-      whenTemplatePublicationGetsUpdated(DEFAULT_TEMPLATE_NAME, shop.Language.EN, '<p>new prefix</p>' + placeholder + '<p>new suffix</p>');
-      expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql('<p>new prefix</p>' + table + '<p>new suffix</p>');
-   });
-   
    
    it('the Tab notifies the registered TabContentChangedCallbacks when tab content gets set to an error message', function() {
-
       var callbackAInvocations = 0;
       var callbackA = function callbackA() { callbackAInvocations++; };
-      givenTabWithUndefinedConfigTopic();
+      givenDefaultInstance();
       givenRegisteredTableChangeListener(callbackA);
-      givenPublishedLanguageIsEnglish();
+      whenTabContentChanges();
       expect(callbackAInvocations).to.be.eql(1);
    });
    
-   it('the Tab notifies the registered TabContentChangedCallbacks when the table content changes', function() {
-
-      var callbackAInvocations = 0;
-      var callbackBInvocations = 0;
-      var capturedSelectorA;
-      var capturedSelectorB;
-      var callbackA = function callbackA(selector) { capturedSelectorA = selector; callbackAInvocations++; };
-      var callbackB = function callbackB(selector) { capturedSelectorB = selector; callbackBInvocations++; };
-      
-      givenTabWithUndefinedConfigTopic();
-      givenRegisteredTableChangeListener(callbackA);
-      givenRegisteredTableChangeListener(callbackB);
-      givenPublishedLanguageIsEnglish();
-      whenTemplatePublicationGetsUpdated(DEFAULT_TEMPLATE_NAME, shop.Language.EN, 'some webpage content');
-      expect(callbackAInvocations).to.be.eql(2);
-      expect(callbackBInvocations).to.be.eql(2);
-      expect(capturedSelectorA).to.be.eql(DEFAULT_SELECTOR);
-      expect(capturedSelectorB).to.be.eql(DEFAULT_SELECTOR);
-   });
-   
    it('setHtmlContentOfChildElement sets the content of a child element A', function() {
-      givenDefaultTab();
+      givenDefaultInstance();
       whenHtmlContentOfAChildElementGetsSet('childId', '<p>child content</p>');
       expect(capturedHtmlContent[DEFAULT_SELECTOR + ' #childId']).to.be.eql('<p>child content</p>');
    });
    
    it('setHtmlContentOfChildElement sets the content of a child element B', function() {
-      givenDefaultTab();
+      givenInstanceWith({selector: 'sel123'});
       whenHtmlContentOfAChildElementGetsSet('anotherChildId', '<h1>child content for testing</h1>');
-      expect(capturedHtmlContent[DEFAULT_SELECTOR + ' #anotherChildId']).to.be.eql('<h1>child content for testing</h1>');
+      expect(capturedHtmlContent['sel123 #anotherChildId']).to.be.eql('<h1>child content for testing</h1>');
    });
    
       
    it('the Tab notifies the registered TabContentChangedCallbacks when setHtmlContentOfChildElement called', function() {
       var callbackAInvocations = 0;
       var callbackA = function callbackA() { callbackAInvocations++; };
-      givenDefaultTab();
+      givenDefaultInstance();
       givenRegisteredTableChangeListener(callbackA);
       whenHtmlContentOfAChildElementGetsSet('childId', '<p>child content</p>');
       expect(callbackAInvocations).to.be.eql(1);
