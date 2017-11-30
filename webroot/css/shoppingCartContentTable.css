@@ -5,39 +5,39 @@
     width: 60%;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table td {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table td {
     padding: 0.5em;
     border: 0;
     border-right: 1px solid #000;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table tr {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table tr {
     border-bottom: 1px solid #000;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table .rightMostColumn {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table .rightMostColumn {
 	padding: 0.5em;
    border-right: none;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table .totalCostRow td {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table .totalCostRow td {
 	background-color: yellow;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table .headers th {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table .headers th {
     background-color: gray;
     color: white;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table .totalCostRow {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table .totalCostRow {
 	border-bottom: none;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table tr:nth-child(even) {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table tr:nth-child(even) {
 	background-color: #f2f2f2;
 }
 
-#shop > #content > #shoppingCart > #shoppingCartContent > table th {
+#shop > #content > #shoppingCart > #tabContent > #shoppingCartContent > table th {
     padding-top: 1em;
     padding-bottom: 1em;
     border: 0;

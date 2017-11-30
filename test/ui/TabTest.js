@@ -202,6 +202,11 @@ describe('Tab', function() {
       expect(instance.getId()).to.be.eql('myIdentifier');
    });
    
+   it('a configured contentSelector does not influence the tab selector returned by getSelector()', function() {
+      givenInstanceWith({contentSelector: 'myContentSelector'});
+      expect(instance.getSelector()).to.be.eql(DEFAULT_SELECTOR);
+   });
+   
    it('the Tab does not publish something when no language publication is available', function() {
       givenDefaultInstance();
       expect(capturedHtmlContent[DEFAULT_SELECTOR]).to.be.eql(undefined);
@@ -216,9 +221,16 @@ describe('Tab', function() {
    
    it('the Tab publishes the html content provided by the TabContent instance B', function() {
       givenTabContentProvides('<h1>I am a header</h1>');
-      givenInstanceWith({selector: 'specialSelector'});
+      givenInstanceWith({selector: 'specialSelector', contentSelector: 'myContentSelector'});
       whenTabContentChanges();
-      expect(capturedHtmlContent.specialSelector).to.be.eql('<h1>I am a header</h1>');
+      expect(capturedHtmlContent.myContentSelector).to.be.eql('<h1>I am a header</h1>');
+   });
+   
+   it('the Tab publishes the html content provided by the TabContent instance by using the configured contentSelector', function() {
+      givenTabContentProvides('<h1>I am a header</h1>');
+      givenInstanceWith({contentSelector: 'myContentSelector'});
+      whenTabContentChanges();
+      expect(capturedHtmlContent.myContentSelector).to.be.eql('<h1>I am a header</h1>');
    });
    
    it('the Tab does not publish something when no language publication is available', function() {

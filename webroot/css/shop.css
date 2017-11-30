@@ -20,32 +20,32 @@ body {
 
 #shop > #content {
    position: relative;
-   border-radius: 0 0 0 0;
+   width: 100%;
+   border-radius: 0 0 1em 1em;
    background-color: #eee;
    z-index: 1;
 }
 
 #shop > #content > .tab {
    position: absolute;
-   border-radius: 0 0 0 0;
    background-color: transparent;
    visibility: hidden;
    top: 0;
    left: 0;
    right: 0;
+}
+
+#shop > #content > .tab > #tabContent{
+   background-color: #eee;
    padding: 0.5em;
 }
 
-#shop > #footer {
+#shop > #content > .tab > #footer{
    border-radius: 0 0 1em 1em;
-   background-color: #AAAAAA;
-   padding: 0.5em;
-}
-
-#shop > #footer > #author  {
+   background-color: #DDDD00;
+   font-size: 1em;
    text-align: center;
-   font-size: 0.5em;
-   margin: 1.5em 0 1.5em 0;
+   padding: 0.5em;
 }
 
 .validInput {

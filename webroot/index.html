@@ -88,6 +88,7 @@
          var startTabConfig = {
             id: 'start',
             selector: '#shop > #content > #start',
+            contentSelector: '#shop > #content > #start > #tabContent',
             configName: undefined,
             contentTemplateName: 'start',
             languages: supportedLanguages
@@ -98,6 +99,7 @@
          var plantTabConfig = {
             id: 'plants',
             selector: '#shop > #content > #plants',
+            contentSelector: '#shop > #content > #plants > #tabContent',
             configName: 'pflanzen',
             contentTemplateName: 'pflanzen',
             languages: supportedLanguages
@@ -108,6 +110,7 @@
          var accessoriesTabConfig = {
             id: 'accessories',
             selector: '#shop > #content > #accessories',
+            contentSelector: '#shop > #content > #accessories > #tabContent',
             configName: 'zubehoer',
             contentTemplateName: 'zubehoer',
             languages: supportedLanguages
@@ -118,6 +121,7 @@
          var eventsTabConfig = {
             id: 'events',
             selector: '#shop > #content > #events',
+            contentSelector: '#shop > #content > #events > #tabContent',
             configName: 'termine',
             contentTemplateName: 'termine',
             languages: supportedLanguages,
@@ -129,6 +133,7 @@
          var shippingTabConfig = {
             id: 'shipping',
             selector: '#shop > #content > #shipping',
+            contentSelector: '#shop > #content > #shipping > #tabContent',
             configName: undefined,
             contentTemplateName: 'versandbedingungen',
             languages: supportedLanguages
@@ -139,6 +144,7 @@
          var companyDetailsTabConfig = {
             id: 'companyDetails',
             selector: '#shop > #content > #companyDetails',
+            contentSelector: '#shop > #content > #companyDetails > #tabContent',
             configName: undefined,
             contentTemplateName: 'impressum',
             languages: supportedLanguages
@@ -149,6 +155,7 @@
          var shoppingCartTabConfig = {
             id: 'shoppingCart',
             selector: '#shop > #content > #shoppingCart',
+            contentSelector: '#shop > #content > #shoppingCart > #tabContent',
             configName: undefined,
             contentTemplateName: 'warenkorb',
             languages: supportedLanguages
@@ -218,10 +225,10 @@
             <table>
                <tr>
                   <td colspan="2" class="caption"><h1>Test / Draft</h1></td>
-               <tr>
+               </tr>
                <tr>
                   <td><p>Passwort:</p></td>
-                  <td><input id="passwordTextField" value="" size="40" type="password">
+                  <td><input id="passwordTextField" value="" size="40" type="password"></td>
                </tr>
                <tr>
                   <td colspan="2" class="buttonRow"><button type="button" id="draftOverlayButton" onclick="shop.ui.DraftOverlay.passwordEntered()">Fortsetzen</button></td>
@@ -265,20 +272,37 @@
    </div>
 
    <div id="content">
-      <div class="tab" id="start"></div>
-      <div class="tab" id="plants"></div>
-      <div class="tab" id="accessories"></div>
-      <div class="tab" id="events"></div>
-      <div class="tab" id="shipping"></div>
-      <div class="tab" id="companyDetails"></div>
-      <div class="tab" id="shoppingCart"></div>
+      <div class="tab" id="start">
+         <div id="tabContent"></div>
+         <div id="footer">written by Thomas Ederer</div>
+      </div>
+      <div class="tab" id="plants">
+         <div id="tabContent"></div>
+         <div id="footer">written by Thomas Ederer</div>
+      </div>
+      <div class="tab" id="accessories">
+         <div id="tabContent"></div>
+         <div id="footer">written by Thomas Ederer</div>
+      </div>
+      <div class="tab" id="events">
+         <div id="tabContent"></div>
+         <div id="footer">written by Thomas Ederer</div>
+      </div>
+      <div class="tab" id="shipping">
+         <div id="tabContent"></div>
+         <div id="footer">written by Thomas Ederer</div>
+      </div>
+      <div class="tab" id="companyDetails">
+         <div id="tabContent"></div>
+         <div id="footer">written by Thomas Ederer</div>
+      </div>
+      <div class="tab" id="shoppingCart">
+         <div id="tabContent"></div>
+         <div id="footer">written by Thomas Ederer</div>
+      </div>
    </div>
    
    <div id="picture"></div>
-
-   <div id="footer">
-      <div id="author">written by Thomas Ederer</div>
-   </div>
 </div>
 </body>
 </html>  

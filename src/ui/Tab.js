@@ -13,11 +13,12 @@ assertNamespace('shop.ui');
  * configuration object description:
  *
  * {
- *    selector:                  the selector identifies the <div> that should receive the content.
- *    configName:                the name of the configuration to use to genenerate the product table. No table gets added when it's undefined.
- *    contentTemplateName:       the name of the HTML template to use. If a product table is configured, the template also requires the PLACEHOLDER in its content.
- *    languages:                 an array of supported languages defined in shop.Language
- *    tableGenerator (optional): the name of the generator to use, default = ProductTableGenerator
+ *    selector:                     the selector identifies the <div> that is the tab
+ *    contentSelector (optional):   the selector identifies the <div> that should receive the content. If it is undefined the value in "selector" will be used.
+ *    configName:                   the name of the configuration to use to genenerate the product table. No table gets added when it's undefined.
+ *    contentTemplateName:          the name of the HTML template to use. If a product table is configured, the template also requires the PLACEHOLDER in its content.
+ *    languages:                    an array of supported languages defined in shop.Language
+ *    tableGenerator (optional):    the name of the generator to use, default = ProductTableGenerator
  * }
  *
  * addTabContentChangedListener(callback) adds a callback to the tab that gets called every time when the tab content gets updated.
@@ -44,7 +45,8 @@ shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlCon
       $(selector).html(htmlContent);
    };
    
-   var setHtmlContentOfTab = (optionalSetHtmlContent === undefined) ? defaultHtmlContentSetter.bind(this, config.selector) : optionalSetHtmlContent.bind(this, config.selector);
+   var contentSelector = config.contentSelector || config.selector;
+   var setHtmlContentOfTab = (optionalSetHtmlContent === undefined) ? defaultHtmlContentSetter.bind(this, contentSelector) : optionalSetHtmlContent.bind(this, contentSelector);
    var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultHtmlContentSetter : optionalSetHtmlContent;
    
    var notifyTableChangeListeners = function notifyTableChangeListeners() {
