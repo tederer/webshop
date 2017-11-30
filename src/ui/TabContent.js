@@ -9,6 +9,19 @@ require('./AbstractTabContent.js');
 
 assertNamespace('shop.ui');
 
+/**
+ * A TabContent is responsible provide the current tab content when getHtmlContent() gets called.
+ * ContentChangedListener get notified when the content changed.
+ * 
+ * configuration object description:
+ *
+ * {
+ *    configName:                the name of the configuration to use to genenerate the product table. No table gets added when it's undefined.
+ *    contentTemplateName:       the name of the HTML template to use. If a product table is configured, the template also requires the PLACEHOLDER in its content.
+ *    languages:                 an array of supported languages defined in shop.Language
+ *    tableGenerator (optional): the name of the generator to use, default = ProductTableGenerator
+ * }
+ */
 shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, optionalBus) {
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    

@@ -26,7 +26,17 @@ assertNamespace('shop.ui');
 shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlContent) {
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
    
-   var tabContent = optionalTabContentFactory === undefined ? new shop.ui.TabContent(config) : optionalTabContentFactory(config);
+   var createTabContentConfig = function createTabContentConfig(config) {
+      return {
+         configName:          config.configName,
+         contentTemplateName: config.contentTemplateName,
+         languages:           config.languages,
+         tableGenerator:      config.tableGenerator
+      };
+   };
+   
+   var tabContentConfig = createTabContentConfig(config);
+   var tabContent = optionalTabContentFactory === undefined ? new shop.ui.TabContent(tabContentConfig) : optionalTabContentFactory(tabContentConfig);
    
    var tabContentChangedCallbacks = [];
    

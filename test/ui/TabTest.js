@@ -19,7 +19,8 @@ var DEFAULT_SELECTOR          = 'defaultSelector';
 var DEFAULT_CONFIG_NAME       = 'myConfig';
 var DEFAULT_TEMPLATE_NAME     = 'myTemplate';
 var DEFAULT_LANGUAGES         = [shop.Language.DE, shop.Language.EN];
-   
+var DEFAULT_TABLE_GENERATOR   = 'defaultTableGenerator';
+
 var instance;
 var templatePrefix;
 var placeholder;
@@ -70,7 +71,8 @@ var getDefaultConfig = function getDefaultConfig() {
       selector:            DEFAULT_SELECTOR,
       configName:          DEFAULT_CONFIG_NAME,
       contentTemplateName: DEFAULT_TEMPLATE_NAME,
-      languages:           DEFAULT_LANGUAGES
+      languages:           DEFAULT_LANGUAGES,
+      tableGenerator:      DEFAULT_TABLE_GENERATOR
    };
 };
 
@@ -165,18 +167,25 @@ describe('Tab', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
-   it('new Instance provides configuration to TabContent', function() {
-      givenInstanceWith({id: 'myIdentifier'});
+   it('new Instance provides configuration to TabContent A', function() {
+      givenInstanceWith({});
       expect(lastCapturedTabContentConfig()).to.be.eql({ 
-         id: 'myIdentifier', 
-         selector: 'defaultSelector', 
          configName: 'myConfig', 
          contentTemplateName: 'myTemplate', 
-         languages: [ 'de', 'en' ]
+         languages: [ 'de', 'en' ],
+         tableGenerator: DEFAULT_TABLE_GENERATOR
       });
    });
    
-   // TODO zweiten test für die config schreiben
+   it('new Instance provides configuration to TabContent B', function() {
+      givenInstanceWith({id: 'id1', selector: 'sel1', configName: 'conf1', contentTemplateName: 'content1', languages: ['hu', 'sk'], tableGenerator: 'specialTableGen'});
+      expect(lastCapturedTabContentConfig()).to.be.eql({ 
+         configName: 'conf1', 
+         contentTemplateName: 'content1', 
+         languages: [ 'hu', 'sk' ],
+         tableGenerator: 'specialTableGen'
+     });
+   });
    
    it('new instance adds ContentChangeListener to TabContent', function() {
       givenDefaultInstance();
@@ -239,7 +248,6 @@ describe('Tab', function() {
       expect(capturedHtmlContent['sel123 #anotherChildId']).to.be.eql('<h1>child content for testing</h1>');
    });
    
-      
    it('the Tab notifies the registered TabContentChangedCallbacks when setHtmlContentOfChildElement called', function() {
       var callbackAInvocations = 0;
       var callbackA = function callbackA() { callbackAInvocations++; };
