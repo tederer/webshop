@@ -102,14 +102,15 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
       contentChangedCallbacks.push(callback);
    };
    
-   var onLanguageChanged = function onLanguageChanged(newLanguage) {
-      activeLanguage = newLanguage;
-   };
-   
    var notifyTabContentChangedListeners = function notifyTabContentChangedListeners() {
       for(var index = 0; index < contentChangedCallbacks.length; index++) {
          contentChangedCallbacks[index]();
       }
+   };
+   
+   var onLanguageChanged = function onLanguageChanged(newLanguage) {
+      activeLanguage = newLanguage;
+      notifyTabContentChangedListeners();
    };
    
    var setMapContent = function setMapContent(map, key, value) {
