@@ -25,7 +25,6 @@ var placeholder;
 var suffix;
 var contentChangedListenerInvocationCount;
 var capturedHtmlContent;
-
 var productTable;
 var mockedBus;
 
@@ -101,14 +100,6 @@ var whenTemplatePublished = function whenTemplatePublished() {
    givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'notRelevant');
 };
 
-var whenConfigPublicationGetsUpdated = function whenConfigPublicationGetsUpdated(name, language, data) {
-   mockedBus.publish('/jsonContent/' + language + '/' + name, JSON.parse(data));
-};
-
-var whenTemplatePublicationGetsUpdated = function whenTemplatePublicationGetsUpdated(name, language, data) {
-   mockedBus.publish('/htmlContent/' + language + '/' + name, data);
-};
-
 var whenGetHtmlContentCalled = function whenGetHtmlContentCalled(done) {
    instance.getHtmlContent().then(function(content) {
       capturedHtmlContent.push(content);
@@ -162,7 +153,6 @@ describe('TabContent', function() {
    beforeEach(setup);
    
    it('creating an instance is an instance/object', function() {
-      
       givenDefaultTabContent();
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
@@ -231,7 +221,6 @@ describe('TabContent', function() {
    });
    
    it('getHtmlContent() provides an error when the template cannot be loaded', function(done) {
-      
       var table = '<table id="anyTable"></table>';
       givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
@@ -243,7 +232,6 @@ describe('TabContent', function() {
    });
    
    it('getHtmlContent() provides an error when the template does not contain a placeholder', function(done) {
-      
       var table = '<table id="anyTable"></table>';
       givenTheProductTableGeneratorReturns(table);
       givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}]}');
