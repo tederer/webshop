@@ -168,15 +168,15 @@
             '#shop > #content');
          
          var cartController = new shop.ui.shoppingCart.CartController(products, shoppingCartTab);
-         shoppingCartTab.onTabContentChanged(cartController.onTabContentChangedCallback);
+         shoppingCartTab.addTabContentChangedListener(cartController.onTabContentChangedCallback);
          
          var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter('plantsTable');
          var accessoriesTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter();
-         plantTab.onTabContentChanged(plantTableSetter.onTabContentChangedCallback);
-         accessoriesTab.onTabContentChanged(accessoriesTableSetter.onTabContentChangedCallback);
+         plantTab.addTabContentChangedListener(plantTableSetter.onTabContentChangedCallback);
+         accessoriesTab.addTabContentChangedListener(accessoriesTableSetter.onTabContentChangedCallback);
          
          var eventsTableSetter = new shop.ui.tablesetters.LanguageDependentTextInEventsTableSetter();
-         eventsTab.onTabContentChanged(eventsTableSetter.onTabContentChangedCallback);
+         eventsTab.addTabContentChangedListener(eventsTableSetter.onTabContentChangedCallback);
          
          var pictureOverlayConfig = {
             selector: '#shop > #picture',

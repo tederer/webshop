@@ -39,7 +39,7 @@ shop.ui.VisibleTabController = function VisibleTabController(tabs, containerSele
    };
    
    tabs.forEach(function(tab) {
-      tab.onTabContentChanged(onTabContentChanged);
+      tab.addTabContentChangedListener(onTabContentChanged);
    });
    
    shop.Context.bus.subscribeToPublication(shop.topics.VISIBLE_TAB, onVisibleTab);

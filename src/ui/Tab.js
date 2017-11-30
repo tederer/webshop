@@ -20,7 +20,7 @@ assertNamespace('shop.ui');
  *    tableGenerator (optional): the name of the generator to use, default = ProductTableGenerator
  * }
  *
- * onTabContentChanged(callback) adds a callback to the tab that gets called every time when the tab content gets updated.
+ * addTabContentChangedListener(callback) adds a callback to the tab that gets called every time when the tab content gets updated.
  * The callback does not get anything from the caller (argument count = 0).
  */
 shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlContent) {
@@ -69,7 +69,7 @@ shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlCon
       updateHtmlContent();
    };
    
-   this.onTabContentChanged = function onTabContentChanged(callback) {
+   this.addTabContentChangedListener = function addTabContentChangedListener(callback) {
       tabContentChangedCallbacks[tabContentChangedCallbacks.length] = callback;
    };
    

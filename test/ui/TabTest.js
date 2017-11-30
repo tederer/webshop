@@ -91,7 +91,7 @@ var givenDefaultInstance = function givenDefaultInstance() {
 };
 
 var givenRegisteredTableChangeListener = function givenRegisteredTableChangeListener(callback) {
-   instance.onTabContentChanged(callback);
+   instance.addTabContentChangedListener(callback);
 };
 
 var givenTabContentProvides = function givenTabContentProvides(htmlContent) {
