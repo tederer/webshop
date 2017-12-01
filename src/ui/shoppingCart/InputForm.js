@@ -19,6 +19,7 @@ shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalUiComponen
    var firstname;
    var lastname;
    var email;
+   var comment;
    var cartContent;
    
    var updateSubmitButton = function updateSubmitButton() {
@@ -52,6 +53,9 @@ shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalUiComponen
                            
          case 'email':     email = isValidEmail(value) ? value : undefined;
                            break;
+                           
+         case 'comment':   comment = value;
+                           break;
       }
       
       updateSubmitButton();
@@ -78,6 +82,7 @@ shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalUiComponen
       uiComponentProvider(selector + ' #firstname').val(firstname);
       uiComponentProvider(selector + ' #lastname').val(lastname);
       uiComponentProvider(selector + ' #email').val(email);
+      uiComponentProvider(selector + ' #comment').val(comment);
       updateSubmitButton();
    };
    

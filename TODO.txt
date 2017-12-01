@@ -1,6 +1,4 @@
 ﻿* beim impressum eine karten mit der google-maps API einbauen
 * bei pflanzentabelle einzelpreise in config eintragen und bei der menge eine drop-down box (5, 10, 15, ...) hingeben
-* wenn amn im warenkorb die sprache ändert ist der kommentar weg
-* großes bild ist nimma in der mitte
-* abstand zwischen knöpfe einbauen, wenn sie nicht in eine zeile passen
+* länder im warenkorb sortieren
 * seite ins web stellen und testen
