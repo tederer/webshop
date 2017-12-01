@@ -7,6 +7,8 @@ var fileSystem = require('fs');
 global.PROJECT_ROOT_PATH = path.resolve('.');
 global.PROJECT_SOURCE_ROOT_PATH = global.PROJECT_ROOT_PATH + '/src';
 global.PROJECT_TEST_ROOT_PATH   = global.PROJECT_ROOT_PATH + '/test';
+var CONCAT_FOLDER = global.PROJECT_ROOT_PATH + '/concat/';
+var CONCATENATED_FILE = CONCAT_FOLDER + 'webshop_spa.js';
 
 // Grunt is a JavaScript task runner, similar to Ant. 
 // See http://gruntjs.com/ for details
@@ -45,7 +47,7 @@ module.exports = function(grunt) {
       }
       },
       
-      clean: ['webroot/javascripts'],
+      clean: ['webroot/javascripts', CONCAT_FOLDER],
 
       copy: {
          main: {
@@ -60,12 +62,19 @@ module.exports = function(grunt) {
       concat: {
          options: {
             process: function(src, filepath) {
-               return src.replace(/\s*require\(.*\);\s*\r?\n/g, '');
+               var result = '';
+               var nameSpaceUtils = 'NamespaceUtils.js';
+               var index = filepath.indexOf(nameSpaceUtils);
+               
+               if (filepath.length < nameSpaceUtils.length || index !== (filepath.length - nameSpaceUtils.length)) {
+                  result = src;
+               }
+               return result;
             }
          },
          javascripts: {
             src: ['src/**/*.js'],
-            dest: 'concat/built.js',
+            dest: CONCATENATED_FILE,
          },
       }
    });
@@ -76,9 +85,27 @@ module.exports = function(grunt) {
    grunt.loadNpmTasks('grunt-contrib-clean');
    grunt.loadNpmTasks('grunt-contrib-concat');
    
+   grunt.task.registerTask('correctConcatenatedFile', 'moves the prototype assignements to the and of the file and brings them into the right order', function() {
+      var CRLF = '\r\n';
+      var prototypeRegexp = /.*prototype =.*/g;
+      //require('./NamespaceUtils.js');
+      var requireRegexp = /require\([^\(]*\);\s*\r?\n/g;
+      var concatenatedContent = fileSystem.readFileSync(CONCATENATED_FILE, 'utf8');
+      var namespaceUtilsContent = fileSystem.readFileSync(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js', 'utf8');
+      var prototypeAssignments = concatenatedContent.match(prototypeRegexp);
+      if (prototypeAssignments === null) {
+         console.log('no prototype assignments found');
+      } else {
+         var newContent = (namespaceUtilsContent + concatenatedContent).replace(prototypeRegexp, '').replace(requireRegexp, '');
+         fileSystem.writeFileSync(CONCATENATED_FILE, newContent, 'utf8');
+         fileSystem.appendFileSync(CONCATENATED_FILE, CRLF + prototypeAssignments.join(CRLF), 'utf8');
+         console.log(CRLF + '\tmoved ' + prototypeAssignments.length + ' prototype assignements to the end of ' + CONCATENATED_FILE);
+      }
+   });
+
    grunt.registerTask('lint', ['jshint']);
    grunt.registerTask('format', ['jsbeautifier']);
    grunt.registerTask('test', ['mochaTest:libRaw']);
    /* damit concat automatisch läuft gehört 'concat' zu den default hinzugefügt. */
-   grunt.registerTask('default', ['clean', 'lint', 'test', 'copy']);
+   grunt.registerTask('default', ['clean', 'lint', 'test', 'copy', 'concat', 'correctConcatenatedFile']);
  };
