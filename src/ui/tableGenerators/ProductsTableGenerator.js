@@ -30,25 +30,25 @@ assertNamespace('shop.ui');
  *      ]
  *   }
  */
-shop.ui.tablegenerators.ProductTableGenerator = function ProductTableGenerator() {
+shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator() {
 
-   var thisInstance = this;
+   this.ProductsTableGenerator = '';
    var configKey;
    
-   var addPrice = function addPrice(price) {
-      thisInstance.addText(price.toFixed(2) + ' EUR');
+   var addPrice = function addPrice(generator, price) {
+      generator.addText(price.toFixed(2) + ' EUR');
    };
    
-   var addShoppingCartAdder = function addShoppingCartAdder(product) {
+   var addShoppingCartAdder = function addShoppingCartAdder(generator, product) {
       var commonId = configKey + '_' + product.id;
       var buttonId = commonId + '_button';
-      var textfieldId = commonId + '_textfield';
-      var button = '<button type="button" id="' + buttonId + '" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\', \'' + textfieldId + '\');"></button>';
-      var input = '<input type="text" id="' + textfieldId + '" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + commonId + '\');">';
-      thisInstance.addText(input + '&nbsp;' + button);
+      var quantitySelectorId = commonId + '_textfield';
+      var input = generator.getQuantityInputHtmlCode(quantitySelectorId, commonId);
+      var button = '<button type="button" id="' + buttonId + '" onClick="shop.ui.Actions.addProductToShoppingCart(\'' + product.id + '\', \'' + quantitySelectorId + '\');"></button>';
+      generator.addText(input + '&nbsp;' + button);
    };
    
-   var addImage = function addImage(imageSmall, imageBig, url) {
+   var addImage = function addImage(generator, imageSmall, imageBig, url) {
       var htmlContent = '';
       if (imageSmall !== undefined) {
          htmlContent = '<img src="' + imageSmall + '">';
@@ -60,41 +60,45 @@ shop.ui.tablegenerators.ProductTableGenerator = function ProductTableGenerator()
             htmlContent = '<a class="onTheInternetAnchor" href="' + url + '"></a>';
          }
       }
-      thisInstance.addText(htmlContent);
+      generator.addText(htmlContent);
    };
    
-   var addRow = function addRow(product) {
-      thisInstance.startRow();
-      addImage(product.imageSmall, product.imageBig, product.url);
-      thisInstance.addText(product.name);
-      thisInstance.addText(product.description);
-      addPrice(product.price);
-      addShoppingCartAdder(product);
-      thisInstance.endRow();
+   var addRow = function addRow(generator, product) {
+      generator.startRow();
+      addImage(generator, product.imageSmall, product.imageBig, product.url);
+      generator.addText(product.name);
+      generator.addText(product.description);
+      addPrice(generator, product.price);
+      addShoppingCartAdder(generator, product);
+      generator.endRow();
    };
    
-   var addCaptions = function addCaptions() {
-      thisInstance.startRow();
-      thisInstance.addHeader('fotoHeader');
-      thisInstance.addHeader('nameHeader');
-      thisInstance.addHeader('descriptionHeader');
-      thisInstance.addHeader('priceHeader');
-      thisInstance.addHeader('&nbsp;');
-      thisInstance.endRow();
+   var addCaptions = function addCaptions(generator) {
+      generator.startRow();
+      generator.addHeader('fotoHeader');
+      generator.addHeader('nameHeader');
+      generator.addHeader('descriptionHeader');
+      generator.addHeader('priceHeader');
+      generator.addHeader('&nbsp;');
+      generator.endRow();
+   };
+   
+   this.getQuantityInputHtmlCode = function getQuantityInputHtmlCode(quantitySelectorId, commonId) {
+      return '<input type="text" id="' + quantitySelectorId + '" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + commonId + '\');">';
    };
    
    this.generateTable = function generateTable(configurationId, config) {
       configKey = configurationId;
-      
-      thisInstance.reset();
-      thisInstance.append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
-      addCaptions();
-      config.products.forEach(function(product) { 
-         addRow(product);
-      });  
-      thisInstance.append('</table>');
-      return thisInstance.getContent();
+      this.reset();
+      this.append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
+      addCaptions(this);
+      var products = config.products;
+      for (var index = 0; index < products.length; index++) {
+         addRow(this, products[index]);
+      }
+      this.append('</table>');
+      return this.getContent();
    };
 };
 
-shop.ui.tablegenerators.ProductTableGenerator.prototype = new shop.ui.tablegenerators.AbstractTableGenerator();
+shop.ui.tablegenerators.ProductsTableGenerator.prototype = new shop.ui.tablegenerators.AbstractTableGenerator();

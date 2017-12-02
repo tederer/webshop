@@ -2,3 +2,5 @@
 * bei pflanzentabelle einzelpreise in config eintragen und bei der menge eine drop-down box (5, 10, 15, ...) hingeben
 * länder im warenkorb sortieren
 * seite ins web stellen und testen
+* reihenfolge der prototypdeklarationen richtig generieren
+* dropdown listen implementierung fertigstellen

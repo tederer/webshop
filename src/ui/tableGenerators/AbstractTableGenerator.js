@@ -6,6 +6,7 @@ assertNamespace('shop.ui.tablegenerators');
 
 shop.ui.tablegenerators.AbstractTableGenerator = function AbstractTableGenerator() {
 
+   this.AbstractTableGenerator = '';
    var CRLF = '\r\n';
    var intentationAsString = '   ';
    var intentations;

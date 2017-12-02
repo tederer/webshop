@@ -32,7 +32,7 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
       tableGenerator = optionalProductTableGenerator;
    } else {
       if (config.tableGenerator === undefined) {
-         tableGenerator = new shop.ui.tablegenerators.ProductTableGenerator();
+         tableGenerator = new shop.ui.tablegenerators.ProductsTableGenerator();
       } else {
          tableGenerator = new shop.ui.tablegenerators[config.tableGenerator]();
       }
@@ -62,7 +62,7 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
                   fulfill(formatErrorMessage(data.message));
                } else {
                   if (data === undefined) {
-                     fulfill(formatErrorMessage('configuration ' + config.configName + ' is not available in language ' + activeLanguage + '!'));
+                     fulfill(formatErrorMessage('configuration "' + config.configName + '" is not available in language ' + activeLanguage + '!'));
                   } else {
                      fulfill(tableGenerator.generateTable(configKey, data));
                   }
@@ -82,7 +82,7 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
       } else {
          var templateContent = (config.contentTemplateName === undefined) ? PLACEHOLDER : templateContents[config.contentTemplateName + '_' + activeLanguage];
          if (templateContent === undefined) {
-            content = formatErrorMessage('template content ' + config.contentTemplateName + ' is not available!');
+            content = formatErrorMessage('template content "' + config.contentTemplateName + '" is not available!');
          } else {
             if (templateContent instanceof Error) {
                content = formatErrorMessage(templateContent.message);
