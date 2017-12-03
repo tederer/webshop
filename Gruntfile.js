@@ -80,7 +80,32 @@ module.exports = function(grunt) {
    grunt.loadNpmTasks('grunt-contrib-clean');
    grunt.loadNpmTasks('grunt-contrib-concat');
    
-   grunt.task.registerTask('correctConcatenatedFile', 'moves the prototype assignements to the and of the file and brings them into the right order', function() {
+   var sortPrototypeAssignments = function sortPrototypeAssignments(assignmentsAsString) {
+      var regexp = /\s*([^\s]+).prototype\s*=\s*new\s*([^\s\(]+).*/;
+      
+      var toObject = function toObject(assignmentAsString) {
+         var result = regexp.exec(assignmentAsString);
+         return {parent: RegExp.$2, child: RegExp.$1};
+      };
+      
+      var sortFunction = function sortFunction(first, second) {
+         var result;
+         if (first.parent === second.parent) {
+            result = 0;
+         } else {
+            result = (first.parent === second.child) ? 1 : -1;
+         }
+         return result;
+      };
+      
+      var toString = function toString(assignmentObject) {
+         return assignmentObject.child + '.prototype = new ' + assignmentObject.parent + '();';
+      };
+      
+      return assignmentsAsString.map(toObject).sort(sortFunction).map(toString);
+   };
+   
+   grunt.task.registerTask('correctConcatenatedFile', 'moves the prototype assignments to the and of the file and brings them into the right order', function() {
       var CRLF = '\r\n';
       var prototypeRegexp = /.*prototype =.*/g;
       var requireRegexp = /require\([^\(]*\);\s*\r?\n/g;
@@ -88,8 +113,9 @@ module.exports = function(grunt) {
       var concatenatedContent = fileSystem.readFileSync(CONCATENATED_FILE, 'utf8');
       var namespaceUtilsContent = fileSystem.readFileSync(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js', 'utf8');
       var prototypeAssignments = concatenatedContent.match(prototypeRegexp);
+      var sortedPrototypeAssignments = sortPrototypeAssignments(prototypeAssignments);
       
-      if (prototypeAssignments === null) {
+      if (sortedPrototypeAssignments === null) {
          console.log('no prototype assignments found');
       } else {
          var newContent = (namespaceUtilsContent + concatenatedContent)
@@ -97,8 +123,8 @@ module.exports = function(grunt) {
                               .replace(requireRegexp, '')
                               .replace(linterSettingsRegexp, '');
          fileSystem.writeFileSync(CONCATENATED_FILE, newContent, 'utf8');
-         fileSystem.appendFileSync(CONCATENATED_FILE, CRLF + prototypeAssignments.join(CRLF), 'utf8');
-         console.log(CRLF + '\tmoved ' + prototypeAssignments.length + ' prototype assignements to the end of ' + CONCATENATED_FILE);
+         fileSystem.appendFileSync(CONCATENATED_FILE, CRLF + sortedPrototypeAssignments.join(CRLF), 'utf8');
+         console.log(CRLF + '\tmoved ' + sortedPrototypeAssignments.length + ' prototype assignements to the end of ' + CONCATENATED_FILE);
       }
    });
 
