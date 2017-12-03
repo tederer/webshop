@@ -12,7 +12,9 @@
    <script type="text/javascript" src="lib/jquery.uriAnchor.js" charset="UTF-8"></script>
    
    <script>
-      var baseAddress            = window.location.protocol + '//' + window.location.host + '/';
+      var href                   = window.location.href.replace(/\\/g,'/');
+      var indexOfLastSlash       = href.lastIndexOf('/');
+      var baseAddress            = href.substring(0, indexOfLastSlash) + '/';
       var supportedLanguages     = [shop.Language.DE, shop.Language.EN];
       var products               = ['pflanzen', 'zubehoer'];
       var configurations         = ['pflanzen', 'zubehoer', 'termine'];
@@ -137,7 +139,7 @@
          var cartController = new shop.ui.shoppingCart.CartController(products, shoppingCartTab);
          shoppingCartTab.addTabContentChangedListener(cartController.onTabContentChangedCallback);
          
-         var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter('plantsTable');
+         var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter();
          var accessoriesTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter();
          plantTab.addTabContentChangedListener(plantTableSetter.onTabContentChangedCallback);
          accessoriesTab.addTabContentChangedListener(accessoriesTableSetter.onTabContentChangedCallback);
@@ -171,7 +173,7 @@
          
          $(window).bind( 'hashchange', onHashChange ).trigger( 'hashchange' );
          
-         shop.ui.DraftOverlay.init();
+         (new shop.ui.DraftOverlay()).init();
       });
    </script>
 </head>
@@ -191,7 +193,7 @@
                   <td><input id="passwordTextField" value="" size="40" type="password"></td>
                </tr>
                <tr>
-                  <td colspan="2" class="buttonRow"><button type="button" id="draftOverlayButton" onclick="shop.ui.DraftOverlay.passwordEntered()">Fortsetzen</button></td>
+                  <td colspan="2" class="buttonRow"><button type="button" id="draftOverlayButton">Fortsetzen</button></td>
                </tr>
             </table>
             
@@ -206,7 +208,7 @@
       <table>
          <tr class="firstRow">
             <td rowspan="2" class="leftColumn">
-               <img src="/images/logo.svg">
+               <img src="images/logo.svg">
             </td>
             <td class="centerColumn">
                <h1>Orchideenvermehrung Ederer Webshop</h1>

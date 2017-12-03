@@ -3,24 +3,24 @@
       { 
          "id": "AerangisEllisii",
          "name": "Aerangis ellisii",
-         "price": 10,
+         "price": 2,
          "description": "weiße Blüte, kleine Pflanze",
          "url": "http://some.webpage.com"
       },
       {
          "id": "CattleyaWalkerianaAlba",
          "name": "Cattleya walkeriana alba",
-         "price": 12,
+         "price": 2.5,
          "description": "Miniatur aus Brasilien",
-         "imageSmall": "/images/pflanzen/cattleya_small.jpg"
+         "imageSmall": "images/pflanzen/cattleya_small.jpg"
       },
       {
          "id": "CymbidiumDevonianum",
          "name": "Cymbidium devonianum",
-         "price": 8,
+         "price": 1.5,
          "description": "Cymb. aus Asien",
-         "imageSmall": "/images/pflanzen/cymbidium_small.jpg",
-         "imageBig": "/images/pflanzen/cymbidium_big.jpg"
+         "imageSmall": "images/pflanzen/cymbidium_small.jpg",
+         "imageBig": "images/pflanzen/cymbidium_big.jpg"
       }
    ]
 }

@@ -9,8 +9,12 @@ shop.ui.tablegenerators.PlantsTableGenerator = function PlantsTableGenerator() {
 
    this.PlantsTableGenerator = '';
    this.getQuantityInputHtmlCode = function getQuantityInputHtmlCode(quantitySelectorId, commonId) {
-      //return '<input type="text" id="' + quantitySelectorId + '" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + commonId + '\');">';
-      return '<p>hi</p>';
+      var htmlCode = '<select id="' + quantitySelectorId + '" size="1">';
+      for (var quantity = 5; quantity <= 50; quantity += 5) {
+         htmlCode += '<option>' + quantity + '</option>';
+      }
+      htmlCode += '</select>';
+      return htmlCode;
    };
 };
 

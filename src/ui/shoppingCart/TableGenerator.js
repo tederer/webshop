@@ -49,7 +49,7 @@ shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
    
    var addDeleteButton = function addDeleteButton(productId) {
       intentations++;
-      append('<td class="zentrierterText rightMostColumn"><button type="button" class="removeButton" onclick="shop.ui.Actions.removeProductFromShoppingCart(\'' + productId + '\');"><img src="/images/warenkorb/kreuz.svg"></button></td>');
+      append('<td class="zentrierterText rightMostColumn"><button type="button" class="removeButton" onclick="shop.ui.Actions.removeProductFromShoppingCart(\'' + productId + '\');"><img src="images/warenkorb/kreuz.svg"></button></td>');
       intentations--;
    };
    

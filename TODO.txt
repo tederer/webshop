@@ -1,5 +1,3 @@
 ﻿* beim impressum eine karten mit der google-maps API einbauen
-* bei pflanzentabelle einzelpreise in config eintragen und bei der menge eine drop-down box (5, 10, 15, ...) hingeben
-* länder im warenkorb sortieren
 * seite ins web stellen und testen
-* dropdown listen implementierung fertigstellen
+* submit von bestellungen implementieren

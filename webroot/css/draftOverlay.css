@@ -1,13 +1,13 @@
 #draftOverlay {
-   position : absolute;
-   top : 0.5em;
-   left : 0.5em;
-   bottom : 0.5em;
-   right : 0.5em;
-   background-color : rgba(127,0,0,0.9);
-   z-index : 100;
-   /*visibility : visible;*/
-   visibility : hidden;
+   position: fixed;
+   top: 0;
+   left: 0;
+   bottom: 0;
+   right: 0;
+   background-color: rgba(127,0,0,0.9);
+   z-index: 100;
+   visibility: visible;
+   /*visibility: hidden*/;
 }
 
 
@@ -19,7 +19,7 @@
 
 #draftOverlay  .fullscreenTable table {
    line-height: 100%;
-   background-color : #DDDD00;
+   background-color: #DDDD00;
    margin: auto;
    padding: 1em;
 }
