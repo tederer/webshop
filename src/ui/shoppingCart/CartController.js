@@ -15,6 +15,7 @@ assertNamespace('shop.ui.shoppingCart');
 
 shop.ui.shoppingCart.CartController = function CartController(products, tab, testingComponents) {
    
+   var CRLF = '\r\n';
    var SHIPPING_COSTS_AUSTRIA = 4.6;
    var SHIPPING_COSTS_NON_AUSTRIA = 11.25;
    
@@ -119,16 +120,17 @@ shop.ui.shoppingCart.CartController = function CartController(products, tab, tes
    
    var getCustomerData = function getCustomerData() {
       return {
-         firstname:  uiComponentProvider('#shop > #content > #shoppingCart #firstname').val(),
-         lastname:   uiComponentProvider('#shop > #content > #shoppingCart #lastname').val(),
-         email:      uiComponentProvider('#shop > #content > #shoppingCart #email').val(),
-         comment:    uiComponentProvider('#shop > #content > #shoppingCart #comment').val(),
+         firstname:              uiComponentProvider('#shop > #content > #shoppingCart #firstname').val(),
+         lastname:               uiComponentProvider('#shop > #content > #shoppingCart #lastname').val(),
+         email:                  uiComponentProvider('#shop > #content > #shoppingCart #email').val(),
+         countryOfDestination:   uiComponentProvider('#shop > #content > #shoppingCart #countryOfDestination').val(),
+         comment:                uiComponentProvider('#shop > #content > #shoppingCart #comment').val(),
       };
    };
    
    var onUserClickedSubmitOrderButton = function onUserClickedSubmitOrderButton() {
       var customerDataAsText = emailTextGenerator.generateCustomerDataAsText(getCustomerData());
-      var emailText = cartContentAsText + customerDataAsText;
+      var emailText = cartContentAsText + CRLF + CRLF + customerDataAsText;
       orderSubmitter.submit(emailText);
    };
    

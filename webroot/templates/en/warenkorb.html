@@ -6,7 +6,7 @@
 
 <table class="ohneRahmen">
    <tr>
-      <td><p>Zielland:</p></td>
+      <td><p>country of destination:</p></td>
       <td>
          <select id="countryOfDestination" size="1" onChange="shop.ui.Actions.changeCountryOfDestination()">
             <option value="nothing" selected>please select your country ...</option>
@@ -68,5 +68,5 @@ To place an order, please enter your firstname, lastname and email address and t
 
 <br>
 <center>
-   <button type="button" id="submitButton" onclick="" disabled>order now</button>
+   <button type="button" id="submitButton" onclick="shop.ui.Actions.submitOrder()" disabled>order now</button>
 </center>

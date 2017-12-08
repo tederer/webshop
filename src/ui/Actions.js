@@ -59,7 +59,7 @@ shop.ui.Actions = {
    },
    
    submitOrder: function submitOrder() {
-      shop.Context.bus.sendCommand(shop.topics.SUBMIT_ORDER);
+      shop.Context.bus.sendCommand(shop.topics.USER_CLICKED_SUBMIT_ORDER_BUTTON);
    }
 };
 

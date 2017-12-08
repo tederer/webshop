@@ -603,7 +603,7 @@ describe('CartController', function() {
       givenTheEmailTextGeneratorReturnsCustomerContentText('customers details');
       givenContentOfTabChanges();
       whenTheUserSubmitsAnOrder();
-      expect(capturedOrderText).to.be.eql('products in the cart' + 'customers details');
+      expect(capturedOrderText).to.be.eql('products in the cart\r\n\r\ncustomers details');
    });
 }); 
       
