@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill-opacity="0">
+   <defs>
+      <filter id="MyFilter" filterUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+         <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+         <feOffset in="blur" dx="1" dy="1" result="offsetBlur"/>
+               <feMerge>
+           <feMergeNode in="offsetBlur"/>
+           <feMergeNode in="SourceGraphic"/>
+         </feMerge>
+      </filter>
+  </defs>
+  
+   <g filter="url(#MyFilter)">
+   <path style="fill:#00ba00;stroke:#00ba00;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+     d="m 3.6792453,10.754717 c 0,0 1.2522663,8.332801 2.7169811,8.943396 1.3227768,0.551425 3.6411136,-2.21465 5.4056606,-4.216981 1.764546,-2.002331 8.688679,-10.216981 8.688679,-10.216981 0,0 -10.042801,7.798087 -12.0566037,8.886792 -2.4957669,1.349267 -4.754717,-3.396226 -4.754717,-3.396226 z"/>
+   </g>
+</svg>

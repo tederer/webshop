@@ -10,7 +10,7 @@ require('./AbstractTabContent.js');
 assertNamespace('shop.ui');
 
 /**
- * A TabContent is responsible provide the current tab content when getHtmlContent() gets called.
+ * A TabContent is responsible to provide the current tab content when getHtmlContent() gets called.
  * ContentChangedListener get notified when the content changed.
  * 
  * configuration object description:

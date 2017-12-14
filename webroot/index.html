@@ -6,6 +6,7 @@
    <link rel="stylesheet" type="text/css" href="css/shoppingCartContentTable.css">
    <link rel="stylesheet" type="text/css" href="css/pictureOverlay.css">
    <link rel="stylesheet" type="text/css" href="css/draftOverlay.css">
+   <link rel="stylesheet" type="text/css" href="css/statusInfo.css">
 
    <script type="text/javascript" src="javascripts/webshop_spa.js" charset="UTF-8"></script>
    <script type="text/javascript" src="lib/jquery-3.2.1.min.js" charset="UTF-8"></script>
@@ -22,7 +23,17 @@
       var htmlContentLoader      = new shop.configuration.HtmlContentLoader(baseAddress + 'templates', supportedLanguages);
       var languageDependentTexts = new shop.LanguageDependentTexts(baseAddress + 'configuration');
       
-      htmlContentLoader.load(['start', 'pflanzen', 'zubehoer', 'termine', 'versandbedingungen', 'impressum', 'warenkorb', 'pictureOverlay']);
+      htmlContentLoader.load([
+         'start', 
+         'pflanzen', 
+         'zubehoer', 
+         'termine', 
+         'versandbedingungen', 
+         'impressum', 
+         'warenkorb', 
+         'pictureOverlay', 
+         'statusInfo']);
+         
       configContentLoader.load(configurations);
       languageDependentTexts.load();
       
@@ -265,6 +276,8 @@
    </div>
    
    <div id="picture"></div>
+   <div id="statusInfo"></div>
+   <div id="errorMessage"></div>
 </div>
 </body>
 </html>  
