@@ -2,3 +2,4 @@
 * seite ins web stellen und testen (auch auf kleinen geräten)
 * submit von bestellungen implementieren (shop.ui.shoppingCart.OrderSubmitter)
 * submit auf dem server implementieren und sicherstellen, dass man keinen code injecten kann
+* implementieren von Overlay
