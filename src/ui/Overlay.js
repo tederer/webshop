@@ -8,6 +8,14 @@ assertNamespace('shop.ui');
 
 /**
  * An overlay shows its content on top of the whole shop.
+ *
+ * configuration object description:
+ *
+ * {
+ *    selector:            the selector identifies the <div> that is the overlay
+ *    contentTemplateName: the name of the HTML template to use.
+ *    languages:           an array of supported languages defined in shop.Language
+ * }
  */
 shop.ui.Overlay = function Overlay(config, optionalSetHtmlContent, optionalBus) {
    

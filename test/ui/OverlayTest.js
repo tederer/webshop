@@ -83,7 +83,7 @@ describe('Overlay', function() {
       expect(initializeInvocationCount).to.be.eql(1);
    });
    
-   it('german content gets set when picture publication gets updated and language is german', function() {
+   it('german content gets set when language gets set to german', function() {
       givenTemplatePublication(shop.Language.DE, 'irgendwas davor und noch was danach');
       givenTemplatePublication(shop.Language.EN, 'a prefix a suffix');
       givenDefaultOverlay();
@@ -91,11 +91,11 @@ describe('Overlay', function() {
       expect(capturedHtmlContent).to.be.eql('irgendwas davor und noch was danach');
    });
    
-   it('english content gets set when picture publication gets updated and language is english', function() {
+   it('english content gets set when language gets set to english', function() {
       givenTemplatePublication(shop.Language.DE, 'irgendwas davor und noch was danach');
-      givenTemplatePublication(shop.Language.EN, 'a prefix a suffix');
+      givenTemplatePublication(shop.Language.EN, 'some english content');
       givenDefaultOverlay();
       givenPublishedLanguageIs(shop.Language.EN);
-      expect(capturedHtmlContent).to.be.eql('a prefix a suffix');
+      expect(capturedHtmlContent).to.be.eql('some english content');
    });
 });  
