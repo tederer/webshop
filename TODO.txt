@@ -1,5 +1,5 @@
 ﻿* beim impressum eine karten mit der google-maps API einbauen
 * seite ins web stellen und testen (auch auf kleinen geräten)
-* submit von bestellungen implementieren (shop.ui.shoppingCart.OrderSubmitter)
 * submit auf dem server implementieren und sicherstellen, dass man keinen code injecten kann
-* implementieren von Overlay
+* in progress, success und error overlay in html implementieren und für die knöpfe einen command hinzufügen der das overlay auf hidden setzt
+* chartController von ui package rausnehmen

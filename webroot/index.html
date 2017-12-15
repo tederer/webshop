@@ -6,7 +6,9 @@
    <link rel="stylesheet" type="text/css" href="css/shoppingCartContentTable.css">
    <link rel="stylesheet" type="text/css" href="css/pictureOverlay.css">
    <link rel="stylesheet" type="text/css" href="css/draftOverlay.css">
-   <link rel="stylesheet" type="text/css" href="css/statusInfo.css">
+   <link rel="stylesheet" type="text/css" href="css/inProgressOverlay.css">
+   <link rel="stylesheet" type="text/css" href="css/successOverlay.css">
+   <link rel="stylesheet" type="text/css" href="css/errorOverlay.css">
 
    <script type="text/javascript" src="javascripts/webshop_spa.js" charset="UTF-8"></script>
    <script type="text/javascript" src="lib/jquery-3.2.1.min.js" charset="UTF-8"></script>
@@ -32,7 +34,9 @@
          'impressum', 
          'warenkorb', 
          'pictureOverlay', 
-         'statusInfo']);
+         'inProgressOverlay',
+         'successOverlay',
+         'errorOverlay']);
          
       configContentLoader.load(configurations);
       languageDependentTexts.load();
@@ -166,6 +170,32 @@
          
          new shop.ui.PictureOverlay(pictureOverlayConfig);
          
+         var inProgressOverlayConfig = {
+            selector: '#shop > #inProgressOverlay',
+            contentTemplateName: 'inProgressOverlay',
+            languages: supportedLanguages
+         };
+         
+         var inProgressOverlay = new shop.ui.Overlay(inProgressOverlayConfig);
+         
+         var successOverlayConfig = {
+            selector: '#shop > #successOverlay',
+            contentTemplateName: 'successOverlay',
+            languages: supportedLanguages
+         };
+         
+         var successOverlay = new shop.ui.Overlay(successOverlayConfig);
+         
+         var errorOverlayConfig = {
+            selector: '#shop > #errorOverlay',
+            contentTemplateName: 'errorOverlay',
+            languages: supportedLanguages
+         };
+         
+         var errorOverlay = new shop.ui.Overlay(errorOverlayConfig);
+         
+         new shop.ui.shoppingCart.OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay);
+         
          new shop.ui.LanguageSelector(function() { return $('#shop > #header #languageSelector'); });
          
          var uiStatePublisherConfig = {
@@ -276,8 +306,9 @@
    </div>
    
    <div id="picture"></div>
-   <div id="statusInfo"></div>
-   <div id="errorMessage"></div>
+   <div id="inProgressOverlay"></div>
+   <div id="successOverlay"></div>
+   <div id="errorOverlay"></div>
 </div>
 </body>
 </html>  

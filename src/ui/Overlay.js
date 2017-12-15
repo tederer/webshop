@@ -30,13 +30,10 @@ shop.ui.Overlay = function Overlay(config, optionalSetHtmlContent, optionalBus) 
    var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultSetHtmlContent : optionalSetHtmlContent.bind(this, config.selector);
    var templateContents = {};
    var activeLanguage;
-   var isVisible;
    
    var updateHtmlContent = function updateHtmlContent() {
       if (activeLanguage !== undefined && templateContents[activeLanguage] !== undefined) {
          setHtmlContent(templateContents[activeLanguage]);
-         thisInstance.show();
-         isVisible = true;
       }
    };
    

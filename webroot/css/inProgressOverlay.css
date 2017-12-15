@@ -1,4 +1,4 @@
-#shop > #statusInfo {
+#shop > #inProgressOverlay {
    position: fixed;
    top: 0;
    bottom: 0;
@@ -10,14 +10,14 @@
    z-index: 3;
 }
 
-#shop > #statusInfo > #content {
+#shop > #inProgressOverlay > #content {
    position: absolute;
    left: 0;
    right: 0;
    top: 2em;
 }
 
-#shop > #statusInfo > #content  button {
+#shop > #inProgressOverlay > #content  button {
     background-color: white;
     border: 1px solid green;
     color: white;

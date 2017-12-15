@@ -6,7 +6,22 @@ require('../../Topics.js');
 
 assertNamespace('shop.ui.shoppingCart');
 
-shop.ui.shoppingCart.OrderSubmitter = function OrderSubmitter() {
+shop.ui.shoppingCart.OrderSubmitter = function OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay, optionalBus, optionalHttpRequester, optionalScheduleDelayedAction) {
+   
+   var bus = (optionalBus !== undefined) ? optionalBus : shop.Context.bus;
+   
+   var defaultHttpRequester = function defaultHttpRequester(orderText, successCallback, errorCallback) {
+      $.ajax({
+            type: 'POST',
+            url: '/cgi-bin/postOrder.pl',
+            data: orderText,
+            success: successCallback,
+            error: errorCallback
+         });
+   };
+   
+   var httpRequester = (optionalHttpRequester === undefined) ? defaultHttpRequester : optionalHttpRequester;
+   var scheduleDelayedAction = (optionalScheduleDelayedAction === undefined) ? setTimeout : optionalScheduleDelayedAction;
    
    var MIN_POPUP_DISPLAY_TIME_IN_MILLIS = 2000;
    var IDLE = 'IDLE';
@@ -17,54 +32,62 @@ shop.ui.shoppingCart.OrderSubmitter = function OrderSubmitter() {
    
    var state = IDLE;
    
-   var hidePopup = function hidePopup() {
-      console.log('hide popup');
+   var showErrorOverlay = function showErrorOverlay() {
+      inProgressOverlay.hide();
+      errorOverlay.show();
    };
    
-   var onMinPopupDisplayTimeExpired = function onMinPopupDisplayTimeExpired() {
+   var showSuccessOverlay = function showSuccessOverlay() {
+      inProgressOverlay.hide();
+      successOverlay.show();
+   };
+   
+   var minimumInProgressDurationPassed = function minimumInProgressDurationPassed() {
       switch(state) {
-         case PENDING:  state =  PENDING_AFTER_MIN_POPUP_DISPLAY_TIME;
+         case PENDING:  state = PENDING_AFTER_MIN_POPUP_DISPLAY_TIME;
                         break;
          
-         case FAILED:
-         case OK:       hidePopup();
-                        // TODO show success message
+         case FAILED:   showErrorOverlay();
                         state = IDLE;
                         break;
                         
-         default:       console.log('min timeout reached in wrong state ' + state);
+         case OK:       showSuccessOverlay();
+                        state = IDLE;
+                        break;
+                        
+         default:       shop.Context.log('minimum in progress duration passed but the state "' + state + '" is not correct.');
       }
    };
    
-   var onAjaxSuccess = function onAjaxSuccess(data) {
-      hidePopup();
+   
+   var httpRequestCallback = function httpRequestCallback(actionToPerformIfInProgressDurationPassed, stateIfInProgressDurationNotPassed, jqXHR) {
       if (state === PENDING_AFTER_MIN_POPUP_DISPLAY_TIME) {
-         // TODO show success message
+         actionToPerformIfInProgressDurationPassed();
          state = IDLE;
       } else {
-         state = OK;
+         state = stateIfInProgressDurationNotPassed;
       }
    };
-   
-   var onAjaxError = function onAjaxError(jqXHR) {
-      var errorMessage = jqXHR.status + ' ' + jqXHR.statusText;
-      state = FAILED;
-      hidePopup();
-      // TODO show error message
-      console.log(errorMessage);
+
+   var onHttpRequestSuccess = function onHttpRequestSuccess(data) {
+      httpRequestCallback(showSuccessOverlay, OK, null);
    };
    
-   this.submit = function submit(orderText) {
+   var onHttpRequestError = function onHttpRequestError(jqXHR) {
+      shop.Context.log(jqXHR.status + ' ' + jqXHR.statusText);
+      httpRequestCallback(showErrorOverlay, FAILED, jqXHR);
+    };
+   
+   var submit = function submit(orderText) {
       if (state === IDLE) {
          state = PENDING;
-         setTimeout(onMinPopupDisplayTimeExpired, MIN_POPUP_DISPLAY_TIME_IN_MILLIS);
-         $.ajax({
-            type: 'POST',
-            url: '/cgi-bin/postOrder.pl',
-            data: orderText,
-            success: onAjaxSuccess,
-            error: onAjaxError
-         });
+         inProgressOverlay.show();
+         scheduleDelayedAction(minimumInProgressDurationPassed, MIN_POPUP_DISPLAY_TIME_IN_MILLIS);
+         httpRequester(orderText, onHttpRequestSuccess, onHttpRequestError);
+      } else {
+         shop.Context.log('can not submit order because the current state "' + state + '" is not "' + IDLE + '"');
       }
    };
+   
+   bus.subscribeToCommand(shop.topics.SUBMIT_ORDER, submit);
 };

@@ -36,7 +36,6 @@ shop.ui.shoppingCart.CartController = function CartController(products, tab, tes
    var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
    var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.ui.shoppingCart.CostsCalculator(productConfigs);
    var emailTextGenerator = testingComponentAvailable('emailTextGenerator') ? testingComponents.emailTextGenerator : new shop.ui.shoppingCart.EmailTextGenerator();
-   var orderSubmitter = testingComponentAvailable('orderSubmitter') ? testingComponents.orderSubmitter : new shop.ui.shoppingCart.OrderSubmitter();
    
    var cartContent;
    var tabSelector;
@@ -131,7 +130,7 @@ shop.ui.shoppingCart.CartController = function CartController(products, tab, tes
    var onUserClickedSubmitOrderButton = function onUserClickedSubmitOrderButton() {
       var customerDataAsText = emailTextGenerator.generateCustomerDataAsText(getCustomerData());
       var emailText = cartContentAsText + CRLF + CRLF + customerDataAsText;
-      orderSubmitter.submit(emailText);
+      bus.sendCommand(shop.topics.SUBMIT_ORDER, emailText);
    };
    
    this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {

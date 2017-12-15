@@ -48,3 +48,6 @@ shop.topics.ORDER_FORM_ELEMENT_CHANGED = '/commands/orderFormElementChanged';
 
 // data: nothing
 shop.topics.USER_CLICKED_SUBMIT_ORDER_BUTTON = '/commands/userClickedSubmitOrderButton';
+
+// data: the order text to submit
+shop.topics.SUBMIT_ORDER = '/commands/submitOrder';

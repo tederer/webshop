@@ -31,7 +31,6 @@ var capturedEmailTextGeneratorCartData;
 var capturedEmailTextGeneratorCustomerData;
 var cartContentAsText;
 var customerDataAsText;
-var capturedOrderText;
 var uiComponentValues;
 
 var mockedTab = {
@@ -101,12 +100,6 @@ var mockedTexts = {
    }
 };
 
-var mockedOrderSubmitter = {
-   submit: function submit(orderText) {
-      capturedOrderText = orderText;
-   }
-};
-
 var mockedInputForm = {
    allValuesAreAvailable : function allValuesAreAvailable() {},
    setValuesEnteredByUser : function setValuesEnteredByUser() {}
@@ -141,7 +134,6 @@ var givenInstance = function givenInstance() {
       inputForm            : mockedInputForm,
       costCalculator       : mockedCostCalculator,
       emailTextGenerator   : mockedEmailTextGenerator,
-      orderSubmitter       : mockedOrderSubmitter
    };
    instance = new shop.ui.shoppingCart.CartController(products, mockedTab, testingComponents);
 };
@@ -317,7 +309,6 @@ var setup = function setup() {
    capturedEmailTextGeneratorCustomerData = [];
    cartContentAsText = undefined;
    customerDataAsText = undefined;
-   capturedOrderText = undefined;
    uiComponentValues = {};
 };
 
@@ -603,7 +594,7 @@ describe('CartController', function() {
       givenTheEmailTextGeneratorReturnsCustomerContentText('customers details');
       givenContentOfTabChanges();
       whenTheUserSubmitsAnOrder();
-      expect(capturedOrderText).to.be.eql('products in the cart\r\n\r\ncustomers details');
+      expect(mockedBus.getLastCommand(shop.topics.SUBMIT_ORDER)).to.be.eql('products in the cart\r\n\r\ncustomers details');
    });
 }); 
       
