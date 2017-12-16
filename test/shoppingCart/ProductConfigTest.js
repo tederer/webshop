@@ -1,6 +1,6 @@
 /* global global, shop, testing, assertNamespace */
 
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/shoppingCart/ProductConfig.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/shoppingCart/ProductConfig.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/Language.js');
 
@@ -19,7 +19,7 @@ function valueIsAnObject(val) {
 }
 
 var createInstance = function createInstance() {
-   instance = new shop.ui.shoppingCart.ProductConfig(products, mockedBus);
+   instance = new shop.shoppingCart.ProductConfig(products, mockedBus);
 };
 
 var givenDefaultInstance = function givenDefaultInstance() {

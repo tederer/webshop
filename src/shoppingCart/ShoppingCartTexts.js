@@ -1,12 +1,12 @@
 /* global shop, common, assertNamespace */
 
-require('../../NamespaceUtils.js');
-require('../../Topics.js');
-require('../../Context.js');
+require('../NamespaceUtils.js');
+require('../Topics.js');
+require('../Context.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.ShoppingCartTexts = function ShoppingCartTexts(optionalBus) {
+shop.shoppingCart.ShoppingCartTexts = function ShoppingCartTexts(optionalBus) {
 
    var TEXT_KEY_PREFIX = 'shoppingCartContentTable.';
    var SHIPPING_COSTS_ID = 'shippingCosts';

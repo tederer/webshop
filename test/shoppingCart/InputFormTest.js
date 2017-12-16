@@ -1,6 +1,6 @@
 /* global global, shop, testing, assertNamespace */
 
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/shoppingCart/InputForm.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/shoppingCart/InputForm.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 
 require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
@@ -41,7 +41,7 @@ var mockedUiComponentProvider = function mockedUiComponentProvider(selector) {
 };
 
 var createInstance = function createInstance() {
-   instance = new shop.ui.shoppingCart.InputForm(formSelector, mockedUiComponentProvider, mockedBus);
+   instance = new shop.shoppingCart.InputForm(formSelector, mockedUiComponentProvider, mockedBus);
 };
 
 var givenDefaultInstance = function givenDefaultInstance() {

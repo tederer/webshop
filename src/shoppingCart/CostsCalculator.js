@@ -1,10 +1,10 @@
 /* global shop, common, assertNamespace */
 
-require('../../NamespaceUtils.js');
+require('../NamespaceUtils.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.CostsCalculator = function CostsCalculator(productConfigs) {
+shop.shoppingCart.CostsCalculator = function CostsCalculator(productConfigs) {
 
    var SHIPPING_COSTS_AUSTRIA = 4.6;
    var SHIPPING_COSTS_NON_AUSTRIA = 11.25;

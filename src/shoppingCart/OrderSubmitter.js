@@ -1,12 +1,12 @@
 /* global shop, setTimeout, assertNamespace */
 
-require('../../NamespaceUtils.js');
-require('../../Context.js');
-require('../../Topics.js');
+require('../NamespaceUtils.js');
+require('../Context.js');
+require('../Topics.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.OrderSubmitter = function OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay, optionalBus, optionalHttpRequester, optionalScheduleDelayedAction) {
+shop.shoppingCart.OrderSubmitter = function OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay, optionalBus, optionalHttpRequester, optionalScheduleDelayedAction) {
    
    var bus = (optionalBus !== undefined) ? optionalBus : shop.Context.bus;
    

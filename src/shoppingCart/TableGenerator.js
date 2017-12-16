@@ -5,9 +5,9 @@ require('../Topics.js');
 require('../bus/Bus.js');
 require('../ui/Actions.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.TableGenerator = function TableGenerator() {
+shop.shoppingCart.TableGenerator = function TableGenerator() {
 
    var CRLF = '\r\n';
    var intentationAsString = '   ';

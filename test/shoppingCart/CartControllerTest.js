@@ -1,6 +1,6 @@
 /* global global, shop, testing, assertNamespace */
 
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/shoppingCart/CartController.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/shoppingCart/CartController.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 
 require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
@@ -135,7 +135,7 @@ var givenInstance = function givenInstance() {
       costCalculator       : mockedCostCalculator,
       emailTextGenerator   : mockedEmailTextGenerator,
    };
-   instance = new shop.ui.shoppingCart.CartController(products, mockedTab, testingComponents);
+   instance = new shop.shoppingCart.CartController(products, mockedTab, testingComponents);
 };
 
 var givenAllTableHeadersAreAvailable = function givenAllTableHeadersAreAvailable() {

@@ -151,7 +151,7 @@
             ],
             '#shop > #content');
          
-         var cartController = new shop.ui.shoppingCart.CartController(products, shoppingCartTab);
+         var cartController = new shop.shoppingCart.CartController(products, shoppingCartTab);
          shoppingCartTab.addTabContentChangedListener(cartController.onTabContentChangedCallback);
          
          var plantTableSetter = new shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter();
@@ -194,7 +194,7 @@
          
          var errorOverlay = new shop.ui.Overlay(errorOverlayConfig);
          
-         new shop.ui.shoppingCart.OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay);
+         new shop.shoppingCart.OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay);
          
          new shop.ui.LanguageSelector(function() { return $('#shop > #header #languageSelector'); });
          

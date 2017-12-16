@@ -1,12 +1,12 @@
 /* global shop, common, assertNamespace */
 
-require('../../NamespaceUtils.js');
-require('../../Topics.js');
-require('../../Context.js');
+require('../NamespaceUtils.js');
+require('../Topics.js');
+require('../Context.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.ProductConfig = function ProductConfig(products, optionalBus) {
+shop.shoppingCart.ProductConfig = function ProductConfig(products, optionalBus) {
 
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    var productConfigurations = {};

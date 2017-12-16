@@ -1,12 +1,12 @@
 /* global shop, common, assertNamespace */
 
-require('../../NamespaceUtils.js');
-require('../../Topics.js');
-require('../../Context.js');
+require('../NamespaceUtils.js');
+require('../Topics.js');
+require('../Context.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.TableHeaders = function TableHeaders(optionalBus) {
+shop.shoppingCart.TableHeaders = function TableHeaders(optionalBus) {
 
    var TEXT_KEY_PREFIX = 'shoppingCartContentTable.';
 

@@ -1,12 +1,12 @@
 /* global shop, common, assertNamespace */
 
-require('../../NamespaceUtils.js');
-require('../../Context.js');
-require('../../Topics.js');
+require('../NamespaceUtils.js');
+require('../Context.js');
+require('../Topics.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.InputForm = function InputForm(selector, optionalUiComponentProvider, optionalBus) {
+shop.shoppingCart.InputForm = function InputForm(selector, optionalUiComponentProvider, optionalBus) {
    
    var defaultUiComponentProvider = function defaultUiComponentProvider(selector) {
       return $(selector);

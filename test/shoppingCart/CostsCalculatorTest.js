@@ -1,6 +1,6 @@
 /* global global, shop, testing, assertNamespace */
 
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/shoppingCart/CostsCalculator.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/shoppingCart/CostsCalculator.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 
 var instance;
@@ -25,7 +25,7 @@ function valueIsAnObject(val) {
 }
 
 var givenInstance = function givenInstance() {
-   instance = new shop.ui.shoppingCart.CostsCalculator(mockedProductConfigs);
+   instance = new shop.shoppingCart.CostsCalculator(mockedProductConfigs);
 };
 
 var givenConfiguredProducts = function givenConfiguredProducts(products) {

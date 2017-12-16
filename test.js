@@ -1,6 +1,6 @@
 require('./src/ui/shoppingCart/EmailTextGenerator.js');
 
-var generator = new shop.ui.shoppingCart.EmailTextGenerator();
+var generator = new shop.shoppingCart.EmailTextGenerator();
 
    var cartData = {
       "productsInShoppingCart":[ {"productId": "AerangisEllisii",          "name": "Aerangis ellisii",         "quantity": 5,    "price": 2},

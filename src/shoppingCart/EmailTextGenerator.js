@@ -1,10 +1,10 @@
 /* global shop, common, assertNamespace */
 
-require('../../NamespaceUtils.js');
+require('../NamespaceUtils.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.EmailTextGenerator = function EmailTextGenerator() {
+shop.shoppingCart.EmailTextGenerator = function EmailTextGenerator() {
    
    var CRLF = '\r\n';
    var EUR = 'EUR';

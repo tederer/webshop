@@ -1,6 +1,6 @@
 /* global global, shop, testing, assertNamespace */
 
-require(global.PROJECT_SOURCE_ROOT_PATH + '/ui/shoppingCart/OrderSubmitter.js');
+require(global.PROJECT_SOURCE_ROOT_PATH + '/shoppingCart/OrderSubmitter.js');
 require(global.PROJECT_SOURCE_ROOT_PATH + '/NamespaceUtils.js');
 
 require(global.PROJECT_TEST_ROOT_PATH + '/MockedBus.js');
@@ -71,7 +71,7 @@ var errorOverlay = {
 };
 
 var givenInstance = function givenInstance() {
-   instance = new shop.ui.shoppingCart.OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay, mockedBus, mockedHttpRequester, mockedScheduleDelayedAction);
+   instance = new shop.shoppingCart.OrderSubmitter(inProgressOverlay, successOverlay, errorOverlay, mockedBus, mockedHttpRequester, mockedScheduleDelayedAction);
 };
 
 var givenAnOrderGetsSubmitted = function givenAnOrderGetsSubmitted() {

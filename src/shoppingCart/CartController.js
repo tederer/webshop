@@ -1,19 +1,19 @@
 /* global shop, common, assertNamespace */
 
-require('../../NamespaceUtils.js');
-require('../../Context.js');
-require('../../Topics.js');
+require('../NamespaceUtils.js');
+require('../Context.js');
+require('../Topics.js');
 require('./ProductConfig.js');
 require('./TableHeaders.js');
 require('./InputForm.js');
 require('./ShoppingCartTexts.js');
 require('./CostsCalculator.js');
 require('./EmailTextGenerator.js');
-require('../Tab.js');
+require('../ui/Tab.js');
 
-assertNamespace('shop.ui.shoppingCart');
+assertNamespace('shop.shoppingCart');
 
-shop.ui.shoppingCart.CartController = function CartController(products, tab, testingComponents) {
+shop.shoppingCart.CartController = function CartController(products, tab, testingComponents) {
    
    var CRLF = '\r\n';
    var SHIPPING_COSTS_AUSTRIA = 4.6;
@@ -29,13 +29,13 @@ shop.ui.shoppingCart.CartController = function CartController(products, tab, tes
    
    var bus = testingComponentAvailable('bus') ? testingComponents.bus : shop.Context.bus;
    var uiComponentProvider = testingComponentAvailable('uiComponentProvider') ? testingComponents.uiComponentProvider : defaultUiComponentProvider;
-   var tableGenerator = testingComponentAvailable('tableGenerator') ? testingComponents.tableGenerator : new shop.ui.shoppingCart.TableGenerator();
-   var tableHeaders = testingComponentAvailable('tableHeaders') ? testingComponents.tableHeaders : new shop.ui.shoppingCart.TableHeaders();
-   var productConfigs = testingComponentAvailable('productConfigs') ? testingComponents.productConfigs : new shop.ui.shoppingCart.ProductConfig(products);
-   var texts = testingComponentAvailable('texts') ? testingComponents.texts : new shop.ui.shoppingCart.ShoppingCartTexts();
-   var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.ui.shoppingCart.InputForm('#shop > #content > #shoppingCart');
-   var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.ui.shoppingCart.CostsCalculator(productConfigs);
-   var emailTextGenerator = testingComponentAvailable('emailTextGenerator') ? testingComponents.emailTextGenerator : new shop.ui.shoppingCart.EmailTextGenerator();
+   var tableGenerator = testingComponentAvailable('tableGenerator') ? testingComponents.tableGenerator : new shop.shoppingCart.TableGenerator();
+   var tableHeaders = testingComponentAvailable('tableHeaders') ? testingComponents.tableHeaders : new shop.shoppingCart.TableHeaders();
+   var productConfigs = testingComponentAvailable('productConfigs') ? testingComponents.productConfigs : new shop.shoppingCart.ProductConfig(products);
+   var texts = testingComponentAvailable('texts') ? testingComponents.texts : new shop.shoppingCart.ShoppingCartTexts();
+   var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.shoppingCart.InputForm('#shop > #content > #shoppingCart');
+   var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.shoppingCart.CostsCalculator(productConfigs);
+   var emailTextGenerator = testingComponentAvailable('emailTextGenerator') ? testingComponents.emailTextGenerator : new shop.shoppingCart.EmailTextGenerator();
    
    var cartContent;
    var tabSelector;
