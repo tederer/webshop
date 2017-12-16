@@ -89,5 +89,7 @@ shop.ui.shoppingCart.OrderSubmitter = function OrderSubmitter(inProgressOverlay,
       }
    };
    
+   [inProgressOverlay, successOverlay, errorOverlay].forEach(function(overlay) { overlay.hide(); });
+
    bus.subscribeToCommand(shop.topics.SUBMIT_ORDER, submit);
 };

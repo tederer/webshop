@@ -10,14 +10,19 @@
    z-index: 3;
 }
 
-#shop > #inProgressOverlay > #content {
-   position: absolute;
-   left: 0;
-   right: 0;
-   top: 2em;
+#shop > #inProgressOverlay  .fullscreenTable {
+   background-color: transparent;
+   width: 100%;
+   height: 100%;
 }
 
-#shop > #inProgressOverlay > #content  button {
+#shop > #inProgressOverlay .fullscreenTable table {
+   background-color: white;
+   margin: auto;
+   padding: 1em;
+}
+
+#shop > #inProgressOverlay .fullscreenTable table  button {
     background-color: white;
     border: 1px solid green;
     color: white;

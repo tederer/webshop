@@ -127,6 +127,13 @@ describe('CartController', function() {
       expect(valueIsAnObject(instance)).to.be.eql(true);
    });
    
+   it('a new order submitter hides all used overlays', function() {
+      givenInstance();
+      expect(overlaysVisibility.inProgressOverlay).to.be.eql(HIDDEN);
+      expect(overlaysVisibility.successOverlay).to.be.eql(HIDDEN);
+      expect(overlaysVisibility.errorOverlay).to.be.eql(HIDDEN);
+   });
+   
    it('submitted order text gets provided to the http requester', function() {
       givenInstance();
       whenAnOrderGetsSubmitted();

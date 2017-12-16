@@ -27,11 +27,11 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
    };
    
    this.show = function show() {
-      capturedVisiblityChanges[capturedVisiblityChanges.length] = 'show';
+      capturedVisiblityChanges[capturedVisiblityChanges.length] = 'visible';
    };
    
    this.hide = function hide() {
-      capturedVisiblityChanges[capturedVisiblityChanges.length] = 'hide';
+      capturedVisiblityChanges[capturedVisiblityChanges.length] = 'hidden';
    };
 };
 
@@ -48,8 +48,14 @@ var getDefaultConfig = function getDefaultConfig() {
    };
 };
 
+var givenOverlayWithSelector = function givenOverlayWithSelector(selector) {
+   var config = getDefaultConfig();
+   config.selector = selector;
+   instance = new shop.ui.Overlay(config, setHtmlContent, mockedBus);
+};
+
 var givenDefaultOverlay = function givenDefaultOverlay() {
-   instance = new shop.ui.Overlay(getDefaultConfig(), setHtmlContent, mockedBus);
+   givenOverlayWithSelector(DEFAULT_SELECTOR);
 };
 
 var givenTemplatePublication = function givenTemplatePublication(language, data) {
@@ -58,6 +64,18 @@ var givenTemplatePublication = function givenTemplatePublication(language, data)
 
 var givenPublishedLanguageIs = function givenPublishedLanguageIs(language) {
    instance.onLanguageChanged(language);
+};
+
+var whenAHideOverlayCommandGetsSentFor = function whenAHideOverlayCommandGetsSentFor(selector) {
+   mockedBus.sendCommand(shop.topics.HIDE_OVERLAY,selector );
+};
+
+var whenAHideOverlayCommandGetsSent = function whenAHideOverlayCommandGetsSent() {
+   whenAHideOverlayCommandGetsSentFor(DEFAULT_SELECTOR);
+};
+
+var lastCapturedVisiblityValue = function lastCapturedVisiblityValue() {
+   return capturedVisiblityChanges[capturedVisiblityChanges.length - 1];
 };
 
 var setup = function setup() {
@@ -97,5 +115,23 @@ describe('Overlay', function() {
       givenDefaultOverlay();
       givenPublishedLanguageIs(shop.Language.EN);
       expect(capturedHtmlContent).to.be.eql('some english content');
+   });
+   
+   it('the overlay gets hidden when a hide overlay command gets sent_A', function() {
+      givenDefaultOverlay();
+      whenAHideOverlayCommandGetsSent();
+      expect(lastCapturedVisiblityValue()).to.be.eql('hidden');
+   });
+   
+   it('the overlay gets hidden when a hide overlay command gets sent_B', function() {
+      givenOverlayWithSelector('specialOverlay');
+      whenAHideOverlayCommandGetsSentFor('specialOverlay');
+      expect(lastCapturedVisiblityValue()).to.be.eql('hidden');
+   });
+   
+   it('the overlay does not gets hidden when a hide overlay command gets sent for another overlay', function() {
+      givenDefaultOverlay();
+      whenAHideOverlayCommandGetsSentFor('selectorOfAnotherOverlay');
+      expect(capturedVisiblityChanges.length).to.be.eql(0);
    });
 });  

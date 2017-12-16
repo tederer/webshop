@@ -2,6 +2,7 @@
 
 require('../NamespaceUtils.js');
 require('../Context.js');
+require('../Topics.js');
 require('./AbstractHideableLanguageDependentComponent.js');
 
 assertNamespace('shop.ui');
@@ -42,6 +43,12 @@ shop.ui.Overlay = function Overlay(config, optionalSetHtmlContent, optionalBus) 
       updateHtmlContent();
    };
    
+   var onHideOverlay = function onHideOverlay(selector) {
+      if (selector === config.selector) {
+         thisInstance.hide();
+      }
+   };
+   
    this.getSelector = function getSelector() {
       return config.selector;
    };
@@ -59,6 +66,7 @@ shop.ui.Overlay = function Overlay(config, optionalSetHtmlContent, optionalBus) 
    }
    
    this.initialize();
+   bus.subscribeToCommand(shop.topics.HIDE_OVERLAY, onHideOverlay);
 };
 
 shop.ui.Overlay.prototype = new shop.ui.AbstractHideableLanguageDependentComponent();
