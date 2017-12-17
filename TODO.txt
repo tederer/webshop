@@ -1,3 +1,9 @@
 ﻿* beim impressum eine karten mit der google-maps API einbauen
 * seite ins web stellen und testen (auch auf kleinen geräten)
 * submit auf dem server implementieren und sicherstellen, dass man keinen code injecten kann
+
+
+
+fragen:
+
+* sollen warenkorb geleert werden nach erfolgreichem abschicken der bestellung?
