@@ -57,7 +57,7 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
          }
       } else {
          if (url !== undefined) {
-            htmlContent = '<a class="onTheInternetAnchor" href="' + url + '"></a>';
+            htmlContent = '<a class="onTheInternetAnchor" href="' + url + '" target="_blank"></a>';
          }
       }
       generator.addText(htmlContent);
