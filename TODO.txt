@@ -1,7 +1,8 @@
 ﻿* beim impressum eine karten mit der google-maps API einbauen
 * seite ins web stellen und testen (auch auf kleinen geräten)
 * submit auf dem server implementieren und sicherstellen, dass man keinen code injecten kann
-
+* font des kommentarfelds beim warenkorb passt nicht
+* wenn man nur ein zubehör abschickt bekommt man die Produkt nicht im Mail sondern nur [Object ...]
 
 
 fragen:
