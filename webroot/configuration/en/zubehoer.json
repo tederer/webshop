@@ -1,11 +1,17 @@
 {
    "products": [
-      { 
-         "id": "zubehoer_Topf12cm",
-         "name": "pot 12cm",
-         "price": 1.2,
-         "description": "transparent orchid pot",
-         "imageSmall": "images/zubehoer/pot12cm.jpg"
-       }
-   ]
+      {
+         "id": "Zubehoer_1",
+         "name": "Bild",
+         "price": 120.000000,
+         "description": "cool stuff",
+         "imageSmall": "images/zubehoer/pot12cm.jpg",
+         "url": "www.dahoam.at"
+      },
+      {
+         "id": "Zubehoer_2",
+         "name": "Kanne",
+         "price": 2.000000,
+         "description": "has a lot of holes"
+      }]
 }

@@ -68,7 +68,7 @@ shop.shoppingCart.EmailTextGenerator = function EmailTextGenerator() {
    };
    
    var calculateColumnWidths = function calculateColumnWidths(tableRows) {
-      return tableRows.map(toTextLength).reduce(maxColumnTextLength);
+      return tableRows.map(toTextLength).reduce(maxColumnTextLength, [0,0,0]);
    };
    
    var addPadding = function addPadding(width) {
@@ -118,7 +118,7 @@ shop.shoppingCart.EmailTextGenerator = function EmailTextGenerator() {
       
       var table = cartData.productsInShoppingCart.map(toTableRow);
       var columnWidths = calculateColumnWidths(table).map(addPadding);
-      var productsAsText = table.map(addSpacesToHaveSameColumnLengths.bind(null, columnWidths)).reduce(concat);
+      var productsAsText = table.map(addSpacesToHaveSameColumnLengths.bind(null, columnWidths)).reduce(concat, '');
       var shippingCostsAsText =  cartData.shippingCostsText + ': ' + 
                                     (cartData.shippingCosts ? cartData.shippingCosts.toFixed(2) + ' ' + EUR : '');
       var totalCostsAsText =     cartData.totalCostsText + ': ' + 

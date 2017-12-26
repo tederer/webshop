@@ -1,26 +1,366 @@
 {
    "products": [
-      { 
-         "id": "AerangisEllisii",
-         "name": "Aerangis ellisii",
-         "price": 2,
-         "description": "white flowers, small plant",
-         "url": "http://some.webpage.com"
+      {
+         "id": "Pflanzen_1",
+         "name": "Angraecum sesquipedale ",
+         "price": 2.500000,
+         "imageSmall": "images/pflanzen/Angraecum sesquipedale small.jpg",
+         "imageBig": "images/pflanzen/Angraecum sesquipedale.jpg"
       },
       {
-         "id": "CattleyaWalkerianaAlba",
-         "name": "Cattleya walkeriana alba",
-         "price": 2.5,
-         "description": "miniature from brasil",
-         "imageSmall": "images/pflanzen/cattleya_small.jpg"
+         "id": "Pflanzen_2",
+         "name": "Bifrenaria inodora",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Bifrenaria inodora small.jpg",
+         "imageBig": "images/pflanzen/Bifrenaria inodora.jpg",
+         "new": "true"
       },
       {
-         "id": "CymbidiumDevonianum",
-         "name": "Cymbidium devonianum",
-         "price": 1.5,
-         "description": "Cymb. from asia",
-         "imageSmall": "images/pflanzen/cymbidium_small.jpg",
-         "imageBig": "images/pflanzen/cymbidium_big.jpg"
-      }
-   ]
+         "id": "Pflanzen_3",
+         "name": "Broughtonia domingensis",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Broughtonia-domingensis small.jpg",
+         "imageBig": "images/pflanzen/Broughtonia-domingensis.jpg",
+         "url": "http://www.orchidspecies.com/laeldomingensis.htm"
+      },
+      {
+         "id": "Pflanzen_4",
+         "name": "Broughtonia negrilensis",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Broughtonia negrilensis small.jpg",
+         "imageBig": "images/pflanzen/Broughtonia negrilensis.jpg"
+      },
+      {
+         "id": "Pflanzen_5",
+         "name": "Bulbophyllum vanvuurenii",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Bulbophyllum vanvuurenii small.jpg",
+         "imageBig": "images/pflanzen/Bulbophyllum vanvuurenii.jpg"
+      },
+      {
+         "id": "Pflanzen_6",
+         "name": "Catasetum bicolor",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Catasetum-bicolor small.jpg",
+         "imageBig": "images/pflanzen/Catasetum-bicolor_Panama.jpg"
+      },
+      {
+         "id": "Pflanzen_7",
+         "name": "Catasetum fimbriatum x Catasetum lanciferum",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/C. fimbriatum_C. lanciferum small.jpg",
+         "imageBig": "images/pflanzen/C. fimbriatum_C. lanciferum.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_8",
+         "name": "Catasetum fimbriatum x Catasetum roseoalbum",
+         "price": 2.000000,
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_9",
+         "name": "Catasetum sanguineum",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Catasetum sanguineum small.jpg",
+         "imageBig": "images/pflanzen/Catasetum sanguineum.jpg",
+         "url": "http://www.orchidspecies.com/catsanguineum.htm"
+      },
+      {
+         "id": "Pflanzen_10",
+         "name": "Cattleya aurea x Cattleya xanthina",
+         "price": 2.000000
+      },
+      {
+         "id": "Pflanzen_11",
+         "name": "Cattleya bicolor var. grossii ",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Cattleya bicolor var. grossii small.jpg",
+         "imageBig": "images/pflanzen/Cattleya bicolor var. grossii.jpg"
+      },
+      {
+         "id": "Pflanzen_12",
+         "name": "Cattleya lueddemanniana",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Cattleya lueddemanniana small.jpg",
+         "imageBig": "images/pflanzen/Cattleya lueddemanniana.jpg"
+      },
+      {
+         "id": "Pflanzen_13",
+         "name": "Cattleya perinii x Cattleya labiata",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Statteriana Hefka small.jpg",
+         "imageBig": "images/pflanzen/Statteriana Hefka.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_14",
+         "name": "Cattleya pumila",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Sophronitis pumila small.jpg"
+      },
+      {
+         "id": "Pflanzen_15",
+         "name": "Cattleya purpurata x Cattleya peckhaviensis",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Heinrich Schott small.jpg",
+         "imageBig": "images/pflanzen/Heinrich Schott.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_16",
+         "name": "Cattleya schilleriana",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Cattleya schilleriana small.jpg",
+         "imageBig": "images/pflanzen/Cattleya schilleriana.jpg",
+         "url": "http://www.orchidspecies.com/catschilleriana.htm"
+      },
+      {
+         "id": "Pflanzen_17",
+         "name": "Caularthron bilamellatum",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Caularthron-bilamellatum small.jpg",
+         "imageBig": "images/pflanzen/Caularthron-bilamellatum.jpg",
+         "url": "https://es.wikipedia.org/wiki/Caularthron_bilamellatum",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_18",
+         "name": "Clowesia russelliana",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Clowesia russelliana small.jpg",
+         "imageBig": "images/pflanzen/Clowesia russelliana.jpg"
+      },
+      {
+         "id": "Pflanzen_19",
+         "name": "Cymbidium aloifolum",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Cymbidium aloifolium small.jpg",
+         "imageBig": "images/pflanzen/Cymbidium aloifolium.jpg"
+      },
+      {
+         "id": "Pflanzen_20",
+         "name": "Cymbidium eburneum ",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Cymbidium eburneum small.jpg",
+         "imageBig": "images/pflanzen/Cymbidium eburneum.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_21",
+         "name": "Dressleria eburnea",
+         "price": 2.000000,
+         "url": "http://www.orchidspecies.com/dresssuavis.htm",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_22",
+         "name": "Encyclia ambigua",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Encyclia ambigua small.jpg",
+         "imageBig": "images/pflanzen/Encyclia ambigua.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_23",
+         "name": "Encyclia cordigeria",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Encyclia cordigera small.jpg",
+         "imageBig": "images/pflanzen/Encyclia cordigera.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_24",
+         "name": "Encyclia dichroma",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Encyclia dichroma small.jpg",
+         "imageBig": "images/pflanzen/Encyclia dichroma.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_25",
+         "name": "Encyclia diurna",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Encyclia diurna small.jpg",
+         "url": "http://www.orchidspecies.com/encdiurna.htm",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_26",
+         "name": "Encyclia garciae-esquivelii ",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Encyclia garciae-esquivelii small.jpg",
+         "imageBig": "images/pflanzen/Encyclia garciae-esquivelii.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_27",
+         "name": "Encyclia mooreana",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Encyclia mooreana small.jpg",
+         "imageBig": "images/pflanzen/Encyclia mooreana.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_28",
+         "name": "Epidendrum bracteolatum",
+         "price": 2.000000,
+         "url": "http://orchids.wikia.com/wiki/Epidendrum_bracteolatum",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_29",
+         "name": "Galeandra lacustris",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Galeandra lacustris small.jpg",
+         "imageBig": "images/pflanzen/Galeandra lacustris.jpg"
+      },
+      {
+         "id": "Pflanzen_30",
+         "name": "Guarianthe patinii",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Guarianthe patinii small.jpg",
+         "imageBig": "images/pflanzen/Guarianthe patinii.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_31",
+         "name": "Ipsea thailandica",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Ipsea thailandica small.jpg",
+         "imageBig": "images/pflanzen/Ipsea thailandica.jpg"
+      },
+      {
+         "id": "Pflanzen_32",
+         "name": "LC Mini Purple coerulea (Meristem)",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/LC Mini Purple coerulea small.jpg",
+         "imageBig": "images/pflanzen/LC Mini Purple coerulea.jpg"
+      },
+      {
+         "id": "Pflanzen_33",
+         "name": "Leptotes bicolor",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Leptotes bicolor small.jpg",
+         "imageBig": "images/pflanzen/Leptotes bicolor.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_34",
+         "name": "Maxillaria desvauxiana",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Maxillaria desvauxianus small.jpg",
+         "imageBig": "images/pflanzen/Maxillaria desvauxianus.jpg"
+      },
+      {
+         "id": "Pflanzen_35",
+         "name": "Maxillaria picta",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Maxillaria picta small.jpg",
+         "imageBig": "images/pflanzen/Maxillaria picta.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_36",
+         "name": "Oeceoclades maculata",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Oeceoclades maculata small.jpg",
+         "imageBig": "images/pflanzen/Oeceoclades maculata.jpg",
+         "url": "http://www.orchidspecies.com/oecmaculata.htm"
+      },
+      {
+         "id": "Pflanzen_37",
+         "name": "Oeceoclades perrieri",
+         "price": 2.200000,
+         "imageSmall": "images/pflanzen/Oeceoclades perrieri small.jpg",
+         "imageBig": "images/pflanzen/Oeceoclades perrieri.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_38",
+         "name": "Oeceoclades spathulifera (Madagaskar)",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Oeceoclades spathulifera small.jpg",
+         "imageBig": "images/pflanzen/Oeceoclades spathulifera.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_39",
+         "name": "Paphiopedilum delenatii",
+         "price": 2.200000,
+         "imageSmall": "images/pflanzen/Paphiopedilum delenatii small.jpg",
+         "imageBig": "images/pflanzen/Paphiopedilum delenatii.jpg"
+      },
+      {
+         "id": "Pflanzen_40",
+         "name": "Paphiopedilum venustum var. alba",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Paphiopedilum venustum alba small.jpg",
+         "imageBig": "images/pflanzen/Paphiopedilum venustum alba.jpg"
+      },
+      {
+         "id": "Pflanzen_41",
+         "name": "Peristeria elata (Nationalblume Panamas) ",
+         "price": 2.500000,
+         "imageSmall": "images/pflanzen/Peristeria elata small.jpg",
+         "imageBig": "images/pflanzen/Peristeria elata.jpg"
+      },
+      {
+         "id": "Pflanzen_42",
+         "name": "Phalaenopsis amboinensis",
+         "price": 2.000000,
+         "url": "http://www.orchidspecies.com/phalamboinensis.htm",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_43",
+         "name": "Phalaenopsis Hybrid (Sämlinge / seedlings)",
+         "price": 1.500000,
+         "imageSmall": "images/pflanzen/Phal. Hybr. small.jpg"
+      },
+      {
+         "id": "Pflanzen_44",
+         "name": "Phalaenopsis pulcherrima",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Phalaenopsis pulcherrima small.jpg",
+         "imageBig": "images/pflanzen/Phalaenopsis pulcherrima.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_45",
+         "name": "Phalaenopsis venosa",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Phalaenopsis venosa small.jpg",
+         "imageBig": "images/pflanzen/Phalaenopsis venosa.jpg",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_46",
+         "name": "Psychopsis papilio (Meristem)",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Psychopsis papilio small.jpg",
+         "imageBig": "images/pflanzen/Psychopsis papilio.jpg"
+      },
+      {
+         "id": "Pflanzen_47",
+         "name": "Rossioglossum williamsianum",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Rossioglossum grande small.jpg",
+         "url": "http://www.orchidspecies.com/rosswilliamsianum.htm"
+      },
+      {
+         "id": "Pflanzen_48",
+         "name": "Sobralia lindleyana",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Sobralia_lindleyana_ORCH130159small.jpg",
+         "url": "http://www.orchidspecies.com/soblindleyana.htm",
+         "new": "true"
+      },
+      {
+         "id": "Pflanzen_49",
+         "name": "Trichopilia marginata",
+         "price": 2.000000,
+         "imageSmall": "images/pflanzen/Trichopilia marginata small.jpg",
+         "imageBig": "images/pflanzen/Trichopilia marginata.jpg"
+      }]
 }
