@@ -118,7 +118,7 @@ body {
 #shop #content .ersteSpalteZentriert td:first-child { text-align:center }
 #shop #content .dritteSpalteZentriert td:nth-child(3) { text-align:center }
 #shop #content .ersterParagraphInZweiterSpalteFett td:nth-child(2) p:first-child { font-weight:bold }
-
+#shop #content .newProductLabel { color: red }
 #shop #content table {margin-left:auto; margin-right:auto; border-collapse: collapse; border: 1px solid #666666; background-color:#DDDDDD;}
 #shop #content table tr:first-child {border-bottom-style: double;}
 #shop #content table caption { text-align:center; padding:0.5em;}

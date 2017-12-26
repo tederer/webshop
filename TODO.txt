@@ -1,8 +1,8 @@
 ﻿* beim impressum eine karten mit der google-maps API einbauen
 * seite ins web stellen und testen (auch auf kleinen geräten)
-* submit auf dem server implementieren und sicherstellen, dass man keinen code injecten kann
+* sicherstellen, dass man keinen code beim abschickeninjecten kann
+* perl script zum anzeigen der anfragen und logs bauen
 * font des kommentarfelds beim warenkorb passt nicht
-* neue produkte werden noch nicht markiert
 
 
 fragen:

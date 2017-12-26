@@ -1,6 +1,7 @@
 /* global shop, common, assertNamespace */
 
 require('../../NamespaceUtils.js');
+require('../../Context.js');
 require('./AbstractTableGenerator.js');
 
 assertNamespace('shop.ui');
@@ -16,24 +17,28 @@ assertNamespace('shop.ui');
  *         { 
  *            "id": "AerangisEllisii",
  *            "name": "Aerangis ellisii",
- *            "price": 10,
+ *            "price": 2.0,
  *            "description": "weiße Blüte, kleine Pflanze",
  *            "url": "http://some.webpage.com"
+ *            "new": "true"
  *         },
  *         {
  *            "id": "CattleyaWalkerianaAlba",
  *            "name": "Cattleya walkeriana alba",
- *            "price": 12,
+ *            "price": 2.5,
  *            "description": "Miniatur aus Brasilien",
  *            "imageSmall": "cattleya_small.jpg"
+ *            "imageBig": "images/pflanzen/Bifrenaria inodora.jpg",
  *         }
  *      ]
  *   }
  */
 shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator() {
 
+   var NEW_TEXT_ID = 'productsTable.newProductLabelText';
    this.ProductsTableGenerator = '';
    var configKey;
+   var newText;
    
    var addPrice = function addPrice(generator, price) {
       generator.addText(price.toFixed(2) + ' EUR');
@@ -66,7 +71,8 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
    var addRow = function addRow(generator, product) {
       generator.startRow();
       addImage(generator, product.imageSmall, product.imageBig, product.url);
-      generator.addText(product.name);
+      var productNameSuffix = (newText !== undefined && product.new) ? ' <span class="newProductLabel">(' + newText + ')' : '';
+      generator.addText(product.name + productNameSuffix);
       generator.addText(product.description);
       addPrice(generator, product.price);
       addShoppingCartAdder(generator, product);
@@ -81,6 +87,10 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
       generator.addHeader('priceHeader');
       generator.addHeader('&nbsp;');
       generator.endRow();
+   };
+   
+   var onLanguageDependentText = function onLanguageDependentText(text) {
+      newText = text;
    };
    
    this.getQuantityInputHtmlCode = function getQuantityInputHtmlCode(quantitySelectorId, commonId) {
@@ -99,6 +109,8 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
       this.append('</table>');
       return this.getContent();
    };
+
+   shop.Context.bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + NEW_TEXT_ID, onLanguageDependentText);
 };
 
 shop.ui.tablegenerators.ProductsTableGenerator.prototype = new shop.ui.tablegenerators.AbstractTableGenerator();
