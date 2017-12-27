@@ -83,7 +83,6 @@ shop.shoppingCart.OrderSubmitter = function OrderSubmitter(inProgressOverlay, su
          state = PENDING;
          inProgressOverlay.show();
          scheduleDelayedAction(minimumInProgressDurationPassed, MIN_POPUP_DISPLAY_TIME_IN_MILLIS);
-         console.log(orderText);
          httpRequester(orderText, onHttpRequestSuccess, onHttpRequestError);
       } else {
          shop.Context.log('can not submit order because the current state "' + state + '" is not "' + IDLE + '"');

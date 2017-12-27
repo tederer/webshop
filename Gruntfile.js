@@ -8,9 +8,8 @@ global.PROJECT_ROOT_PATH = path.resolve('.');
 global.PROJECT_SOURCE_ROOT_PATH = global.PROJECT_ROOT_PATH + '/src';
 global.PROJECT_TEST_ROOT_PATH   = global.PROJECT_ROOT_PATH + '/test';
 
-var JAVASCRIPT_TARGET_FOLDER = global.PROJECT_ROOT_PATH + '/webroot/javascripts';
-var CONCAT_FOLDER = JAVASCRIPT_TARGET_FOLDER;
-var CONCATENATED_FILE = CONCAT_FOLDER + '/webshop_spa.js';
+var JAVASCRIPT_TARGET_FOLDER = global.PROJECT_ROOT_PATH + '/target';
+var CONCATENATED_FILE = JAVASCRIPT_TARGET_FOLDER + '/webshop_spa.js';
 
 // Grunt is a JavaScript task runner, similar to Ant. 
 // See http://gruntjs.com/ for details

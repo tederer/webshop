@@ -118,7 +118,7 @@ var setup = function setup() {
    mockedBus = new testing.MockedBus();
 };
 
-describe('CartController', function() {
+describe('OrderSubmitter', function() {
 	
    beforeEach(setup);
    
