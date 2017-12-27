@@ -38,7 +38,6 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
    var NEW_TEXT_ID = 'productsTable.newProductLabelText';
    this.ProductsTableGenerator = '';
    var configKey;
-   var newText;
    
    var addPrice = function addPrice(generator, price) {
       generator.addText(price.toFixed(2) + ' EUR');
@@ -68,10 +67,10 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
       generator.addText(htmlContent);
    };
    
-   var addRow = function addRow(generator, product) {
+   var addRow = function addRow(generator, product, newProductLabelText) {
       generator.startRow();
       addImage(generator, product.imageSmall, product.imageBig, product.url);
-      var productNameSuffix = (newText !== undefined && product.new) ? ' <span class="newProductLabel">(' + newText + ')' : '';
+      var productNameSuffix = product.new ? ' <span class="newProductLabel">(' + newProductLabelText + ')' : '';
       generator.addText(product.name + productNameSuffix);
       generator.addText(product.description);
       addPrice(generator, product.price);
@@ -89,28 +88,22 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
       generator.endRow();
    };
    
-   var onLanguageDependentText = function onLanguageDependentText(text) {
-      newText = text;
-   };
-   
    this.getQuantityInputHtmlCode = function getQuantityInputHtmlCode(quantitySelectorId, commonId) {
       return '<input type="text" id="' + quantitySelectorId + '" value="1" size="2" onKeyUp="shop.ui.Actions.checkInputValidity(\'' + commonId + '\');">';
    };
    
-   this.generateTable = function generateTable(configurationId, config) {
+   this.generateTable = function generateTable(configurationId, config, newProductLabelText) {
       configKey = configurationId;
       this.reset();
       this.append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
       addCaptions(this);
       var products = config.products;
       for (var index = 0; index < products.length; index++) {
-         addRow(this, products[index]);
+         addRow(this, products[index], newProductLabelText);
       }
       this.append('</table>');
       return this.getContent();
    };
-
-   shop.Context.bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + NEW_TEXT_ID, onLanguageDependentText);
 };
 
 shop.ui.tablegenerators.ProductsTableGenerator.prototype = new shop.ui.tablegenerators.AbstractTableGenerator();

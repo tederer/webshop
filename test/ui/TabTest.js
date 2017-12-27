@@ -41,10 +41,6 @@ var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHi
    
    this.hide = function hide() {
    };
-   
-   this.simulateLanguageChangeTo = function simulateLanguageChangeTo(language) {
-      this.onLanguageChanged(language);
-   };
 };
 
 var mockedTabContentFactory = function mockedTabContentFactory(config) {
@@ -105,11 +101,6 @@ var whenTabContentChanges = function whenTabContentChanges() {
 var whenPublishedVisibleTabIs = function whenPublishedVisibleTabIs(tabId) {
    mockedBus.publish(shop.topics.VISIBLE_TAB, tabId);
 };
-
-var whenCurrentLanguageGetsChanged = function whenCurrentLanguageGetsChanged() {
-   instance.simulateLanguageChangeTo('notRelevant');
-};
-
 
 var whenHtmlContentOfAChildElementGetsSet = function whenHtmlContentOfAChildElementGetsSet(childElementId, htmlContent) {
    instance.setHtmlContentOfChildElement(childElementId, htmlContent);
@@ -231,12 +222,6 @@ describe('Tab', function() {
       givenInstanceWith({contentSelector: 'myContentSelector'});
       whenTabContentChanges();
       expect(capturedHtmlContent.myContentSelector).to.be.eql('<h1>I am a header</h1>');
-   });
-   
-   it('the Tab does not publish something when no language publication is available', function() {
-      givenDefaultInstance();
-      whenCurrentLanguageGetsChanged();
-      expect(getHtmlContentInvocationCount).to.be.eql(1);
    });
    
    it('the Tab notifies the registered TabContentChangedCallbacks when tab content gets set to an error message', function() {

@@ -42,6 +42,7 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
    var templateContents = {};
    var activeLanguage;
    var contentChangedCallbacks = [];
+   var newProductLabelText;
    
    var formatErrorMessage = function formatErrorMessage(message) {
       return '<p class="errorMessage">' + message + '</p>';
@@ -64,7 +65,7 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
                   if (data === undefined) {
                      fulfill(formatErrorMessage('configuration "' + config.configName + '" is not available in language ' + activeLanguage + '!'));
                   } else {
-                     fulfill(tableGenerator.generateTable(configKey, data));
+                     fulfill(tableGenerator.generateTable(configKey, data, newProductLabelText));
                   }
                }
             }
@@ -126,6 +127,11 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
       notifyTabContentChangedListeners();
    };
    
+   var onNewProductLabelText = function onNewProductLabelText(text) {
+      newProductLabelText = text;
+      notifyTabContentChangedListeners();
+   };
+   
    var setMapContent = function setMapContent(map, key, value) {
       map[key] = value;
       notifyTabContentChangedListeners();
@@ -144,6 +150,7 @@ shop.ui.TabContent = function TabContent(config, optionalProductTableGenerator, 
    }
    
    bus.subscribeToPublication(shop.topics.CURRENT_LANGUAGE, onLanguageChanged);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.newProductLabelText', onNewProductLabelText);
 };
 
 shop.ui.TabContent.prototype = new shop.ui.AbstractTabContent();

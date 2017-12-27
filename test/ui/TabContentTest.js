@@ -25,11 +25,17 @@ var placeholder;
 var suffix;
 var contentChangedListenerInvocationCount;
 var capturedHtmlContent;
+var capturedConfigId;
+var capturedConfig;
+var capturedNewProductLabelText;
 var productTable;
 var mockedBus;
 
 var mockedProductTableGenerator = {
-   generateTable: function generateTable(configId, config) {
+   generateTable: function generateTable(configId, config, newProductLabelText) {
+      capturedConfigId = configId;
+      capturedConfig = config;
+      capturedNewProductLabelText = newProductLabelText;
       return productTable;
    }
 };
@@ -88,6 +94,10 @@ var givenRegisteredTabContentChangedListener = function givenRegisteredTabConten
    instance.addContentChangedListener(function() { contentChangedListenerInvocationCount++; });
 };
 
+var givenNewProductLabelTextPublished = function givenNewProductLabelTextPublished(text) {
+   mockedBus.publish(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + 'productsTable.newProductLabelText', text);   
+};
+
 var whenActiveLanguageChanges = function whenActiveLanguageChanges() {
    mockedBus.publish(shop.topics.CURRENT_LANGUAGE, 'AT');
 };
@@ -98,6 +108,10 @@ var whenConfigPublished = function whenConfigPublished() {
 
 var whenTemplatePublished = function whenTemplatePublished() {
    givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, 'notRelevant');
+};
+
+var whenNewProductLabelTextPublished = function whenNewProductLabelTextPublished() {
+   givenNewProductLabelTextPublished('notRelevant');   
 };
 
 var whenGetHtmlContentCalled = function whenGetHtmlContentCalled(done) {
@@ -142,6 +156,9 @@ var setup = function setup() {
    productTable = undefined;
    contentChangedListenerInvocationCount = 0;
    capturedHtmlContent = [];
+   capturedConfigId = undefined;
+   capturedConfig = undefined;
+   capturedNewProductLabelText = undefined;
    templatePrefix = '<h1>Hello World</h1>';
    placeholder = '<!--DYNAMIC_CONTENT-->';
    suffix = '<p>after configured content</p>';
@@ -178,6 +195,87 @@ describe('TabContent', function() {
       expect(contentChangedListenerInvocationCount).to.be.eql(1);
    });
    
+   it('registered TabContentChangedListener gets notified when new product label text received', function() {
+      givenDefaultTabContent();
+      givenRegisteredTabContentChangedListener();
+      whenNewProductLabelTextPublished();
+      expect(contentChangedListenerInvocationCount).to.be.eql(1);
+   });
+   
+   it('generateTable() of table generator gets the language dependent config key_A', function(done) {
+      var table = '<table></table>';
+      givenTheProductTableGeneratorReturns(table);
+      givenConfigPublication('tabConfigA', shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
+      createTabContentWith({configName: 'tabConfigA'});
+      givenPublishedLanguageIsGerman();
+      whenGetHtmlContentCalled(done);
+      expect(capturedConfigId).to.be.eql('tabConfigA_de');
+   });
+   
+   it('generateTable() of table generator gets the language dependent config key_B', function(done) {
+      var table = '<table></table>';
+      givenTheProductTableGeneratorReturns(table);
+      givenConfigPublication('tabConfigA', shop.Language.EN, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.EN, templatePrefix + placeholder + suffix);
+      createTabContentWith({configName: 'tabConfigA'});
+      givenPublishedLanguageIsEnglish();
+      whenGetHtmlContentCalled(done);
+      expect(capturedConfigId).to.be.eql('tabConfigA_en');
+   });
+   
+   it('generateTable() of table generator gets the current data_DE', function(done) {
+      var table = '<table></table>';
+      var configDE = {products: [{name: 'Aerangis ellisii', price: 10}, {name: 'Cattleya walkeriana', price: 8}]};
+      var configEN = {products: [{name: 'Aerangis ellisii_en', price: 10}, {name: 'Cattleya walkeriana_en', price: 8}]};
+      givenTheProductTableGeneratorReturns(table);
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, JSON.stringify(configDE));
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, JSON.stringify(configEN));
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
+      givenDefaultTabContent();
+      givenPublishedLanguageIsGerman();
+      whenGetHtmlContentCalled(done);
+      expect(capturedConfig).to.be.eql(configDE);
+   });
+   
+   it('generateTable() of table generator gets the current data_EN', function(done) {
+      var table = '<table></table>';
+      var configDE = {products: [{name: 'Aerangis ellisii', price: 10}, {name: 'Cattleya walkeriana', price: 8}]};
+      var configEN = {products: [{name: 'Aerangis ellisii_en', price: 10}, {name: 'Cattleya walkeriana_en', price: 8}]};
+      givenTheProductTableGeneratorReturns(table);
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, JSON.stringify(configDE));
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.EN, JSON.stringify(configEN));
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
+      givenDefaultTabContent();
+      givenPublishedLanguageIsEnglish();
+      whenGetHtmlContentCalled(done);
+      expect(capturedConfig).to.be.eql(configEN);
+   });
+      
+   it('generateTable() of table generator gets the new product label text_A', function(done) {
+      var table = '<table></table>';
+      givenTheProductTableGeneratorReturns(table);
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
+      givenNewProductLabelTextPublished('totalNew');
+      givenDefaultTabContent();
+      givenPublishedLanguageIsGerman();
+      whenGetHtmlContentCalled(done);
+      expect(capturedNewProductLabelText).to.be.eql('totalNew');
+   });
+   
+   it('generateTable() of table generator gets the new product label text_B', function(done) {
+      var table = '<table></table>';
+      givenTheProductTableGeneratorReturns(table);
+      givenConfigPublication(DEFAULT_CONFIG_NAME, shop.Language.DE, '{"products": [{"name": "Aerangis ellisii", "price": 10}, {"name": "Cattleya walkeriana", "price": 8}]}');
+      givenTemplatePublication(DEFAULT_TEMPLATE_NAME, shop.Language.DE, templatePrefix + placeholder + suffix);
+      givenNewProductLabelTextPublished('neu');
+      givenDefaultTabContent();
+      givenPublishedLanguageIsGerman();
+      whenGetHtmlContentCalled(done);
+      expect(capturedNewProductLabelText).to.be.eql('neu');
+   });
+
    it('getHtmlContent() provides the HTML content with the configured plants', function(done) {
       var table = '<table></table>';
       givenTheProductTableGeneratorReturns(table);

@@ -68,7 +68,6 @@ shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlCon
    };
    
    this.onLanguageChanged = function onLanguageChanged(newLanguage) {
-      updateHtmlContent();
    };
    
    this.addTabContentChangedListener = function addTabContentChangedListener(callback) {
