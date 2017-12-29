@@ -16,7 +16,8 @@ assertNamespace('shop.ui');
  *         { 
  *             date:          "17. - 25. Februar 2018",
  *             location:      "Hirschstetten",
- *             description:   "Internationale Ausstellung"
+ *             description:   "Internationale Ausstellung",
+ *             url:           "http://www.orchideenausstellung-wien.at"
  *         },
  *         {
  *             date:          "7. April 2018",
@@ -30,11 +31,15 @@ shop.ui.tablegenerators.EventsTableGenerator = function EventsTableGenerator() {
    var thisInstance = this;
    var configKey;
    
+   var getDescription = function getDescription(description, url) {
+      return url ? '<a href="' + url + '" target="_blank">' + description + '</a>' : description;
+   };
+   
    var addRow = function addRow(event) {
       thisInstance.startRow();
       thisInstance.addText(event.date);
       thisInstance.addText(event.location);
-      thisInstance.addText(event.description);
+      thisInstance.addText(getDescription(event.description, event.url));
       thisInstance.endRow();
    };
    
