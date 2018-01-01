@@ -28,8 +28,7 @@ shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function Langu
    var onTheInternetAnchorText;
    var bigPictureAnchorText;
    var fotoHeader;
-   var nameHeader;
-   var descriptionHeader;
+   var productHeader;
    var priceHeader;
    var selectors = [];
    
@@ -68,8 +67,7 @@ shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function Langu
    var updateTableHeaders = function updateTableHeaders() {
       selectors.forEach(function(selector) {
          uiComponentProvider(selector + ' .fotoHeader').text(getFormattedText(fotoHeader));
-         uiComponentProvider(selector + ' .nameHeader').text(getFormattedText(nameHeader));
-         uiComponentProvider(selector + ' .descriptionHeader').text(getFormattedText(descriptionHeader));
+         uiComponentProvider(selector + ' .productHeader').text(getFormattedText(productHeader));
          uiComponentProvider(selector + ' .priceHeader').text(getFormattedText(priceHeader));
       });
    };
@@ -94,13 +92,8 @@ shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function Langu
       updateTableHeaders();
    };
    
-   var onNameHeader = function onNameHeader(text) {
-      nameHeader = text;
-      updateTableHeaders();
-   };
-   
-   var onDescriptionHeader = function onDescriptionHeader(text) {
-      descriptionHeader = text;
+   var onProductHeader = function onProductHeader(text) {
+      productHeader = text;
       updateTableHeaders();
    };
    
@@ -124,8 +117,7 @@ shop.ui.tablesetters.LanguageDependentTextInProductsTableSetter = function Langu
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.bigPictureAnchor', onBigPictureAnchorText);
 
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.fotoHeader', onFotoHeader);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.nameHeader', onNameHeader);
-   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.descriptionHeader', onDescriptionHeader);
+   bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.productHeader', onProductHeader);
    bus.subscribeToPublication(shop.topics.LANGUAGE_DEPENDENT_TEXT_PREFIX + textKeyPrefix + '.priceHeader', onPriceHeader);
 };
 

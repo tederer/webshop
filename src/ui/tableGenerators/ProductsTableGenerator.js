@@ -67,12 +67,19 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
       generator.addText(htmlContent);
    };
    
+   var getProductText = function getProductText(product, newProductLabelText) {
+      var productNameSuffix = product.new ? ' <span class="newProductLabel">(' + newProductLabelText + ')' : '';
+      var text = '<p>' + product.name + productNameSuffix + '</p>';
+      if (product.description !== undefined && product.description.length > 0) {
+         text += product.description;
+      }
+      return text;
+   };
+   
    var addRow = function addRow(generator, product, newProductLabelText) {
       generator.startRow();
       addImage(generator, product.imageSmall, product.imageBig, product.url);
-      var productNameSuffix = product.new ? ' <span class="newProductLabel">(' + newProductLabelText + ')' : '';
-      generator.addText(product.name + productNameSuffix);
-      generator.addText(product.description);
+      generator.addText(getProductText(product, newProductLabelText));
       addPrice(generator, product.price);
       addShoppingCartAdder(generator, product);
       generator.endRow();
@@ -81,8 +88,7 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
    var addCaptions = function addCaptions(generator) {
       generator.startRow();
       generator.addHeader('fotoHeader');
-      generator.addHeader('nameHeader');
-      generator.addHeader('descriptionHeader');
+      generator.addHeader('productHeader');
       generator.addHeader('priceHeader');
       generator.addHeader('&nbsp;');
       generator.endRow();
@@ -95,7 +101,7 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
    this.generateTable = function generateTable(configurationId, config, newProductLabelText) {
       configKey = configurationId;
       this.reset();
-      this.append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert">');
+      this.append('<table class="alternierendeZeilenFarbe ersteSpalteZentriert dritteSpalteZentriert ersterParagraphInZweiterSpalteFett">');
       addCaptions(this);
       var products = config.products;
       for (var index = 0; index < products.length; index++) {
