@@ -8,6 +8,14 @@ assertNamespace('shop.shoppingCart');
 
 shop.shoppingCart.InputForm = function InputForm(selector, optionalUiComponentProvider, optionalBus) {
    
+   var COUNTRY_OF_DESTINATION = 'countryOfDestination';
+   var FIRSTNAME = 'firstname';
+   var LASTNAME = 'lastname';
+   var EMAIL = 'email';
+   var COMMENT = 'comment';
+   var TERMS_AND_CONDITIONS = 'termsAndConditionsCheckbox';
+   var CHECKED_PROPERTY_NAME = 'checked';
+   
    var defaultUiComponentProvider = function defaultUiComponentProvider(selector) {
       return $(selector);
    };
@@ -19,14 +27,17 @@ shop.shoppingCart.InputForm = function InputForm(selector, optionalUiComponentPr
    var firstname;
    var lastname;
    var email;
+   var termsAndConditionsChecked;
    var comment;
    var cartContent;
    
    var updateSubmitButton = function updateSubmitButton() {
-      var submitButtonEnabled = countryOfDestination !== undefined && 
+      var submitButtonEnabled = 
+            countryOfDestination !== undefined && 
             firstname !== undefined && 
             lastname !== undefined && 
             email !== undefined &&
+            termsAndConditionsChecked &&
             cartContent !== undefined && cartContent.length > 0;
             
       if (selector !== undefined) {
@@ -43,19 +54,29 @@ shop.shoppingCart.InputForm = function InputForm(selector, optionalUiComponentPr
    };
    
    var onOrderFormElementChanged = function onOrderFormElementChanged(uiComponentId) {
-      var value = uiComponentProvider(selector + ' #' + uiComponentId).val();
+      var value;
+      
+      if (uiComponentId === TERMS_AND_CONDITIONS) {
+         value = uiComponentProvider(selector + ' #' + uiComponentId).prop(CHECKED_PROPERTY_NAME);
+      } else {
+         value = uiComponentProvider(selector + ' #' + uiComponentId).val();
+      }
+      
       switch(uiComponentId) {
-         case 'firstname': firstname = isValidName(value) ? value : undefined;
-                           break;
-                           
-         case 'lastname':  lastname = isValidName(value) ? value : undefined;
-                           break;
-                           
-         case 'email':     email = isValidEmail(value) ? value : undefined;
-                           break;
-                           
-         case 'comment':   comment = value;
-                           break;
+         case FIRSTNAME:            firstname = isValidName(value) ? value : undefined;
+                                    break;
+                                       
+         case LASTNAME:             lastname = isValidName(value) ? value : undefined;
+                                    break;
+                                       
+         case EMAIL:                email = isValidEmail(value) ? value : undefined;
+                                    break;
+                                       
+         case COMMENT:              comment = value;
+                                    break;
+                    
+         case TERMS_AND_CONDITIONS: termsAndConditionsChecked = value;
+                                    break;
       }
       
       updateSubmitButton();
@@ -71,22 +92,19 @@ shop.shoppingCart.InputForm = function InputForm(selector, optionalUiComponentPr
       updateSubmitButton();
    };
 
-   this.allValuesAreAvailable = function allValuesAreAvailable() {
-      return firstname !== undefined && 
-            lastname !== undefined && 
-            email !== undefined;
-   };
-   
    this.setValuesEnteredByUser = function setValuesEnteredByUser() {
-      uiComponentProvider(selector + ' #countryOfDestination').val((countryOfDestination === undefined) ? 'nothing' : countryOfDestination);
-      uiComponentProvider(selector + ' #firstname').val(firstname);
-      uiComponentProvider(selector + ' #lastname').val(lastname);
-      uiComponentProvider(selector + ' #email').val(email);
-      uiComponentProvider(selector + ' #comment').val(comment);
+      uiComponentProvider(selector + ' #' + COUNTRY_OF_DESTINATION).val((countryOfDestination === undefined) ? 'nothing' : countryOfDestination);
+      uiComponentProvider(selector + ' #' + FIRSTNAME).val(firstname);
+      uiComponentProvider(selector + ' #' + LASTNAME).val(lastname);
+      uiComponentProvider(selector + ' #' + EMAIL).val(email);
+      uiComponentProvider(selector + ' #' + COMMENT).val(comment);
+      uiComponentProvider(selector + ' #' + TERMS_AND_CONDITIONS).prop(CHECKED_PROPERTY_NAME, termsAndConditionsChecked ? true : false);
       updateSubmitButton();
    };
    
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToCommand(shop.topics.ORDER_FORM_ELEMENT_CHANGED, onOrderFormElementChanged);
+   
+   updateSubmitButton();
 };

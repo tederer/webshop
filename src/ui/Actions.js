@@ -62,6 +62,10 @@ shop.ui.Actions = {
       shop.Context.bus.sendCommand(shop.topics.USER_CLICKED_SUBMIT_ORDER_BUTTON);
    },
    
+   showOverlay: function showOverlay(selector) {
+      shop.Context.bus.sendCommand(shop.topics.SHOW_OVERLAY, selector);
+   },
+   
    hideOverlay: function hideOverlay(selector) {
       shop.Context.bus.sendCommand(shop.topics.HIDE_OVERLAY, selector);
    }

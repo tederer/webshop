@@ -38,6 +38,9 @@ shop.topics.SHOW_PICTURE = '/commands/showPicture';
 shop.topics.HIDE_PICTURE = '/commands/hidePicture';
 
 // data: the selector of the <div> that represents the overlay
+shop.topics.SHOW_OVERLAY = '/commands/showOverlay';
+
+// data: the selector of the <div> that represents the overlay
 shop.topics.HIDE_OVERLAY = '/commands/hideOverlay';
 
 // data: an object {productId: <String>, quantity: <integer>}

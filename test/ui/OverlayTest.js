@@ -74,6 +74,14 @@ var whenAHideOverlayCommandGetsSent = function whenAHideOverlayCommandGetsSent()
    whenAHideOverlayCommandGetsSentFor(DEFAULT_SELECTOR);
 };
 
+var whenAShowOverlayCommandGetsSentFor = function whenAShowOverlayCommandGetsSentFor(selector) {
+   mockedBus.sendCommand(shop.topics.SHOW_OVERLAY, selector );
+};
+
+var whenAShowOverlayCommandGetsSent = function whenAShowOverlayCommandGetsSent() {
+   whenAShowOverlayCommandGetsSentFor(DEFAULT_SELECTOR);
+};
+
 var lastCapturedVisiblityValue = function lastCapturedVisiblityValue() {
    return capturedVisiblityChanges[capturedVisiblityChanges.length - 1];
 };
@@ -127,6 +135,19 @@ describe('Overlay', function() {
       givenOverlayWithSelector('specialOverlay');
       whenAHideOverlayCommandGetsSentFor('specialOverlay');
       expect(lastCapturedVisiblityValue()).to.be.eql('hidden');
+   });
+   
+   // TODO
+   it('the overlay gets shown when a show overlay command gets sent_A', function() {
+      givenDefaultOverlay();
+      whenAShowOverlayCommandGetsSent();
+      expect(lastCapturedVisiblityValue()).to.be.eql('visible');
+   });
+   
+   it('the overlay gets shown when a show overlay command gets sent_B', function() {
+      givenOverlayWithSelector('specialOverlay');
+      whenAShowOverlayCommandGetsSentFor('specialOverlay');
+      expect(lastCapturedVisiblityValue()).to.be.eql('visible');
    });
    
    it('the overlay does not gets hidden when a hide overlay command gets sent for another overlay', function() {

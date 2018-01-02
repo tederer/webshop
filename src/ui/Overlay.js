@@ -43,6 +43,12 @@ shop.ui.Overlay = function Overlay(config, optionalSetHtmlContent, optionalBus) 
       updateHtmlContent();
    };
    
+   var onShowOverlay = function onShowOverlay(selector) {
+      if (selector === config.selector) {
+         thisInstance.show();
+      }
+   };
+   
    var onHideOverlay = function onHideOverlay(selector) {
       if (selector === config.selector) {
          thisInstance.hide();
@@ -66,6 +72,7 @@ shop.ui.Overlay = function Overlay(config, optionalSetHtmlContent, optionalBus) 
    }
    
    this.initialize();
+   bus.subscribeToCommand(shop.topics.SHOW_OVERLAY, onShowOverlay);
    bus.subscribeToCommand(shop.topics.HIDE_OVERLAY, onHideOverlay);
 };
 
