@@ -15,6 +15,7 @@ assertNamespace('shop.shoppingCart');
 
 shop.shoppingCart.CartController = function CartController(products, tab, testingComponents) {
    
+   var BEYOND_WEIGHT_LIMIT_INFO_SELECTOR = 'beyondWeightLimitInfo';
    var CRLF = '\r\n';
    var SHIPPING_COSTS_AUSTRIA = 4.6;
    var SHIPPING_COSTS_NON_AUSTRIA = 11.25;
@@ -35,13 +36,15 @@ shop.shoppingCart.CartController = function CartController(products, tab, testin
    var texts = testingComponentAvailable('texts') ? testingComponents.texts : new shop.shoppingCart.ShoppingCartTexts();
    var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.shoppingCart.InputForm('#shop > #content > #shoppingCart');
    var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.shoppingCart.CostsCalculator(productConfigs);
+   var weightLimitChecker = testingComponentAvailable('weightLimitChecker') ? testingComponents.weightLimitChecker : new shop.shoppingCart.WeightLimitChecker(productConfigs);
    var emailTextGenerator = testingComponentAvailable('emailTextGenerator') ? testingComponents.emailTextGenerator : new shop.shoppingCart.EmailTextGenerator();
    
    var cartContent;
    var tabSelector;
    var countryOfDestination;
    var cartContentAsText;
-   var ignoreNextContentChangeCallback = false;
+   var tabContentRevisionToIgnore;
+   var tabContentRevision;
    
    var productConfigForCartContentAvailable = function productConfigForCartContentAvailable() {
       var configAvailable = true;
@@ -88,6 +91,10 @@ shop.shoppingCart.CartController = function CartController(products, tab, testin
       return tableGenerator.generateTable(data);
    };
    
+   var incrementTabContentRevisionToIgnore = function incrementTabContentRevisionToIgnore() {
+      tabContentRevisionToIgnore = (tabContentRevision !== undefined) ? tabContentRevision + 1 : undefined;
+   };
+   
    var updateTable = function updateTable() {
       if (allDataAvailable()) {
          var htmlCode;
@@ -100,15 +107,28 @@ shop.shoppingCart.CartController = function CartController(products, tab, testin
             htmlCode = getHtmlTable(cartData);
             cartContentAsText = emailTextGenerator.generateCartContentAsText(cartData);
          }
-         ignoreNextContentChangeCallback = true;
+         incrementTabContentRevisionToIgnore();
          tab.setHtmlContentOfChildElement('shoppingCartContent', htmlCode);
       }
    };
 
+   var updateWeightLimitInfo = function updateWeightLimitInfo() {
+      var text = (weightLimitChecker.beyondWeightLimit()) ? texts.getWeightBeyondLimitText() : '';
+      incrementTabContentRevisionToIgnore();
+      tab.setHtmlContentOfChildElement(BEYOND_WEIGHT_LIMIT_INFO_SELECTOR, text);
+   };
+   
    var onShoppingCartContent = function onShoppingCartContent(content) {
       cartContent = content;
+      weightLimitChecker.setCartContent(content);
       costCalculator.setCartContent(content);
       updateTable();
+      updateWeightLimitInfo();
+   };
+   
+   var productConfigsChanged = function productConfigsChanged() {
+      updateTable();
+      updateWeightLimitInfo();
    };
    
    var onCountryOfDestination = function onCountryOfDestination(countryCode) {
@@ -133,18 +153,20 @@ shop.shoppingCart.CartController = function CartController(products, tab, testin
       bus.sendCommand(shop.topics.SUBMIT_ORDER, emailText);
    };
    
-   this.onTabContentChangedCallback = function onTabContentChangedCallback(selector) {
-      if (!ignoreNextContentChangeCallback) {
+   this.onTabContentChangedCallback = function onTabContentChangedCallback(selector, revision) {
+      tabContentRevision = revision;
+      if (revision !== tabContentRevisionToIgnore) {
          tabSelector = selector;
          updateTable();
+         updateWeightLimitInfo();
          inputForm.setValuesEnteredByUser();
-      } else {
-         ignoreNextContentChangeCallback = false;
       }
    };
    
    tableHeaders.onTableHeaderChanged(updateTable);
    texts.onLanguageDependentTextChanged(updateTable);
+   texts.onLanguageDependentTextChanged(updateWeightLimitInfo);
+   productConfigs.onConfigChanged(productConfigsChanged);
    
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);
    bus.subscribeToPublication(shop.topics.SHOPPING_CART_CONTENT, onShoppingCartContent);

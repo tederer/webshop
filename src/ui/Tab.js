@@ -26,6 +26,7 @@ assertNamespace('shop.ui');
  */
 shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlContent) {
    var PLACEHOLDER = '<!--DYNAMIC_CONTENT-->';
+   var revision = 1;
    
    var createTabContentConfig = function createTabContentConfig(config) {
       return {
@@ -50,7 +51,8 @@ shop.ui.Tab = function Tab(config, optionalTabContentFactory, optionalSetHtmlCon
    var setHtmlContent = (optionalSetHtmlContent === undefined) ? defaultHtmlContentSetter : optionalSetHtmlContent;
    
    var notifyTableChangeListeners = function notifyTableChangeListeners() {
-      tabContentChangedCallbacks.forEach(function(callback) { callback(config.selector);});
+      var revisionToUse = revision++;
+      tabContentChangedCallbacks.forEach(function(callback) { callback(config.selector, revisionToUse);});
    };
    
    var updateHtmlContent = function updateHtmlContent() {

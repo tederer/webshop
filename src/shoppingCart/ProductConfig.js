@@ -12,6 +12,13 @@ shop.shoppingCart.ProductConfig = function ProductConfig(products, optionalBus) 
    var productConfigurations = {};
    var languages = [];
    var currentLanguage;
+   var callbacks = [];
+   
+   var notifyCallbacks = function notifyCallbacks() {
+      for (var index = 0; index < callbacks.length; index++) {
+         callbacks[index]();
+      }
+   };
    
    var onProductConfiguration = function onProductConfiguration(productName, language, config) {
       if (productConfigurations[language] === undefined) {
@@ -35,8 +42,13 @@ shop.shoppingCart.ProductConfig = function ProductConfig(products, optionalBus) 
          languages[languages.length] = language;
          subscribeTo(language);
       }
+      notifyCallbacks();
    };
       
+   this.onConfigChanged = function onConfigChanged(callback) {
+      callbacks[callbacks.length] = callback;
+   };
+   
    this.get = function get(productId) {
       var config;
       if (currentLanguage !== undefined) {

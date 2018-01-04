@@ -6,14 +6,39 @@ assertNamespace('shop.shoppingCart');
 
 shop.shoppingCart.CostsCalculator = function CostsCalculator(productConfigs) {
 
-   var SHIPPING_COSTS_AUSTRIA = 4.6;
-   var SHIPPING_COSTS_NON_AUSTRIA = 11.25;
-   
    var cartContent;
    var countryOfDestination;
    
    var cartContainsProducts = function cartContainsProducts() {
       return cartContent !== undefined && cartContent.length > 0;
+   };
+   
+   var getShippingCostsForAustria = function getShippingCostsForAustria(totalProductCosts, totalProductWeightInGrams) {
+      var shippingCosts = 0;
+      if (totalProductCosts < 50) {
+         if (totalProductWeightInGrams < 2000) {
+            shippingCosts = 4;
+         } else if (totalProductWeightInGrams < 5000) {
+            shippingCosts = 5.82;
+         } else {
+            shippingCosts = 8.57;
+         }
+      }
+      return shippingCosts;
+   };
+   
+   var getShippingCostsForAllOthers = function getShippingCostsForAllOthers(totalProductCosts, totalProductWeightInGrams) {
+      var shippingCosts = 0;
+      if (totalProductCosts < 100) {
+         if (totalProductWeightInGrams < 2000) {
+            shippingCosts = 13.92;
+         } else if (totalProductWeightInGrams < 4000) {
+            shippingCosts = 15.27;
+         } else {
+            shippingCosts = 19.27;
+         }
+      }
+      return shippingCosts;
    };
    
    this.setCartContent = function setCartContent(content) {
@@ -29,18 +54,22 @@ shop.shoppingCart.CostsCalculator = function CostsCalculator(productConfigs) {
       
       if (cartContainsProducts() && countryOfDestination !== undefined) {
          var totalProductCosts = 0;
+         var totalProductWeightInGrams = 0;
          var shippingCosts;
       
          for(var index = 0; index < cartContent.length; index++) {
             var productConfig = productConfigs.get(cartContent[index].productId);
-            totalProductCosts += productConfig.price * cartContent[index].quantity;
+            var quantity = cartContent[index].quantity;
+            totalProductCosts += productConfig.price * quantity;
+            totalProductWeightInGrams += productConfig.weightInGrams * quantity;
          }
 
          if (countryOfDestination === 'AT') {
-            shippingCosts = (totalProductCosts >= 50) ? 0 : SHIPPING_COSTS_AUSTRIA;
+            shippingCosts = getShippingCostsForAustria(totalProductCosts, totalProductWeightInGrams);
          } else {
-            shippingCosts = (totalProductCosts >= 100) ? 0 : SHIPPING_COSTS_NON_AUSTRIA;
+            shippingCosts = getShippingCostsForAllOthers(totalProductCosts, totalProductWeightInGrams);
          }
+         
          result = {totalCosts: totalProductCosts + shippingCosts, shippingCosts: shippingCosts};
       }
       return result;

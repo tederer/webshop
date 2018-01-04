@@ -12,6 +12,7 @@ var instance;
 
 var mockedBus;
 var products;
+var configChangedCallbackInvocations;
 
 function valueIsAnObject(val) {
    if (val === null) { return false;}
@@ -40,6 +41,10 @@ var givenConfiguredProduct = function givenConfiguredProduct(language, product, 
    mockedBus.publish('/jsonContent/' + language + '/' + product, config);
 };
 
+var givenRegisteredConfigChangeCallback = function givenRegisteredConfigChangeCallback() {
+   instance.onConfigChanged(function() { configChangedCallbackInvocations++;});
+};
+
 var whenTheCurrentLanguageIs = function whenTheCurrentLanguageIs(language) {
    givenTheCurrentLanguageIs(language);
 };
@@ -55,6 +60,7 @@ var busGotPublicationSubscriptionFor = function busGotPublicationSubscriptionFor
 
 var setup = function setup() {
    mockedBus = new testing.MockedBus();
+   configChangedCallbackInvocations = 0;
 };
 
 describe('ProductConfig', function() {
@@ -117,5 +123,12 @@ describe('ProductConfig', function() {
       givenTheCurrentLanguageIs(shop.Language.EN);
       expect(instance.get('plantA').name).to.be.eql('plant_A');
       expect(instance.get('accessoriesA').name).to.be.eql('accessories_A');
+   });
+   
+   it('a registered change callback gets called when the language changes', function() {
+      givenDefaultInstance();
+      givenRegisteredConfigChangeCallback();
+      whenTheCurrentLanguageIs(shop.Language.EN);
+      expect(configChangedCallbackInvocations).to.be.eql(1);
    });
 });  

@@ -32,6 +32,7 @@ var capturedTabContentConfig;
 var mockedBus;
 var htmlTabContent;
 var getHtmlContentInvocationCount;
+var tabContentChangedListenerInvocations;
 
 var MockedAbstractHideableLanguageDependentComponent = function MockedAbstractHideableLanguageDependentComponent() {
    this.initialize = function initialize() {};
@@ -61,6 +62,14 @@ var mockedHtmlContentSetter = function mockedHtmlContentSetter(selector, content
    capturedHtmlContent[selector] = content;
 };
 
+var tabContentChangedListener = function tabContentChangedListener(selector, revision) {
+   if (tabContentChangedListenerInvocations[selector] === undefined) {
+      tabContentChangedListenerInvocations[selector] = [revision];
+   } else {
+      tabContentChangedListenerInvocations[selector].push(revision);
+   }
+};
+
 var getDefaultConfig = function getDefaultConfig() {
    return {
       id:                  DEFAULT_TAB_ID,
@@ -86,7 +95,7 @@ var givenDefaultInstance = function givenDefaultInstance() {
    givenInstanceWith({});
 };
 
-var givenRegisteredTableChangeListener = function givenRegisteredTableChangeListener(callback) {
+var givenRegisteredTabContentChangedListener = function givenRegisteredTabContentChangedListener(callback) {
    instance.addTabContentChangedListener(callback);
 };
 
@@ -141,6 +150,7 @@ var setup = function setup() {
    capturedHtmlContent = {};
    capturedTabContentChangeListeners = [];
    capturedTabContentConfig = [];
+   tabContentChangedListenerInvocations = {};
    htmlTabContent = undefined;
    getHtmlContentInvocationCount = 0;
    templatePrefix = '<h1>Hello World</h1>';
@@ -225,12 +235,10 @@ describe('Tab', function() {
    });
    
    it('the Tab notifies the registered TabContentChangedCallbacks when tab content gets set to an error message', function() {
-      var callbackAInvocations = 0;
-      var callbackA = function callbackA() { callbackAInvocations++; };
       givenDefaultInstance();
-      givenRegisteredTableChangeListener(callbackA);
+      givenRegisteredTabContentChangedListener(tabContentChangedListener);
       whenTabContentChanges();
-      expect(callbackAInvocations).to.be.eql(1);
+      expect(tabContentChangedListenerInvocations[DEFAULT_SELECTOR].length).to.be.eql(1);
    });
    
    it('setHtmlContentOfChildElement sets the content of a child element A', function() {
@@ -246,11 +254,18 @@ describe('Tab', function() {
    });
    
    it('the Tab notifies the registered TabContentChangedCallbacks when setHtmlContentOfChildElement called', function() {
-      var callbackAInvocations = 0;
-      var callbackA = function callbackA() { callbackAInvocations++; };
       givenDefaultInstance();
-      givenRegisteredTableChangeListener(callbackA);
+      givenRegisteredTabContentChangedListener(tabContentChangedListener);
       whenHtmlContentOfAChildElementGetsSet('childId', '<p>child content</p>');
-      expect(callbackAInvocations).to.be.eql(1);
+      expect(tabContentChangedListenerInvocations[DEFAULT_SELECTOR].length).to.be.eql(1);
+   });
+   
+   it('the revision provided to the TabContentChangedCallbacks gets incremented by one every time', function() {
+      givenDefaultInstance();
+      givenRegisteredTabContentChangedListener(tabContentChangedListener);
+      whenTabContentChanges();
+      whenTabContentChanges();
+      whenTabContentChanges();
+      expect(tabContentChangedListenerInvocations[DEFAULT_SELECTOR]).to.be.eql([1,2,3]);
    });
 });  

@@ -18,6 +18,7 @@ assertNamespace('shop.ui');
  *            "id": "AerangisEllisii",
  *            "name": "Aerangis ellisii",
  *            "price": 2.0,
+ *            "weightInGrams": 0.000000,
  *            "description": "weiße Blüte, kleine Pflanze",
  *            "url": "http://some.webpage.com"
  *            "new": "true"
@@ -26,6 +27,7 @@ assertNamespace('shop.ui');
  *            "id": "CattleyaWalkerianaAlba",
  *            "name": "Cattleya walkeriana alba",
  *            "price": 2.5,
+ *            "weightInGrams": 0.000000,
  *            "description": "Miniatur aus Brasilien",
  *            "imageSmall": "cattleya_small.jpg"
  *            "imageBig": "images/pflanzen/Bifrenaria inodora.jpg",

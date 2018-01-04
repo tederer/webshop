@@ -54,13 +54,15 @@ describe('ShoppingCartTexts', function() {
       givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
       givenLanguageDependentTextIs('totalCosts', 'total costs text');
       givenLanguageDependentTextIs('emptyCart', 'empty cart text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
       expect(instance.allTextsAreAvailable()).to.be.eql(true);
    });
    
    it('allTextsAreAvailable returns false when a text is missing A', function() {
       givenInstance();
-      givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
       givenLanguageDependentTextIs('totalCosts', 'total costs text');
+      givenLanguageDependentTextIs('emptyCart', 'empty cart text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
       expect(instance.allTextsAreAvailable()).to.be.eql(false);
    });
    
@@ -68,11 +70,21 @@ describe('ShoppingCartTexts', function() {
       givenInstance();
       givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
       givenLanguageDependentTextIs('emptyCart', 'empty cart text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
       expect(instance.allTextsAreAvailable()).to.be.eql(false);
    });
    
    it('allTextsAreAvailable returns false when a text is missing C', function() {
       givenInstance();
+      givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
+      givenLanguageDependentTextIs('totalCosts', 'total costs text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
+      expect(instance.allTextsAreAvailable()).to.be.eql(false);
+   });
+   
+   it('allTextsAreAvailable returns false when a text is missing D', function() {
+      givenInstance();
+      givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
       givenLanguageDependentTextIs('totalCosts', 'total costs text');
       givenLanguageDependentTextIs('emptyCart', 'empty cart text');
       expect(instance.allTextsAreAvailable()).to.be.eql(false);
@@ -96,11 +108,18 @@ describe('ShoppingCartTexts', function() {
       expect(instance.getEmptyCartText()).to.be.eql('a empty cart text');
    });
       
+   it('getWeightBeyondLimitText returns the last published text', function() {
+      givenInstance();
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
+      expect(instance.getWeightBeyondLimitText()).to.be.eql('weight beyond limit text');
+   });
+      
    it('listener gets notified when shipping costs text changes', function() {
       givenInstance();
       givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
       givenLanguageDependentTextIs('totalCosts', 'total costs text');
       givenLanguageDependentTextIs('emptyCart', 'empty cart text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
       givenRegisteredCallback();
       whenLanguageDependentTextIs('shippingCosts', 'another text');
       expect(callbackInvocations).to.be.eql(1);
@@ -111,6 +130,7 @@ describe('ShoppingCartTexts', function() {
       givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
       givenLanguageDependentTextIs('totalCosts', 'total costs text');
       givenLanguageDependentTextIs('emptyCart', 'empty cart text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
       givenRegisteredCallback();
       whenLanguageDependentTextIs('totalCosts', 'another text');
       expect(callbackInvocations).to.be.eql(1);
@@ -121,8 +141,20 @@ describe('ShoppingCartTexts', function() {
       givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
       givenLanguageDependentTextIs('totalCosts', 'total costs text');
       givenLanguageDependentTextIs('emptyCart', 'empty cart text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
       givenRegisteredCallback();
       whenLanguageDependentTextIs('emptyCart', 'another text');
+      expect(callbackInvocations).to.be.eql(1);
+   });
+      
+   it('listener gets notified when weight beyond limit text changes', function() {
+      givenInstance();
+      givenLanguageDependentTextIs('shippingCosts', 'shipping costs text');
+      givenLanguageDependentTextIs('totalCosts', 'total costs text');
+      givenLanguageDependentTextIs('emptyCart', 'empty cart text');
+      givenLanguageDependentTextIs('weightBeyondLimit', 'weight beyond limit text');
+      givenRegisteredCallback();
+      whenLanguageDependentTextIs('weightBeyondLimit', 'another text');
       expect(callbackInvocations).to.be.eql(1);
    });
 });  

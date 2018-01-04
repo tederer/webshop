@@ -1,2 +1,1 @@
-﻿* beim impressum eine karten mit der google-maps API einbauen
-* seite ins web stellen und testen (auch auf kleinen geräten)
+﻿* seite ins web stellen und testen (auch auf kleinen geräten)

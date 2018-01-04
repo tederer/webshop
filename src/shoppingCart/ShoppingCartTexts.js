@@ -12,6 +12,7 @@ shop.shoppingCart.ShoppingCartTexts = function ShoppingCartTexts(optionalBus) {
    var SHIPPING_COSTS_ID = 'shippingCosts';
    var TOTAL_COSTS_ID = 'totalCosts';
    var EMPTY_CART_ID = 'emptyCart';
+   var WEIGHT_BEYOND_LIMIT_ID = 'weightBeyondLimit';
    
    var bus = (optionalBus === undefined) ? shop.Context.bus : optionalBus;
    var shippingCostsText;
@@ -51,16 +52,21 @@ shop.shoppingCart.ShoppingCartTexts = function ShoppingCartTexts(optionalBus) {
       return texts[EMPTY_CART_ID];
    };
    
+   this.getWeightBeyondLimitText = function getWeightBeyondLimitText() {
+      return texts[WEIGHT_BEYOND_LIMIT_ID];
+   };
+   
    this.allTextsAreAvailable = function allTextsAreAvailable() {
       var allAvailable = true;
-      var textIds = [SHIPPING_COSTS_ID, TOTAL_COSTS_ID, EMPTY_CART_ID];
+      var textIds = [SHIPPING_COSTS_ID, TOTAL_COSTS_ID, EMPTY_CART_ID, WEIGHT_BEYOND_LIMIT_ID];
       for (var index=0; allAvailable && index < textIds.length; index++) {
          allAvailable = texts[textIds[index]] !== undefined;
       }
       return allAvailable;
    };
    
-   subscribeToPublication('shippingCosts');
-   subscribeToPublication('totalCosts');
-   subscribeToPublication('emptyCart');
+   subscribeToPublication(SHIPPING_COSTS_ID);
+   subscribeToPublication(TOTAL_COSTS_ID);
+   subscribeToPublication(EMPTY_CART_ID);
+   subscribeToPublication(WEIGHT_BEYOND_LIMIT_ID);
 };
