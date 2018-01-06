@@ -36,7 +36,6 @@ shop.shoppingCart.CartController = function CartController(products, tab, testin
    var texts = testingComponentAvailable('texts') ? testingComponents.texts : new shop.shoppingCart.ShoppingCartTexts();
    var inputForm = testingComponentAvailable('inputForm') ? testingComponents.inputForm : new shop.shoppingCart.InputForm('#shop > #content > #shoppingCart');
    var costCalculator = testingComponentAvailable('costCalculator') ? testingComponents.costCalculator : new shop.shoppingCart.CostsCalculator(productConfigs);
-   var weightLimitChecker = testingComponentAvailable('weightLimitChecker') ? testingComponents.weightLimitChecker : new shop.shoppingCart.WeightLimitChecker(productConfigs);
    var emailTextGenerator = testingComponentAvailable('emailTextGenerator') ? testingComponents.emailTextGenerator : new shop.shoppingCart.EmailTextGenerator();
    
    var cartContent;
@@ -112,23 +111,14 @@ shop.shoppingCart.CartController = function CartController(products, tab, testin
       }
    };
 
-   var updateWeightLimitInfo = function updateWeightLimitInfo() {
-      var text = (weightLimitChecker.beyondWeightLimit()) ? texts.getWeightBeyondLimitText() : '';
-      incrementTabContentRevisionToIgnore();
-      tab.setHtmlContentOfChildElement(BEYOND_WEIGHT_LIMIT_INFO_SELECTOR, text);
-   };
-   
    var onShoppingCartContent = function onShoppingCartContent(content) {
       cartContent = content;
-      weightLimitChecker.setCartContent(content);
       costCalculator.setCartContent(content);
       updateTable();
-      updateWeightLimitInfo();
    };
    
    var productConfigsChanged = function productConfigsChanged() {
       updateTable();
-      updateWeightLimitInfo();
    };
    
    var onCountryOfDestination = function onCountryOfDestination(countryCode) {
@@ -158,14 +148,12 @@ shop.shoppingCart.CartController = function CartController(products, tab, testin
       if (revision !== tabContentRevisionToIgnore) {
          tabSelector = selector;
          updateTable();
-         updateWeightLimitInfo();
          inputForm.setValuesEnteredByUser();
       }
    };
    
    tableHeaders.onTableHeaderChanged(updateTable);
    texts.onLanguageDependentTextChanged(updateTable);
-   texts.onLanguageDependentTextChanged(updateWeightLimitInfo);
    productConfigs.onConfigChanged(productConfigsChanged);
    
    bus.subscribeToPublication(shop.topics.COUNTRY_OF_DESTINATION, onCountryOfDestination);

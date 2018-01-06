@@ -55,7 +55,7 @@ shop.ui.tablegenerators.EventsTableGenerator = function EventsTableGenerator() {
       configKey = configurationId;
       
       thisInstance.reset();
-      thisInstance.append('<table class="eventTable">');
+      thisInstance.append('<table class="defaultTable eventTable">');
       addCaptions();
       config.events.forEach(function(event) { 
          addRow(event);

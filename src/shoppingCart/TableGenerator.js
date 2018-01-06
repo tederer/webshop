@@ -103,7 +103,7 @@ shop.shoppingCart.TableGenerator = function TableGenerator() {
       htmlContent = '';
       tableHeaders = data.tableHeaders;
       
-      append('<table>');
+      append('<table class="defaultTable">');
       addCaptions();
       for (var index = 0; index < data.productsInShoppingCart.length; index++) { 
          addRow(data.productsInShoppingCart[index]);

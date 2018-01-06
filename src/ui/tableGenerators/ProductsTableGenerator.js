@@ -103,7 +103,7 @@ shop.ui.tablegenerators.ProductsTableGenerator = function ProductsTableGenerator
    this.generateTable = function generateTable(configurationId, config, newProductLabelText) {
       configKey = configurationId;
       this.reset();
-      this.append('<table class="productTable">');
+      this.append('<table class="defaultTable productTable">');
       addCaptions(this);
       var products = config.products;
       for (var index = 0; index < products.length; index++) {

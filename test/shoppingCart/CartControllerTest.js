@@ -22,9 +22,7 @@ var tabSelector;
 var shippingCostsText;
 var totalCostsText;
 var emptyCartText;
-var weightBeyondLimitText;
 var capturedCartContentsInCalculator;
-var capturedCartContentsInWeightLimitChecker;
 var capturedCountryCodeInCalculator;
 var calculatedCosts;
 var shippingCosts;
@@ -34,7 +32,6 @@ var capturedEmailTextGeneratorCustomerData;
 var cartContentAsText;
 var customerDataAsText;
 var uiComponentValues;
-var weightBeyondLimit;
 var tabContentRevision;
 var productConfigChangedCallbacks;
 
@@ -104,7 +101,6 @@ var mockedTexts = {
    getShippingCostsText : function getShippingCostsText() { return shippingCostsText; },
    getTotalCostsText : function getTotalCostsText() { return totalCostsText; },
    getEmptyCartText : function getEmptyCartText() { return emptyCartText; },
-   getWeightBeyondLimitText: function getWeightBeyondLimitText() { return weightBeyondLimitText; },
    allTextsAreAvailable : function allTextsAreAvailable() {
       return cartTextsAreAvailable;
    }
@@ -127,15 +123,6 @@ var mockedCostCalculator = {
    }
 };
 
-var mockedWeightLimitChecker = {
-   setCartContent: function setCartContent(content) {
-      capturedCartContentsInWeightLimitChecker[capturedCartContentsInWeightLimitChecker.length] = content;
-   },
-   beyondWeightLimit: function beyondWeightLimit() {
-      return weightBeyondLimit;
-   }
-};
-
 function valueIsAnObject(val) {
    if (val === null) { return false;}
    return ( (typeof val === 'function') || (typeof val === 'object') );
@@ -152,7 +139,6 @@ var givenInstance = function givenInstance() {
       texts                : mockedTexts,
       inputForm            : mockedInputForm,
       costCalculator       : mockedCostCalculator,
-      weightLimitChecker   : mockedWeightLimitChecker,
       emailTextGenerator   : mockedEmailTextGenerator,
    };
    instance = new shop.shoppingCart.CartController(products, mockedTab, testingComponents);
@@ -202,10 +188,6 @@ var givenEmptyCartTextIs = function givenEmptyCartTextIs(text) {
    emptyCartText = text;
 };
 
-var givenWeightBeyondLimitTextIs = function givenWeightBeyondLimitTextIs(text) {
-   weightBeyondLimitText = text;
-};
-
 
 var givenContentOfTabChanges = function givenContentOfTabChanges(tabSelectorToUse) {
    tabSelector = (tabSelectorToUse === undefined) ? DEFAULT_TAB_SELECTOR : tabSelectorToUse;
@@ -242,14 +224,6 @@ var givenValidCartContent = function givenValidCartContent() {
    givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 1 }]);
 };
 
-var givenWeightLimitCheckerReturnsTrueForBeyondWeightLimit = function givenWeightLimitCheckerReturnsTrueForBeyondWeightLimit() {
-   weightBeyondLimit = true;
-};
-
-var givenWeightLimitCheckerReturnsFalseForBeyondWeightLimit = function givenWeightLimitCheckerReturnsFalseForBeyondWeightLimit() {
-   weightBeyondLimit = false;
-};
-
 var whenCountryOfDestinationIs = function whenCountryOfDestinationIs(countryCode) {
    givenCountryOfDestinationIs(countryCode);
 };
@@ -274,26 +248,13 @@ var getCapturedShoppingCartHtmlContents = function getCapturedShoppingCartHtmlCo
    return capturedHtmlContent.shoppingCartContent;
 };
 
-var getCapturedBeyondWeightLimitInfoHtmlContents = function getCapturedBeyondWeightLimitInfoHtmlContents() {
-   return capturedHtmlContent.beyondWeightLimitInfo;
-};
-
 var lastPublishedShoppingCartHtmlContent = function lastPublishedShoppingCartHtmlContent() {
    var data = getCapturedShoppingCartHtmlContents();
    return data[data.length - 1];
 };
 
-var lastPublishedBeyondWeightLimitInfoHtmlContent = function lastPublishedBeyondWeightLimitInfoHtmlContent() {
-   var data = getCapturedBeyondWeightLimitInfoHtmlContents();
-   return data[data.length - 1];
-};
-
 var lastCartContentsInCalculator = function lastCartContentsInCalculator() {
    return capturedCartContentsInCalculator[capturedCartContentsInCalculator.length - 1];   
-};
-
-var lastCartContentsInWeightLimitChecker = function lastCartContentsInWeightLimitChecker() {
-   return capturedCartContentsInWeightLimitChecker[capturedCartContentsInWeightLimitChecker.length - 1];   
 };
 
 var lastTableGeneratorData = function lastTableGeneratorData() {
@@ -342,10 +303,6 @@ var lastCartContentsInCalculatorContains = function lastCartContentsInCalculator
    return lastCartContentsContains(lastCartContentsInCalculator(), productId, quantity);
 };
    
-var lastCartContentsInWeightLimitCheckerContains = function lastCartContentsInWeightLimitCheckerContains(productId, quantity) {
-   return lastCartContentsContains(lastCartContentsInWeightLimitChecker(), productId, quantity);
-};
-   
 var setup = function setup() {
    mockedBus = new testing.MockedBus();
    capturedHtmlContent = {};
@@ -357,9 +314,7 @@ var setup = function setup() {
    shippingCostsText = undefined;
    totalCostsText = undefined;
    emptyCartText = undefined;
-   weightBeyondLimitText = undefined;
    capturedCartContentsInCalculator = [];
-   capturedCartContentsInWeightLimitChecker = [];
    capturedCountryCodeInCalculator = [];
    calculatedCosts = undefined;
    shippingCosts = undefined;
@@ -369,7 +324,6 @@ var setup = function setup() {
    cartContentAsText = undefined;
    customerDataAsText = undefined;
    uiComponentValues = {};
-   weightBeyondLimit = undefined;
    tabContentRevision = 1;
    productConfigChangedCallbacks = [];
 };
@@ -410,8 +364,8 @@ describe('CartController', function() {
       givenAllTableHeadersAreAvailable();
       givenCartTextsAreAvailable();
       givenConfiguredProducts([
-         {id: 'prodA', name: 'pflanze_A', price: 5, weightInGrams: 1},
-         {id: 'prodB', name: 'pflanze_B', price: 7, weightInGrams: 2}]);
+         {id: 'prodA', name: 'pflanze_A', price: 5},
+         {id: 'prodB', name: 'pflanze_B', price: 7}]);
       givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 1 },{ productId: 'prodB', quantity: 2 }]);
       whenContentOfTabChanges();
       expect(lastTableGeneratorData().productsInShoppingCart.length).to.be.eql(2);
@@ -424,8 +378,8 @@ describe('CartController', function() {
       givenAllTableHeadersAreAvailable();
       givenCartTextsAreAvailable();
       givenConfiguredProducts([
-         {id: 'fish', name: 'shark', price: 120, weightInGrams: 2000},
-         {id: 'potato', name: 'blue potato', price: 0.7, weightInGrams: 35}]);
+         {id: 'fish', name: 'shark', price: 120},
+         {id: 'potato', name: 'blue potato', price: 0.7}]);
       givenTheShoppingCartContentIs([{ productId: 'potato', quantity: 15 }]);
       whenContentOfTabChanges();
       expect(lastTableGeneratorData().productsInShoppingCart.length).to.be.eql(1);
@@ -527,8 +481,8 @@ describe('CartController', function() {
       givenAllTableHeadersAreAvailable();
       givenCartTextsAreAvailable();
       givenConfiguredProducts([
-         {id: 'prodA', name: 'pflanze_A', price: 5, weightInGrams: 8},
-         {id: 'prodB', name: 'pflanze_B', price: 7, weightInGrams: 12}]);
+         {id: 'prodA', name: 'pflanze_A', price: 5},
+         {id: 'prodB', name: 'pflanze_B', price: 7}]);
       givenTheShoppingCartContentIs([{ productId: 'prodA', quantity: 1 },{ productId: 'prodB', quantity: 2 }]);
       whenContentOfTabChanges();
       expect(lastEmailTextGeneratorCartData().productsInShoppingCart.length).to.be.eql(2);
@@ -541,8 +495,8 @@ describe('CartController', function() {
       givenAllTableHeadersAreAvailable();
       givenCartTextsAreAvailable();
       givenConfiguredProducts([
-         {id: 'fish', name: 'shark', price: 120, weightInGrams: 3000},
-         {id: 'potato', name: 'blue potato', price: 0.7, weightInGrams: 44}]);
+         {id: 'fish', name: 'shark', price: 120},
+         {id: 'potato', name: 'blue potato', price: 0.7}]);
       givenTheShoppingCartContentIs([{ productId: 'potato', quantity: 15 }]);
       whenContentOfTabChanges();
       expect(lastEmailTextGeneratorCartData().productsInShoppingCart.length).to.be.eql(1);
@@ -650,19 +604,6 @@ describe('CartController', function() {
       expect(lastCartContentsInCalculator().length).to.be.eql(0);
    });
       
-   it('new cart content gets forwarded to the WeightLimitChecker A', function() {
-      givenInstance();
-      whenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
-      expect(lastCartContentsInWeightLimitChecker().length).to.be.eql(1);
-      expect(lastCartContentsInWeightLimitCheckerContains('fish', 2)).to.be.eql(true);
-   });
-      
-   it('new cart content gets forwarded to the WeightLimitChecker B', function() {
-      givenInstance();
-      whenTheShoppingCartContentIs([]);
-      expect(lastCartContentsInWeightLimitChecker().length).to.be.eql(0);
-   });
-      
    it('new country of destination gets forwarded to the CostsCalculator A', function() {
       givenInstance();
       whenCountryOfDestinationIs('DE');
@@ -685,22 +626,6 @@ describe('CartController', function() {
       expect(mockedBus.getLastCommand(shop.topics.SUBMIT_ORDER)).to.be.eql('products in the cart\r\n\r\ncustomers details');
    });
    
-   it('weight limit info gets set when WeightLimitChecker says that products are too heavy', function() {
-      givenInstance();
-      givenWeightBeyondLimitTextIs('it is to heavy');
-      givenWeightLimitCheckerReturnsTrueForBeyondWeightLimit();
-      whenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
-      expect(lastPublishedBeyondWeightLimitInfoHtmlContent()).to.be.eql('it is to heavy');
-   });
-   
-   it('weight limit info gets removed when WeightLimitChecker says that weight of products is below limit', function() {
-      givenInstance();
-      givenWeightBeyondLimitTextIs('it is to heavy');
-      givenWeightLimitCheckerReturnsFalseForBeyondWeightLimit();
-      whenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
-      expect(lastPublishedBeyondWeightLimitInfoHtmlContent()).to.be.eql('');
-   });
-   
    it('table content gets updated when product configs changed', function() {
       givenInstance();
       givenTableGeneratorReturns('some html code');
@@ -709,16 +634,6 @@ describe('CartController', function() {
       givenTableGeneratorReturns('another html code');
       whenProductConfigsChanged();
       expect(lastPublishedShoppingCartHtmlContent()).to.be.eql('another html code');
-   });
-   
-   it('beyond weight limit info content gets updated when product configs changed', function() {
-      givenInstance();
-      givenWeightBeyondLimitTextIs('it is to heavy');
-      givenWeightLimitCheckerReturnsTrueForBeyondWeightLimit();
-      givenTheShoppingCartContentIs([{ productId: 'fish', quantity: 2 }]);
-      givenWeightBeyondLimitTextIs('it is still to heavy');
-      whenProductConfigsChanged();
-      expect(lastPublishedBeyondWeightLimitInfoHtmlContent()).to.be.eql('it is still to heavy');
    });
 }); 
       
