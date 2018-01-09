@@ -120,9 +120,9 @@ shop.shoppingCart.EmailTextGenerator = function EmailTextGenerator() {
       var columnWidths = calculateColumnWidths(table).map(addPadding);
       var productsAsText = table.map(addSpacesToHaveSameColumnLengths.bind(null, columnWidths)).reduce(concat, '');
       var shippingCostsAsText =  cartData.shippingCostsText + ': ' + 
-                                    (cartData.shippingCosts ? cartData.shippingCosts.toFixed(2) + ' ' + EUR : '');
+                                    (cartData.shippingCosts !== undefined ? cartData.shippingCosts.toFixed(2) + ' ' + EUR : '');
       var totalCostsAsText =     cartData.totalCostsText + ': ' + 
-                                    (cartData.totalCosts ? cartData.totalCosts.toFixed(2) + ' ' + EUR : '');
+                                    (cartData.totalCosts !== undefined ? cartData.totalCosts.toFixed(2) + ' ' + EUR : '');
       return productsAsText + CRLF + CRLF + shippingCostsAsText + CRLF + CRLF + totalCostsAsText;
    };
    
